@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package file;
+
+option go_package = "./file";
+
+message UserIdReq{
+  string id = 1;
+}
+message UrlReply{
+  string url = 1;
+}
+message HelpIdReq{
+  int64 id = 1;
+}
+message ScholarApplyReq{
+  int64 id = 1;
+}
+service file {
+  rpc getAvatar(UserIdReq) returns(UrlReply);
+  rpc getHelpFile(UserIdReq) returns(UrlReply);
+  rpc getApplyFile(UserIdReq) returns(UrlReply);
+}

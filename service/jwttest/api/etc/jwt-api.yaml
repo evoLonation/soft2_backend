@@ -1,0 +1,13 @@
+Name: jwt-api
+Host: 0.0.0.0
+Port: 8889
+Mysql:
+  DataSource: root:2002116yy@tcp(127.0.0.1:3306)/soft2_backend?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+Auth:
+  AccessSecret: BUAADIAMONDPICK
+  AccessExpire: 5
+FileRpc:
+  Etcd:
+    Hosts:
+      - 0.0.0.0:2379
+    Key: file.rpc

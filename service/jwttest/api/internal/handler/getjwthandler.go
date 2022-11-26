@@ -1,0 +1,28 @@
+package handler
+
+import (
+	"net/http"
+
+	"github.com/zeromicro/go-zero/rest/httpx"
+	"soft2_backend/service/jwttest/api/internal/logic"
+	"soft2_backend/service/jwttest/api/internal/svc"
+	"soft2_backend/service/jwttest/api/internal/types"
+)
+
+func getJwtHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var req types.Request
+		if err := httpx.Parse(r, &req); err != nil {
+			httpx.Error(w, err)
+			return
+		}
+
+		l := logic.NewGetJwtLogic(r.Context(), svcCtx)
+		resp, err := l.GetJwt(&req)
+		if err != nil {
+			httpx.Error(w, err)
+		} else {
+			httpx.OkJson(w, resp)
+		}
+	}
+}

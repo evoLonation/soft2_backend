@@ -1,0 +1,21 @@
+syntax = "v1"
+
+type request {
+	UserId string `json:"user_id"`
+}
+type response {
+	Token string `json:"token"`
+}
+
+service jwt-api {
+	@handler getJwt
+	post /api/get-jwt (request) returns (response)
+}
+
+@server(
+	jwt: Auth
+)
+service jwt-api {
+	@handler checkJwt
+	post /api/check-jwt () returns (response)
+}
