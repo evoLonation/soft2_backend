@@ -1,0 +1,27 @@
+paper-rpc: # {服务名称}.rpc或者 {服务名称}.api
+  build:
+    dockerfile: service/paper/rpc/Dockerfile # service/{服务名称}/{rpc|api}/Dockerfile
+  environment:
+    - TZ=Asia/Shanghai
+  privileged: true
+  ports:
+    - "8085:8085"  # rpc或者api服务的自己的端口
+  stdin_open: true
+  tty: true
+  networks:
+    - backend
+  restart: always
+
+paper-api: # {服务名称}.rpc或者 {服务名称}.api
+  build:
+    dockerfile: service/paper/api/Dockerfile # service/{服务名称}/{rpc|api}/Dockerfile
+  environment:
+    - TZ=Asia/Shanghai
+  privileged: true
+  ports:
+    - "8893:8893"  # rpc或者api服务的自己的端口
+  stdin_open: true
+  tty: true
+  networks:
+    - backend
+  restart: always
