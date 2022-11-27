@@ -5,7 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"log"
-	"soft2_backend/search/database"
+	"soft2_backend/service/paper/database"
 	"soft2_backend/service/paper/rpc/internal/svc"
 	"soft2_backend/service/paper/rpc/types/paper"
 
