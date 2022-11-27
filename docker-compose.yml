@@ -1,0 +1,13 @@
+user.api: # {服务名称}.rpc或者 {服务名称}.api
+  build:
+    dockerfile: service/user/api/Dockerfile # service/{服务名称}/{rpc|api}/Dockerfile
+  environment:
+    - TZ=Asia/Shanghai
+  privileged: true
+  ports:
+    - "8889:8889"  # rpc或者api服务的自己的端口
+  stdin_open: true
+  tty: true
+  networks:
+    - backend
+  restart: always
