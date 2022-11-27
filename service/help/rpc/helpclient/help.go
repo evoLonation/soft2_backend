@@ -6,7 +6,7 @@ package helpclient
 import (
 	"context"
 
-	"help/rpc/types/help"
+	"soft2_backend/service/help/rpc/types/help"
 
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"

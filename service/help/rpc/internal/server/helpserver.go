@@ -6,9 +6,9 @@ package server
 import (
 	"context"
 
-	"help/rpc/internal/logic"
-	"help/rpc/internal/svc"
-	"help/rpc/types/help"
+	"soft2_backend/service/help/rpc/internal/logic"
+	"soft2_backend/service/help/rpc/internal/svc"
+	"soft2_backend/service/help/rpc/types/help"
 )
 
 type HelpServer struct {

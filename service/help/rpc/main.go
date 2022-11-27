@@ -4,10 +4,10 @@ import (
 	"flag"
 	"fmt"
 
-	"help/rpc/internal/config"
-	"help/rpc/internal/server"
-	"help/rpc/internal/svc"
-	"help/rpc/types/help"
+	"soft2_backend/service/help/rpc/internal/config"
+	"soft2_backend/service/help/rpc/internal/server"
+	"soft2_backend/service/help/rpc/internal/svc"
+	"soft2_backend/service/help/rpc/types/help"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"

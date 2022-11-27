@@ -1,6 +1,6 @@
 package svc
 
-import "help/rpc/internal/config"
+import "soft2_backend/service/help/rpc/internal/config"
 
 type ServiceContext struct {
 	Config config.Config
