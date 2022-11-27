@@ -136,3 +136,56 @@ services:
     networks:
       - backend
     restart: always
+
+  apply-api: # {服务名称}.rpc或者 {服务名称}.api
+    build:
+      dockerfile: service/apply/api/Dockerfile # service/{服务名称}/{rpc|api}/Dockerfile
+    environment:
+      - TZ=Asia/Shanghai
+    privileged: true
+    ports:
+      - "8891:8891"  # rpc或者api服务的自己的端口
+    stdin_open: true
+    tty: true
+    networks:
+      - backend
+    restart: always
+  apply-rpc: # {服务名称}.rpc或者 {服务名称}.api
+    build:
+      dockerfile: service/apply/rpc/Dockerfile # service/{服务名称}/{rpc|api}/Dockerfile
+    environment:
+      - TZ=Asia/Shanghai
+    privileged: true
+    ports:
+      - "8083:8083"  # rpc或者api服务的自己的端口
+    stdin_open: true
+    tty: true
+    networks:
+      - backend
+    restart: always
+  message-api: # {服务名称}.rpc或者 {服务名称}.api
+    build:
+      dockerfile: service/message/api/Dockerfile # service/{服务名称}/{rpc|api}/Dockerfile
+    environment:
+      - TZ=Asia/Shanghai
+    privileged: true
+    ports:
+      - "8890:8890"  # rpc或者api服务的自己的端口
+    stdin_open: true
+    tty: true
+    networks:
+      - backend
+    restart: always
+  message-rpc: # {服务名称}.rpc或者 {服务名称}.api
+    build:
+      dockerfile: service/message/rpc/Dockerfile # service/{服务名称}/{rpc|api}/Dockerfile
+    environment:
+      - TZ=Asia/Shanghai
+    privileged: true
+    ports:
+      - "8082:8082"  # rpc或者api服务的自己的端口
+    stdin_open: true
+    tty: true
+    networks:
+      - backend
+    restart: always
