@@ -1,7 +1,7 @@
 package svc
 
 import (
-	"help/api/internal/config"
+	"soft2_backend/service/help/api/internal/config"
 )
 
 type ServiceContext struct {

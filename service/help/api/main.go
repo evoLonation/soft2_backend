@@ -3,10 +3,10 @@ package main
 import (
 	"flag"
 	"fmt"
+	"soft2_backend/service/help/api/internal/config"
+	"soft2_backend/service/help/api/internal/handler"
 
-	"help/api/internal/config"
-	"help/api/internal/handler"
-	"help/api/internal/svc"
+	"soft2_backend/service/help/api/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/rest"
