@@ -9,5 +9,5 @@ Auth:
 FileRpc:
   Etcd:
     Hosts:
-      - 0.0.0.0:2379
+      - etcd:2379
     Key: file.rpc

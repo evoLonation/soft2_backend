@@ -45,7 +45,7 @@ func (l *UploadAvatarLogic) UploadAvatar() error {
 	}
 	tmp := strings.Split(l.File.Filename, ".")
 	suffix := tmp[len(tmp)-1]
-	newFile, err := os.Create(newUuid.String() + "." + suffix)
+	newFile, err := os.Create("./localfile/" + newUuid.String() + "." + suffix)
 	if err != nil {
 		panic(err)
 	}
