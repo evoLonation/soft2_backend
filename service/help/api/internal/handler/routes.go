@@ -4,7 +4,7 @@ package handler
 import (
 	"net/http"
 
-	"help/api/internal/svc"
+	"soft2_backend/service/help/api/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
 )

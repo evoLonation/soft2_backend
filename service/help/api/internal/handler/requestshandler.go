@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
-	"help/api/internal/logic"
-	"help/api/internal/svc"
-	"help/api/internal/types"
+	"soft2_backend/service/help/api/internal/logic"
+	"soft2_backend/service/help/api/internal/svc"
+	"soft2_backend/service/help/api/internal/types"
 )
 
 func requestsHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {

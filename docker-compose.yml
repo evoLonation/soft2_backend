@@ -69,7 +69,7 @@ services:
 
   help-api: # {服务名称}.rpc或者 {服务名称}.api
     build:
-      dockerfile: service/help/api/Dockerfile # service/{服务名称}/{rpc|api}/Dockerfile
+      dockerfile: service/soft2_backend/service/help/api/Dockerfile # service/{服务名称}/{rpc|api}/Dockerfile
     environment:
       - TZ=Asia/Shanghai
     privileged: true
