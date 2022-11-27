@@ -1,0 +1,9 @@
+Name: paper.rpc
+ListenOn: 0.0.0.0:8085
+Etcd:
+  Hosts:
+  - 127.0.0.1:2379
+  Key: paper.rpc
+elasticsearch:
+  host:
+  - 127.0.0.1:9200

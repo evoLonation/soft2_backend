@@ -1,0 +1,9 @@
+Name: paper-api
+Host: 0.0.0.0
+Port: 8893
+Auth:
+  AccessSecret: BUAADIAMONDPICK
+  AccessExpire: 3600
+elasticsearch:
+  host:
+    - 127.0.0.1:9200

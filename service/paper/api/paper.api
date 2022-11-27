@@ -1,0 +1,153 @@
+service paper-api {
+	@handler Paper
+	post /api/search/paper (PaperRequest) returns (PaperResponse)
+	
+	@handler Scholar
+	post /api/search/scholar (ScholarRequest) returns (ScholarResponse)
+	
+	@handler AutoComplete
+	post /api/search/auto-complete (AutoCompleteRequest) returns (AutoCompleteResponse)
+	
+	@handler PaperDetail
+	post /api/paper (PaperDetailRequest) returns (PaperDetailResponse);
+	
+	@handler PaperCite
+	post /api/paper/cite (PaperCiteRequest) returns (PaperCiteResponse);
+	
+	@handler ScholarBasic
+	post /api/scholar/basic (ScholarBasicRequest) returns (ScholarBasicResponse);
+}
+
+type PaperRequest {
+	Content   []PaperRequestJSON `json:"search_content"`
+	StartYear int                `json:"start_year"`
+	EndYear   int                `json:"end_year"`
+	Page      int                `json:"page"`
+	SortType  int                `json:"sort_type"`
+}
+
+type PaperRequestJSON {
+	Type       int    `json:"type"`
+	SearchType int    `json:"search_type"`
+	IsExact    int    `json:"is_exact"`
+	Content    string `json:"content"`
+}
+
+type PaperResponse {
+	PageNum  int                 `json:"page_num"`
+	PaperNum int                 `json:"paper_num"`
+	Papers   []PaperResponseJSON `json:"papers"`
+	Themes   []string            `json:"themes"`
+	Years    []int               `json:"years"`
+	Fields   []string            `json:"fields"`
+}
+
+type PaperResponseJSON {
+	Title     string       `json:"title"`
+	Abstract  string       `json:"abstract"`
+	Authors   []AuthorJSON `json:"authors"`
+	Year      int          `json:"year"`
+	NCitation int          `json:"n_citation"`
+	Publisher string       `json:"publisher"`
+}
+
+type AuthorJSON {
+	Name string `json:"name"`
+	Id   string `json:"id"`
+}
+
+type ScholarRequest {
+	Page        int    `json:"page"`
+	Name        string `json:"name, optional"`
+	Institution string `json:"institution, optional"`
+}
+
+type ScholarResponse {
+	PageNum    int                   `json:"page_num"`
+	ScholarNum int                   `json:"scholar_num"`
+	Scholars   []ScholarResponseJSON `json:"scholars"`
+}
+
+type ScholarResponseJSON {
+	Id          string   `json:"id"`
+	Name        string   `json:"name"`
+	Institution []string `json:"institution"`
+	PaperNum    int      `json:"paper_num"`
+}
+
+type AutoCompleteRequest {
+	SearchType int    `json:"search_type"`
+	Text       string `json:"text"`
+}
+
+type AutoCompleteResponse {
+	AutoCompletes []string `json:"auto_completes"`
+}
+
+type PaperDetailRequest {
+	Id string `json:"id"`
+}
+
+type PaperDetailResponse {
+	Title      string          `json:"title"`
+	Abstract   string          `json:"abstract"`
+	Authors    []AuthorJSON    `json:"authors"`
+	Doi        string          `json:"doi"`
+	ISBN       string          `json:"isbn"`
+	Org        string          `json:"org"`
+	Keywords   []string        `json:"keywords"`
+	Year       int             `json:"year"`
+	NCitation  int             `json:"n_citation"`
+	Publisher  string          `json:"publisher"`
+	References []ReferenceJSON `json:"references"`
+	Url        []string        `json:"url"`
+}
+
+type ReferenceJSON {
+	Id     string   `json:"id"`
+	Title  string   `json:"title"`
+	Author []string `json:"author"`
+	Year   int      `json:"year"`
+}
+
+type PaperCiteRequest {
+	Id string `json:"id"`
+}
+
+type PaperCiteResponse {
+	Gb     string `json:"gb"`
+	Mla    string `json:"mla"`
+	Apa    string `json:"apa"`
+	Bibtex string `json:"bibix"`
+	CajCd  string `json:"caj_cd"`
+}
+
+type ScholarBasicRequest {
+	ScholarId string `json:"scholar_id"`
+}
+
+type ScholarBasicResponse {
+	ScholarId    string    `json:"scholar_id"`
+	Name         string    `json:"name"`
+	Institution  []string  `json:"institution"`
+	Position     string    `json:"position"`
+	RefNum       int       `json:"ref_num"`
+	AchNum       int       `json:"ach_num"`
+	HIndex       int       `json:"h_index"`
+	IsIdentified bool      `json:"is_identified"`
+	Years        []int     `json:"years"`
+	Tags         []TagJSON `json:"tags"`
+}
+
+type TagJSON {
+	T string `json:"t"`
+	W int    `json:"w"`
+}
+
+type Request {
+	Name string `path:"name, options=you|me"`
+}
+
+type Response {
+	Message string `json:"message"`
+}

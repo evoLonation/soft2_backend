@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package paper;
+option go_package = "./paper";
+
+message CheckScholarReq {
+  int64 scholarId = 1;
+}
+message CreateScholarReply {
+  string scholarName = 1;
+  string institution = 2;
+}
+
+service StreamGreeter {
+  rpc CheckScholar(CheckScholarReq) returns (CreateScholarReply);
+}
