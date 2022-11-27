@@ -2,7 +2,7 @@ Name: message.rpc
 ListenOn: 0.0.0.0:8082
 Etcd:
   Hosts:
-  - 0.0.0.0:2379
+  - etcd:2379
   Key: message.rpc
 Mysql:
   DataSource: root:@DiamondPick@tcp(120.46.220.182:3306)/wyx?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
