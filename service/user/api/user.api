@@ -1,0 +1,141 @@
+type (
+	// 用户登录
+	LoginRequest {
+		LoginId  string `json:"login_id"`
+		PassWord string `json:"password"`
+	}
+	LoginResponse {
+		Code     int64  `json:"code"` //0登录成功 1用户名不存在 2 密码错误
+		UserId   int64  `json:"user_id"`
+		Token    string `json:"token"`
+		NickName string `json:"nick_name"`
+	}
+	// 用户登录
+
+	// 用户注册
+	RegisterRequest {
+		LoginId  string `json:"login_id"`
+		Nickname string `json:"nickname"`
+		Password string `json:"password"`
+		Email    string `json:"email"`
+	}
+	RegisterResponse {
+		Code     int64  `json:"code"`
+		UserId   int64  `json:"user_id"`
+		Token    string `json:"token"`
+		NickName string `json:"nick_name"`
+	}
+	// 用户注册
+	UserInfoRequest {
+	}
+	// 用户信息
+	UserInfoResponse {
+		Nickname   string `json:"nickname"`
+		Email      string `json:"email"`
+		Requests   int64  `json:"n_request"`  //求助次数
+		Helps      int64  `json:"n_help"`     //应助次数
+		Follows    int64  `json:"follows"`    //关注学者量
+		Complaints int64  `json:"complaints"` //投诉次数
+		Wealth     int64  `json:"wealth"`     //财富值
+	}
+	// 用户信息
+	//收藏文献
+	CollectPaperRequest {
+		PaperId int64 `json:"paper_id"`
+	}
+	CollectPaperResponse {
+		Code int64 `json:"code"` //0收藏成功 1已收藏 2尚未登录
+	}
+	//收藏文献
+	//取消收藏文献
+	CancelCollectPaperRequest {
+		PaperId int64 `json:"paper_id"`
+	}
+	CancelCollectPaperResponse {
+		Code int64 `json:"code"` //0取消成功 1尚未登录
+	}
+	//取消收藏文献
+	//评论文献
+	CommentPaperRequest {
+		PaperId int64  `json:"paper_id"`
+		Content string `json:"content"`
+	}
+	CommentPaperResponse {
+		Code int64 `json:"code"` //0表示成功 1尚未登录 2检测到不合适字段
+	}
+	//评论文献
+	//删除评论
+	DeleteCommentRequest {
+		CommentId int64 `json:"comment_id"`
+	}
+	DeleteCommentResponse {
+		Code int64 `json:"code"` //0成功 1尚未登录
+	}
+	//删除评论
+	//点赞评论
+	LikeCommentRequest {
+		CommentId int64 `json:"comment_id"`
+	}
+	LikeCommentResponse {
+		Code int64 `json:"code"` //0成功 1尚未登录
+	}
+	//点赞评论
+	//取消点赞
+	CancelLikeRequest {
+		CommentId int64 `json:"comment_id"`
+	}
+	CancelLikeResponse {
+		Code int64 `json:"code"`
+	}
+	//取消点赞
+	//订阅
+	SubscribeRequest {
+		UserId    int64 `json:"user_id"`
+		ScholarId int64 `json:"scholar_id"`
+	}
+	SubscribeResponse {
+		Code int64 `json:"code"` //0订阅成功 1订阅过
+	}
+	//订阅
+	//取消订阅
+	DeleteSubscribeRequest {
+		UserId    int64 `json:"user_id"`
+		ScholarId int64 `json:"scholar_id"`
+	}
+	DeleteSubscribeResponse {
+		Code int64 `json:"code"` //0取消订阅成功 1没有订阅过
+	}
+	//取消订阅
+)
+
+service User {
+	@handler Login
+	post /api/user/login(LoginRequest) returns (LoginResponse)
+	@handler Register
+	post /api/user/register(RegisterRequest) returns (RegisterResponse)
+	
+}
+
+@server(
+	jwt: Auth
+)
+service User {
+	@handler UserInfo
+	post /api/user/user-info() returns (UserInfoResponse)
+	@handler CollectPaper
+	post /api/paper/star(CollectPaperRequest) returns(CollectPaperResponse)
+	@handler CancelCollectPaper
+	post /api/paper/star/cancel(CancelCollectPaperRequest) returns(CancelCollectPaperResponse)
+	@handler CommentPaper
+	post /api/paper/comment(CommentPaperRequest) returns(CommentPaperResponse)
+	@handler DeleteComment
+	post /api/paper/comment/delete(DeleteCommentRequest) returns(DeleteCommentResponse)
+	@handler LikeComment
+	post /api/paper/comment/like(LikeCommentRequest) returns(LikeCommentResponse)
+	@handler CancelLike
+	post /api/paper/comment/cancel(CancelLikeRequest) returns(CancelLikeResponse)
+	@handler Subscribe
+	post /api/scholar/subscribe(SubscribeRequest) returns(SubscribeResponse)
+	@handler DeleteSubscribe
+	post /api/scholar/delete-subscribe(DeleteSubscribeRequest) returns(DeleteSubscribeResponse)
+}

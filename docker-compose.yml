@@ -26,7 +26,7 @@ services:
       - TZ=Asia/Shanghai
     privileged: true
     ports: # 设置端口映射
-      - "8889:8889"  # 课件服务rpc端口
+      - "8888:8888"  # 课件服务rpc端口
     stdin_open: true                     # 打开标准输入，可以接受外部输入
     tty: true
     networks:
@@ -41,7 +41,7 @@ services:
       - TZ=Asia/Shanghai
     privileged: true
     ports: # 设置端口映射
-      - "8888:8888"  # 课件服务api端口
+      - "8894:8894"  # 课件服务api端口
     stdin_open: true                     # 打开标准输入，可以接受外部输入
     tty: true
     volumes:
@@ -58,7 +58,7 @@ services:
       - TZ=Asia/Shanghai
     privileged: true
     ports: # 设置端口映射
-      - "8080:8080"  # 课件服务api端口
+      - "8086:8086"  # 课件服务api端口
     stdin_open: true                     # 打开标准输入，可以接受外部输入
     tty: true
     volumes:
@@ -88,9 +88,24 @@ services:
       - TZ=Asia/Shanghai
     privileged: true
     ports:
-      - "8884:8884"  # rpc或者api服务的自己的端口
+      - "8084:8084"  # rpc或者api服务的自己的端口
     stdin_open: true
     tty: true
     networks:
       - backend
     restart: always
+
+  user-api: # {服务名称}.rpc或者 {服务名称}.api
+    build:
+      dockerfile: service/user/api/Dockerfile # service/{服务名称}/{rpc|api}/Dockerfile
+    environment:
+      - TZ=Asia/Shanghai
+    privileged: true
+    ports:
+      - "8889:8889"  # rpc或者api服务的自己的端口
+    stdin_open: true
+    tty: true
+    networks:
+      - backend
+    restart: always
+
