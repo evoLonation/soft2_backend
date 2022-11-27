@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package help;
+
+option go_package = "./help";
+
+message IdReq{
+  int64 id = 1;     //新用户id
+}
+message Reply{
+
+}
+service help {
+  rpc registerUser(IdReq) returns(Reply);
+  rpc upDateStatus(IdReq) returns(Reply);
+}

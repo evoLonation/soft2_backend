@@ -1,68 +1,27 @@
-version: '3.5'
-# 网络配置
-networks:
-  backend:
-    driver: bridge
+help.api: # {服务名称}.rpc或者 {服务名称}.api
+  build:
+    dockerfile: service/help/api/Dockerfile # service/{服务名称}/{rpc|api}/Dockerfile
+  environment:
+    - TZ=Asia/Shanghai
+  privileged: true
+  ports:
+    - "8892:8892"  # rpc或者api服务的自己的端口
+  stdin_open: true
+  tty: true
+  networks:
+    - backend
+  restart: always
 
-# 服务容器配置
-services:
-  etcd:                                  # 自定义容器名称
-    image: "docker.io/bitnami/etcd:3.5.5"
-    environment:
-      - ALLOW_NONE_AUTHENTICATION=yes
-      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
-    ports:                               # 设置端口映射
-      - "2379:2379"
-      - "2380:2380"
-    networks:
-      - backend
-    restart: always
-
-  jwttest-api: # 自定义容器名称
-    build:
-      # context: service/jwttest                 # 指定构建使用的 Dockerfile 文件
-      dockerfile: service/jwttest/api/Dockerfile
-    environment: # 设置环境变量
-      - TZ=Asia/Shanghai
-    privileged: true
-    ports: # 设置端口映射
-      - "8889:8889"  # 课件服务rpc端口
-    stdin_open: true                     # 打开标准输入，可以接受外部输入
-    tty: true
-    networks:
-      - backend
-    restart: always                      # 指定容器退出后的重启策略为始终重启
-
-  file-api: # 自定义容器名称
-    build:
-      # context: service/file                  # 指定构建使用的 Dockerfile 文件
-      dockerfile: service/file/api/Dockerfile
-    environment: # 设置环境变量
-      - TZ=Asia/Shanghai
-    privileged: true
-    ports: # 设置端口映射
-      - "8888:8888"  # 课件服务api端口
-    stdin_open: true                     # 打开标准输入，可以接受外部输入
-    tty: true
-    volumes:
-      - ./localfile:/app/localfile
-    networks:
-      - backend
-    restart: always                      # 指定容器退出后的重启策略为始终重启
-
-  file-rpc: # 自定义容器名称
-    build:
-      # context: service/file                  # 指定构建使用的 Dockerfile 文件
-      dockerfile: service/file/rpc/Dockerfile
-    environment: # 设置环境变量
-      - TZ=Asia/Shanghai
-    privileged: true
-    ports: # 设置端口映射
-      - "8080:8080"  # 课件服务api端口
-    stdin_open: true                     # 打开标准输入，可以接受外部输入
-    tty: true
-    volumes:
-      - ./localfile:/app/localfile
-    networks:
-      - backend
-    restart: always                      # 指定容器退出后的重启策略为始终重启
+help.rpc: # {服务名称}.rpc或者 {服务名称}.api
+  build:
+    dockerfile: service/help/rpc/Dockerfile # service/{服务名称}/{rpc|api}/Dockerfile
+  environment:
+    - TZ=Asia/Shanghai
+  privileged: true
+  ports:
+    - "8884:8884"  # rpc或者api服务的自己的端口
+  stdin_open: true
+  tty: true
+  networks:
+    - backend
+  restart: always

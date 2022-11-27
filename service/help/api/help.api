@@ -1,0 +1,112 @@
+type (
+	ReqsReq {
+		Start int64 `json:"start"`
+		End   int64 `json:"end"`
+		Order int64 `json:"order"`
+	}
+
+	ReqsReply {
+		ReqList     []Request `json:"requests"`
+		RequestsNum int64     `json:"requests_num"`
+	}
+
+	ReqSearchReq {
+		Start         int64  `json:"start"`
+		End           int64  `json:"end"`
+		SearchContent string `json:"search_content"`
+	}
+
+	ReqSearchReply {
+		ReqList     []Search `json:"requests"`
+		RequestsNum int64    `json:"requests_num"`
+	}
+
+	BeforeHelpReq {
+		RequestId int64 `json:"request_id"`
+	}
+
+	BeforeHelpReply {
+		Status int64 `json:"status"`
+	}
+
+	UserInfoReq {
+	}
+
+	UserInfoReply {
+		Request int64 `json:"request"`
+		Help    int64 `json:"help"`
+		Wealth  int64 `json:"wealth"`
+	}
+
+	AddRequestsReq {
+		UserId   int64    `json:"user_id"`
+		Title    string   `json:"title"`
+		Author   []string `json:"author"`
+		Magazine string   `json:"magazine"`
+		Link     string   `json:"link"`
+		Content  string   `json:"content"`
+		Wealth   int64    `json:"wealth"`
+	}
+
+	AddRequestsReply {
+		Code int64 `json:"code"`
+	}
+)
+type Request {
+	Id             int64  `json:"request_id"`
+	Title          string `json:"title"`
+	Author         string `json:"author"`
+	Magazine       string `json:"magazine"`
+	Link           string `json:"link"`
+	RequestTime    string `json:"request_time"`
+	RequestContent string `json:"request_content"`
+	Wealth         int64  `json:"wealth"`
+}
+type Search {
+	HelpId         int64  `json:"help_id"`
+	RequestId      int64  `json:"request_id"`
+	RequestTime    string `json:"request_time"`
+	RequestContent string `json:"request_content"`
+	Wealth         int64  `json:"wealth"`
+	RequestStatus  int64  `json:"request_status"`
+}
+
+@server(
+	jwt: Auth
+)
+service request-api {
+	@handler requests
+	post /api/help/requests (ReqsReq) returns (ReqsReply)
+}
+
+@server(
+	jwt: Auth
+)
+service request-api {
+	@handler search
+	post /api/help/search (ReqSearchReq) returns (ReqSearchReply)
+}
+
+@server(
+	jwt: Auth
+)
+service request-api {
+	@handler beforeHelp
+	post /api/help/before-help (BeforeHelpReq) returns (BeforeHelpReply)
+}
+
+@server(
+	jwt: Auth
+)
+service request-api {
+	@handler userInfo
+	post /api/help/user-info (UserInfoReq) returns (UserInfoReply)
+}
+
+@server(
+	jwt: Auth
+)
+service request-api {
+	@handler addRequest
+	post /api/help/newRequests (AddRequestsReq) returns (AddRequestsReply)
+}
