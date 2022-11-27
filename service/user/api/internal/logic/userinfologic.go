@@ -3,8 +3,8 @@ package logic
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
-	errorx "soft2_backend/common"
 	"soft2_backend/service/user/model"
 
 	"soft2_backend/service/user/api/internal/svc"
@@ -34,7 +34,7 @@ func (l *UserInfoLogic) UserInfo() (resp *types.UserInfoResponse, err error) {
 	res, err := l.svcCtx.UserModel.FindOne(l.ctx, userId)
 	if err != nil {
 		if err == model.ErrNotFound {
-			return nil, errorx.NewCodeError(404, "用户不存在")
+			return nil, errors.New("用户不存在")
 		}
 		return nil, err
 	} //不过应该不会存在上述情况

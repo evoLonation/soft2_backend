@@ -62,16 +62,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/api/paper/comment/cancel",
 				Handler: CancelLikeHandler(serverCtx),
 			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/api/scholar/subscribe",
-				Handler: SubscribeHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/api/scholar/delete-subscribe",
-				Handler: DeleteSubscribeHandler(serverCtx),
-			},
 		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 	)

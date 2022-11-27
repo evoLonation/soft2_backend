@@ -88,24 +88,7 @@ type (
 		Code int64 `json:"code"`
 	}
 	//取消点赞
-	//订阅
-	SubscribeRequest {
-		UserId    int64 `json:"user_id"`
-		ScholarId int64 `json:"scholar_id"`
-	}
-	SubscribeResponse {
-		Code int64 `json:"code"` //0订阅成功 1订阅过
-	}
-	//订阅
-	//取消订阅
-	DeleteSubscribeRequest {
-		UserId    int64 `json:"user_id"`
-		ScholarId int64 `json:"scholar_id"`
-	}
-	DeleteSubscribeResponse {
-		Code int64 `json:"code"` //0取消订阅成功 1没有订阅过
-	}
-	//取消订阅
+
 )
 
 service User {
@@ -134,8 +117,5 @@ service User {
 	post /api/paper/comment/like(LikeCommentRequest) returns(LikeCommentResponse)
 	@handler CancelLike
 	post /api/paper/comment/cancel(CancelLikeRequest) returns(CancelLikeResponse)
-	@handler Subscribe
-	post /api/scholar/subscribe(SubscribeRequest) returns(SubscribeResponse)
-	@handler DeleteSubscribe
-	post /api/scholar/delete-subscribe(DeleteSubscribeRequest) returns(DeleteSubscribeResponse)
+	
 }

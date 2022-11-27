@@ -2,9 +2,9 @@ package logic
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/golang-jwt/jwt/v4"
-	errorx "soft2_backend/common"
 	"soft2_backend/service/user/api/internal/svc"
 	"soft2_backend/service/user/api/internal/types"
 	"soft2_backend/service/user/model"
@@ -41,12 +41,12 @@ func (l *LoginLogic) Login(req *types.LoginRequest) (resp *types.LoginResponse, 
 	switch err {
 	case nil:
 	case model.ErrNotFound:
-		return nil, errorx.NewCodeError(1, "用户名不存在")
+		return nil, errors.New("用户名不存在")
 	default:
 		return nil, err
 	}
 	if userInfo.Password != req.PassWord {
-		return nil, errorx.NewCodeError(2, "密码错误")
+		return nil, errors.New("密码错误")
 	}
 	now := time.Now().Unix()
 	jwtToken, err := l.getJwtToken(l.svcCtx.Config.Auth.AccessSecret, now, l.svcCtx.Config.Auth.AccessExpire, userInfo.UserId)

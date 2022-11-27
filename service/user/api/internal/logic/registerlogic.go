@@ -2,8 +2,8 @@ package logic
 
 import (
 	"context"
+	"errors"
 	"github.com/golang-jwt/jwt/v4"
-	errorx "soft2_backend/common"
 	"soft2_backend/service/user/model"
 	"time"
 
@@ -39,7 +39,7 @@ func (l *RegisterLogic) Register(req *types.RegisterRequest) (resp *types.Regist
 	// todo: add your logic here and delete this line
 	_, err = l.svcCtx.UserModel.FindOneByLoginId(l.ctx, req.LoginId)
 	if err == nil {
-		return nil, errorx.NewCodeError(1, "用户名已存在")
+		return nil, errors.New("用户名已注册")
 	}
 	newUser := model.User{
 		LoginId:  req.LoginId,

@@ -88,21 +88,3 @@ type CancelLikeRequest struct {
 type CancelLikeResponse struct {
 	Code int64 `json:"code"`
 }
-
-type SubscribeRequest struct {
-	UserId    int64 `json:"user_id"`
-	ScholarId int64 `json:"scholar_id"`
-}
-
-type SubscribeResponse struct {
-	Code int64 `json:"code"` //0订阅成功 1订阅过
-}
-
-type DeleteSubscribeRequest struct {
-	UserId    int64 `json:"user_id"`
-	ScholarId int64 `json:"scholar_id"`
-}
-
-type DeleteSubscribeResponse struct {
-	Code int64 `json:"code"` //0取消订阅成功 1没有订阅过
-}
