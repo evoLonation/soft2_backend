@@ -1,0 +1,49 @@
+type (
+	// 认证信息
+	ApplyInfo {
+		ApplyId     int64  `json:"apply_id"`
+		ScholarName string `json:"scholar_name"`
+		Institution string `json:"institution"`
+		ApplyType   int64  `json:"apply_type"`
+		Email       string `json:"email"`
+		URL         string `json:"url"`
+	}
+
+	// 获得所有学者认证
+	GetApplyRequest {
+		Start int64 `json:"start,optinal"`
+		End int64 `json:"end,optinal"`
+	}
+
+	GetApplyResponse {
+		ApplyList []ApplyInfo `json:"records"`
+	}
+
+	// 处理学者认证申请
+	DealApplyRequest {
+		ApplyId int64 `json:"apply_id"`
+		IsAgree bool  `json:"is_agree"`
+	}
+
+	// 通过邮箱认领学者主页
+	EmailIdentifyRequest {
+		Email     string `json:"email"`
+		ScholarId int64  `json:"scholar_id"`
+	}
+)
+
+service Apply {
+	@handler GetApply
+	post /api/admin/get-scholar-apply returns (GetApplyResponse)
+	
+	@handler DealApply
+	post /api/admin/deal-scholar-apply (DealApplyRequest)
+}
+
+@server(
+	jwt: Auth
+)
+service Apply {
+	@handler EmailIdentify
+	post /api/scholar/emial-identify (EmailIdentifyRequest)
+}
