@@ -19,6 +19,9 @@ service paper-api {
 	
 	@handler ScholarCooperation
 	post /api/scholar/coop-list (ScholarCooperationRequest) returns (ScholarCooperationResponse);
+	
+	@handler ScholarPapers
+	post /api/scholar/papers (ScholarPapersRequest) returns (ScholarPapersResponse);
 }
 
 type PaperRequest {
@@ -159,4 +162,18 @@ type CoopJSON {
 	Name        string `json:"name"`
 	Institution string `json:"institution"`
 	Time        int    `json:"time"`
+}
+
+type ScholarPapersRequest {
+	ScholarId string `json:"scholar_id"`
+	IsFirst   bool   `json:"is_first, optional"`
+	Year      int    `json:"year, optional"`
+	TimeOrder bool   `json:"time_order, optional"`
+	Start     int    `json:"start"`
+	End       int    `json:"end"`
+}
+
+type ScholarPapersResponse {
+	PaperNum int                 `json:"paper_num"`
+	Papers   []PaperResponseJSON `json:"papers"`
 }

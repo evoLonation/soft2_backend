@@ -140,3 +140,17 @@ type CoopJSON struct {
 	Institution string `json:"institution"`
 	Time        int    `json:"time"`
 }
+
+type ScholarPapersRequest struct {
+	ScholarId string `json:"scholar_id"`
+	IsFirst   bool   `json:"is_first, optional"`
+	Year      int    `json:"year, optional"`
+	TimeOrder bool   `json:"time_order, optional"`
+	Start     int    `json:"start"`
+	End       int    `json:"end"`
+}
+
+type ScholarPapersResponse struct {
+	PaperNum int                 `json:"paper_num"`
+	Papers   []PaperResponseJSON `json:"papers"`
+}

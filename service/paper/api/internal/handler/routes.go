@@ -47,6 +47,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/api/scholar/coop-list",
 				Handler: ScholarCooperationHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/api/scholar/papers",
+				Handler: ScholarPapersHandler(serverCtx),
+			},
 		},
 	)
 }
