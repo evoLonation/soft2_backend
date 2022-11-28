@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package apply;
+
+option go_package = "./apply";
+
+// 创建认证
+message CreateIdentifyReq {
+  int64 userId = 1;
+  int64 scholarId = 2;
+  string url = 3;
+}
+message CreateIdentifyReply {
+
+}
+
+// 查看用户认证的学者
+message CheckIdentifyReq {
+  int64 userId = 1;
+}
+message CheckIdentifyReply {
+  bool isScholar = 1;
+  int64 scholarId = 2;
+}
+
+service Apply {
+  rpc CreateIdentify(CreateIdentifyReq) returns(CreateIdentifyReply);
+  rpc CheckIdentify(CheckIdentifyReq) returns(CheckIdentifyReply);
+}

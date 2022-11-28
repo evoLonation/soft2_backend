@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package message;
+
+option go_package = "./message";
+
+// 创建消息
+message CreateMessageReq {
+  int64 receiverId=1; //接收者
+  string content=2; //消息内容(处理超过10字符串的名字)
+  int64 messageType=3; //消息类型
+  int64 result=4; //处理结果
+  int64 uId=5; //用户id
+  int64 gId=6; //误认领申诉Id
+  int64 pId=7; //文献id
+  int64 rId=8; //文献互助Id
+}
+message CreateMessageReply {
+
+}
+
+service Message {
+  rpc CreateMessage(CreateMessageReq) returns(CreateMessageReply);
+}

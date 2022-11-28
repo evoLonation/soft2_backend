@@ -1,0 +1,74 @@
+type (
+	// 认证信息
+	ApplyInfo {
+		ApplyId     int64  `json:"apply_id"`
+		ScholarName string `json:"scholar_name"`
+		Institution string `json:"institution"`
+		ApplyType   int64  `json:"apply_type"`
+		Email       string `json:"email,optional"`
+		URL         string `json:"url,optional"`
+	}
+
+	// 获得所有学者认证
+	GetApplyRequest {
+		Start int64 `json:"start,optional"`
+		End   int64 `json:"end,optional"`
+	}
+
+	GetApplyResponse {
+		Count     int64       `json:"count"`
+		ApplyList []ApplyInfo `json:"records"`
+	}
+
+	// 处理学者认证申请
+	DealApplyRequest {
+		ApplyId int64 `json:"apply_id"`
+		IsAgree bool  `json:"is_agree"`
+	}
+
+	// 通过邮箱认领学者主页
+	EmailIdentifyRequest {
+		Email     string `json:"email"`
+		ScholarId int64  `json:"scholar_id"`
+	}
+
+	// 查看用户认证的学者
+	CheckScholarResponse {
+		Code      int64  `json:"code"`
+		ScholarId int64  `json:"scholar_id,optional"`
+		Msg       string `json:"msg,optional"`
+	}
+
+	// 查看学者是否被认证
+	CheckUserRequest {
+		ScholarId int64 `json:"scholar_id"`
+	}
+
+	CheckUserResponse {
+		Code   int64  `json:"code"`
+		UserId int64  `json:"user_id,optional"`
+		Msg    string `json:"msg,optional"`
+	}
+)
+
+service Apply {
+	@handler GetApply
+	post /api/admin/get-scholar-apply (GetApplyRequest) returns (GetApplyResponse)
+	
+	@handler DealApply
+	post /api/admin/deal-scholar-apply (DealApplyRequest)
+	
+	@handler CheckUser
+	post /api/scholar/check-user (CheckUserRequest) returns (CheckUserResponse)
+}
+
+@server(
+	jwt: Auth
+)
+service Apply {
+	@handler EmailIdentify
+	post /api/scholar/email-identify (EmailIdentifyRequest)
+	
+	@handler CheckScholar
+	post /api/scholar/check-scholar returns (CheckScholarResponse)
+}

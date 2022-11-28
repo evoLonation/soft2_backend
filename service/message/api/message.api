@@ -1,0 +1,50 @@
+type (
+	// 消息内容
+	MessageInfo {
+		MessageId   int64  `json:"apply_id"`
+		MessageType int64  `json:"scholar_name"`
+		UId         int64  `json:"uid,optional"`
+		GId         int64  `json:"gid,optional"`
+		PId         int64  `json:"pid,optional"`
+		RId         int64  `json:"rid,optional"`
+		Result      int64  `json:"result,optional"`
+		Content     string `json:"content"`
+		Read        bool   `json:"read"`
+		MessageTime string `json:"msg_time"`
+	}
+
+	// 查看消息列表
+	GetMessageRequest {
+		Start int64 `json:"start,optional"`
+		End   int64 `json:"end,optional"`
+	}
+
+	GetMessageResponse {
+		Count       int64         `json:"count"`
+		MessageList []MessageInfo `json:"messages"`
+	}
+
+	// 标记已读
+	ReadMessageRequest {
+		MessageId int64 `json:"apply_id"`
+	}
+
+	// 删除消息
+	DeleteMessageRequest {
+		MessageId int64 `json:"apply_id"`
+	}
+)
+
+@server(
+	jwt: Auth
+)
+service Message {
+	@handler GetMessage
+	post /api/message/get-all-messages (GetMessageRequest) returns (GetMessageResponse)
+	
+	@handler ReadMessage
+	post /api/message/read (ReadMessageRequest)
+	
+	@handler DeleteMessage
+	post /api/message/delete (DeleteMessageRequest)
+}
