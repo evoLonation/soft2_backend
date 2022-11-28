@@ -27,7 +27,7 @@ func (s *HelpServer) RegisterUser(ctx context.Context, in *help.IdReq) (*help.Re
 	return l.RegisterUser(in)
 }
 
-func (s *HelpServer) UpDateStatus(ctx context.Context, in *help.IdReq) (*help.Reply, error) {
+func (s *HelpServer) UpDateStatus(ctx context.Context, in *help.UpdateReq) (*help.Reply, error) {
 	l := logic.NewUpDateStatusLogic(ctx, s.svcCtx)
 	return l.UpDateStatus(in)
 }

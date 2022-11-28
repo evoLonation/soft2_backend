@@ -23,7 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type HelpClient interface {
 	RegisterUser(ctx context.Context, in *IdReq, opts ...grpc.CallOption) (*Reply, error)
-	UpDateStatus(ctx context.Context, in *IdReq, opts ...grpc.CallOption) (*Reply, error)
+	UpDateStatus(ctx context.Context, in *UpdateReq, opts ...grpc.CallOption) (*Reply, error)
 }
 
 type helpClient struct {
@@ -43,7 +43,7 @@ func (c *helpClient) RegisterUser(ctx context.Context, in *IdReq, opts ...grpc.C
 	return out, nil
 }
 
-func (c *helpClient) UpDateStatus(ctx context.Context, in *IdReq, opts ...grpc.CallOption) (*Reply, error) {
+func (c *helpClient) UpDateStatus(ctx context.Context, in *UpdateReq, opts ...grpc.CallOption) (*Reply, error) {
 	out := new(Reply)
 	err := c.cc.Invoke(ctx, "/help.help/upDateStatus", in, out, opts...)
 	if err != nil {
@@ -57,7 +57,7 @@ func (c *helpClient) UpDateStatus(ctx context.Context, in *IdReq, opts ...grpc.C
 // for forward compatibility
 type HelpServer interface {
 	RegisterUser(context.Context, *IdReq) (*Reply, error)
-	UpDateStatus(context.Context, *IdReq) (*Reply, error)
+	UpDateStatus(context.Context, *UpdateReq) (*Reply, error)
 	mustEmbedUnimplementedHelpServer()
 }
 
@@ -68,7 +68,7 @@ type UnimplementedHelpServer struct {
 func (UnimplementedHelpServer) RegisterUser(context.Context, *IdReq) (*Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterUser not implemented")
 }
-func (UnimplementedHelpServer) UpDateStatus(context.Context, *IdReq) (*Reply, error) {
+func (UnimplementedHelpServer) UpDateStatus(context.Context, *UpdateReq) (*Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpDateStatus not implemented")
 }
 func (UnimplementedHelpServer) mustEmbedUnimplementedHelpServer() {}
@@ -103,7 +103,7 @@ func _Help_RegisterUser_Handler(srv interface{}, ctx context.Context, dec func(i
 }
 
 func _Help_UpDateStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(IdReq)
+	in := new(UpdateReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -115,7 +115,7 @@ func _Help_UpDateStatus_Handler(srv interface{}, ctx context.Context, dec func(i
 		FullMethod: "/help.help/upDateStatus",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HelpServer).UpDateStatus(ctx, req.(*IdReq))
+		return srv.(HelpServer).UpDateStatus(ctx, req.(*UpdateReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }

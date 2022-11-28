@@ -2,7 +2,7 @@ Name: request-api
 Host: 0.0.0.0
 Port: 8892
 Mysql:
-  DataSource: root:@DiamondPick@tcp(120.46.220.182:3306)/zzy(名字简写)?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+  DataSource: root:@DiamondPick@tcp(120.46.220.182:3306)/yyh?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
 Auth:
   AccessSecret: BUAADIAMONDPICK
   AccessExpire: 3600

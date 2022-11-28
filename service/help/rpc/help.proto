@@ -10,7 +10,12 @@ message IdReq{
 message Reply{
 
 }
+message UpdateReq{
+  int64 requestId = 1;     //求助id
+  int64 userId = 2;//发布应助者id
+  int64 status = 3; //更新后状态 上传文件后状态变为1
+}
 service help {
   rpc registerUser(IdReq) returns(Reply);
-  rpc upDateStatus(IdReq) returns(Reply);
+  rpc upDateStatus(UpdateReq) returns(Reply);
 }
