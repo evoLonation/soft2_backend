@@ -63,13 +63,13 @@ func (l *PaperLogic) Paper(req *types.PaperRequest) (resp *types.PaperResponse, 
 			if content.IsExact == 0 {
 				must = append(must, map[string]interface{}{
 					"match_phrase": map[string]interface{}{
-						TranslateSearchKey(int(content.SearchType)): content.Content,
+						TranslateSearchKey(content.SearchType): content.Content,
 					},
 				})
 			} else {
 				must = append(must, map[string]interface{}{
 					"match": map[string]interface{}{
-						TranslateSearchKey(int(content.SearchType)): content.Content,
+						TranslateSearchKey(content.SearchType): content.Content,
 					},
 				})
 			}
@@ -77,13 +77,13 @@ func (l *PaperLogic) Paper(req *types.PaperRequest) (resp *types.PaperResponse, 
 			if content.IsExact == 0 {
 				should = append(should, map[string]interface{}{
 					"match_phrase": map[string]interface{}{
-						TranslateSearchKey(int(content.SearchType)): content.Content,
+						TranslateSearchKey(content.SearchType): content.Content,
 					},
 				})
 			} else {
 				should = append(should, map[string]interface{}{
 					"match": map[string]interface{}{
-						TranslateSearchKey(int(content.SearchType)): content.Content,
+						TranslateSearchKey(content.SearchType): content.Content,
 					},
 				})
 			}
@@ -91,13 +91,13 @@ func (l *PaperLogic) Paper(req *types.PaperRequest) (resp *types.PaperResponse, 
 			if content.IsExact == 0 {
 				mustNot = append(mustNot, map[string]interface{}{
 					"match_phrase": map[string]interface{}{
-						TranslateSearchKey(int(content.SearchType)): content.Content,
+						TranslateSearchKey(content.SearchType): content.Content,
 					},
 				})
 			} else {
 				mustNot = append(mustNot, map[string]interface{}{
 					"match": map[string]interface{}{
-						TranslateSearchKey(int(content.SearchType)): content.Content,
+						TranslateSearchKey(content.SearchType): content.Content,
 					},
 				})
 			}
@@ -199,7 +199,7 @@ func TranslateSearchKey(searchKey int) string {
 
 func getKeywords(source map[string]int) []string {
 	var keywords []string
-	for k, _ := range source {
+	for k := range source {
 		keywords = append(keywords, k)
 	}
 	return keywords
