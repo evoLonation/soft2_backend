@@ -35,8 +35,9 @@ type PaperResponseJSON struct {
 }
 
 type AuthorJSON struct {
-	Name string `json:"name"`
-	Id   string `json:"id"`
+	Name  string `json:"name"`
+	Id    string `json:"id"`
+	HasId bool   `json:"has_id"`
 }
 
 type ScholarRequest struct {
@@ -83,7 +84,7 @@ type PaperDetailResponse struct {
 	NCitation  int             `json:"n_citation"`
 	Publisher  string          `json:"publisher"`
 	References []ReferenceJSON `json:"references"`
-	Url        []string        `json:"url"`
+	Urls       []string        `json:"urls"`
 }
 
 type ReferenceJSON struct {

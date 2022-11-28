@@ -52,8 +52,9 @@ type PaperResponseJSON {
 }
 
 type AuthorJSON {
-	Name string `json:"name"`
-	Id   string `json:"id"`
+	Name  string `json:"name"`
+	Id    string `json:"id"`
+	HasId bool   `json:"has_id"`
 }
 
 type ScholarRequest {
@@ -100,7 +101,7 @@ type PaperDetailResponse {
 	NCitation  int             `json:"n_citation"`
 	Publisher  string          `json:"publisher"`
 	References []ReferenceJSON `json:"references"`
-	Url        []string        `json:"url"`
+	Urls       []string        `json:"urls"`
 }
 
 type ReferenceJSON {

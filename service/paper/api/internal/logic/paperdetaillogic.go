@@ -48,9 +48,14 @@ func (l *PaperDetailLogic) PaperDetail(req *types.PaperDetailRequest) (resp *typ
 	source := res["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})
 	var authors []types.AuthorJSON
 	for _, author := range source["authors"].([]interface{}) {
+		hasId := false
+		if author.(map[string]interface{})["id"] != nil {
+			hasId = true
+		}
 		authors = append(authors, types.AuthorJSON{
-			Name: author.(map[string]interface{})["name"].(string),
-			Id:   NilHandler(author.(map[string]interface{})["id"], "string").(string),
+			Name:  author.(map[string]interface{})["name"].(string),
+			Id:    NilHandler(author.(map[string]interface{})["id"], "string").(string),
+			HasId: hasId,
 		})
 	}
 	var urls []string
@@ -68,7 +73,7 @@ func (l *PaperDetailLogic) PaperDetail(req *types.PaperDetailRequest) (resp *typ
 		Year:      NilHandler(source["year"], "int").(int),
 		NCitation: NilHandler(source["n_citation"], "int").(int),
 		Publisher: NilHandler(source["publisher"], "string").(string),
-		Url:       urls,
+		Urls:      urls,
 	}
 	return resp, nil
 }
