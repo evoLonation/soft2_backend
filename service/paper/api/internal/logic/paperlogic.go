@@ -34,8 +34,8 @@ func (l *PaperLogic) Paper(req *types.PaperRequest) (resp *types.PaperResponse, 
 	var should []map[string]interface{}
 	var mustNot []map[string]interface{}
 	query := map[string]interface{}{
-		"from": (req.Page - 1) * 10,
-		"size": 10,
+		"from": req.Start,
+		"size": req.Start - req.End,
 		"query": map[string]interface{}{
 			"bool": map[string]interface{}{
 				"filter": map[string]interface{}{
@@ -132,15 +132,20 @@ func (l *PaperLogic) Paper(req *types.PaperRequest) (resp *types.PaperResponse, 
 	res := database.SearchPaper(buf)
 
 	var papers []types.PaperResponseJSON
-	var themes []string
+	var themes map[string]int
 	var years []int
 	for _, hit := range res["hits"].(map[string]interface{})["hits"].([]interface{}) {
 		source := hit.(map[string]interface{})["_source"].(map[string]interface{})
 		var authors []types.AuthorJSON
 		for _, author := range source["authors"].([]interface{}) {
+			hasId := false
+			if author.(map[string]interface{})["id"] != nil {
+				hasId = true
+			}
 			authors = append(authors, types.AuthorJSON{
-				Name: author.(map[string]interface{})["name"].(string),
-				Id:   NilHandler(author.(map[string]interface{})["id"], "string").(string),
+				Name:  author.(map[string]interface{})["name"].(string),
+				Id:    NilHandler(author.(map[string]interface{})["id"], "string").(string),
+				HasId: hasId,
 			})
 		}
 		papers = append(papers, types.PaperResponseJSON{
@@ -154,19 +159,19 @@ func (l *PaperLogic) Paper(req *types.PaperRequest) (resp *types.PaperResponse, 
 		log.Println(papers)
 
 		keywords := NilHandler(source["keywords"], "list").([]interface{})
+		cnt := 0
 		for _, theme := range keywords {
-			themes = append(themes, theme.(string))
+			themes[theme.(string)] = cnt
+			cnt++
 		}
 		years = append(years, int(source["year"].(float64)))
 	}
 
 	resp = &types.PaperResponse{
-		PageNum:  int(res["hits"].(map[string]interface{})["total"].(map[string]interface{})["value"].(float64))/10 + 1,
 		PaperNum: int(res["hits"].(map[string]interface{})["total"].(map[string]interface{})["value"].(float64)),
 		Papers:   papers,
-		Themes:   themes,
+		Themes:   getKeywords(themes),
 		Years:    years,
-		Fields:   themes,
 	}
 	return resp, nil
 }
@@ -190,4 +195,12 @@ func TranslateSearchKey(searchKey int) string {
 	default:
 		return ""
 	}
+}
+
+func getKeywords(source map[string]int) []string {
+	var keywords []string
+	for k, _ := range source {
+		keywords = append(keywords, k)
+	}
+	return keywords
 }

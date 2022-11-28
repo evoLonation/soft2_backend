@@ -22,8 +22,9 @@ type PaperRequest {
 	Content   []PaperRequestJSON `json:"search_content"`
 	StartYear int                `json:"start_year"`
 	EndYear   int                `json:"end_year"`
-	Page      int                `json:"page"`
 	SortType  int                `json:"sort_type"`
+	Start     int                `json:"start"`
+	End       int                `json:"end"`
 }
 
 type PaperRequestJSON {
@@ -34,12 +35,10 @@ type PaperRequestJSON {
 }
 
 type PaperResponse {
-	PageNum  int                 `json:"page_num"`
 	PaperNum int                 `json:"paper_num"`
 	Papers   []PaperResponseJSON `json:"papers"`
 	Themes   []string            `json:"themes"`
 	Years    []int               `json:"years"`
-	Fields   []string            `json:"fields"`
 }
 
 type PaperResponseJSON {
