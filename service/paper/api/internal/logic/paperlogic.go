@@ -35,7 +35,7 @@ func (l *PaperLogic) Paper(req *types.PaperRequest) (resp *types.PaperResponse, 
 	var mustNot []map[string]interface{}
 	query := map[string]interface{}{
 		"from": req.Start,
-		"size": req.Start - req.End,
+		"size": req.End - req.Start,
 		"query": map[string]interface{}{
 			"bool": map[string]interface{}{
 				"filter": map[string]interface{}{

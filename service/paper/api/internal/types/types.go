@@ -40,15 +40,15 @@ type AuthorJSON struct {
 }
 
 type ScholarRequest struct {
-	Page        int    `json:"page"`
 	Name        string `json:"name, optional"`
 	Institution string `json:"institution, optional"`
+	Start       int    `json:"start"`
+	End         int    `json:"end"`
 }
 
 type ScholarResponse struct {
-	PageNum    int                   `json:"page_num"`
 	ScholarNum int                   `json:"scholar_num"`
-	Scholars   []ScholarResponseJSON `json:"scholars"`
+	Scholar    []ScholarResponseJSON `json:"scholar"`
 }
 
 type ScholarResponseJSON struct {

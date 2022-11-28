@@ -30,8 +30,8 @@ func (l *ScholarLogic) Scholar(req *types.ScholarRequest) (resp *types.ScholarRe
 	// todo: add your logic here and delete this line
 	var buf bytes.Buffer
 	query := map[string]interface{}{
-		"from": (req.Page - 1) * 6,
-		"size": 6,
+		"from": req.Start,
+		"size": req.End - req.Start,
 		"query": map[string]interface{}{
 			"bool": map[string]interface{}{
 				"should": []map[string]interface{}{
@@ -71,9 +71,8 @@ func (l *ScholarLogic) Scholar(req *types.ScholarRequest) (resp *types.ScholarRe
 		scholars = append(scholars, scholar)
 	}
 	resp = &types.ScholarResponse{
-		PageNum:    int(res["hits"].(map[string]interface{})["total"].(map[string]interface{})["value"].(float64))/6 + 1,
 		ScholarNum: int(res["hits"].(map[string]interface{})["total"].(map[string]interface{})["value"].(float64)),
-		Scholars:   scholars,
+		Scholar:    scholars,
 	}
 	return
 }
