@@ -126,10 +126,17 @@ type TagJSON struct {
 	W int    `json:"w"`
 }
 
-type Request struct {
-	Name string `path:"name, options=you|me"`
+type ScholarCooperationRequest struct {
+	ScholarId string `json:"scholar_id"`
 }
 
-type Response struct {
-	Message string `json:"message"`
+type ScholarCooperationResponse struct {
+	CoopList []CoopJSON `json:"coop_list"`
+}
+
+type CoopJSON struct {
+	ScholarId   string `json:"id"`
+	Name        string `json:"name"`
+	Institution string `json:"institution"`
+	Time        int    `json:"time"`
 }

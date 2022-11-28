@@ -16,6 +16,9 @@ service paper-api {
 	
 	@handler ScholarBasic
 	post /api/scholar/basic (ScholarBasicRequest) returns (ScholarBasicResponse);
+	
+	@handler ScholarCooperation
+	post /api/scholar/coop-list (ScholarCooperationRequest) returns (ScholarCooperationResponse);
 }
 
 type PaperRequest {
@@ -143,10 +146,17 @@ type TagJSON {
 	W int    `json:"w"`
 }
 
-type Request {
-	Name string `path:"name, options=you|me"`
+type ScholarCooperationRequest {
+	ScholarId string `json:"scholar_id"`
 }
 
-type Response {
-	Message string `json:"message"`
+type ScholarCooperationResponse {
+	CoopList []CoopJSON `json:"coop_list"`
+}
+
+type CoopJSON {
+	ScholarId   string `json:"id"`
+	Name        string `json:"name"`
+	Institution string `json:"institution"`
+	Time        int    `json:"time"`
 }
