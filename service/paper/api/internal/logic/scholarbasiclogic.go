@@ -77,16 +77,15 @@ func (l *ScholarBasicLogic) ScholarBasic(req *types.ScholarBasicRequest) (resp *
 	sort.Sort(sort.Reverse(sort.IntSlice(years)))
 
 	resp = &types.ScholarBasicResponse{
-		ScholarId:    source["id"].(string),
-		Name:         source["name"].(string),
-		Institution:  institutions,
-		Position:     NilHandler(source["position"], "string").(string),
-		RefNum:       int(source["n_citation"].(float64)),
-		AchNum:       int(source["n_pubs"].(float64)),
-		HIndex:       int(source["h_index"].(float64)),
-		IsIdentified: int(source["is_identified"].(float64)) == 1,
-		Years:        years,
-		Tags:         tags,
+		ScholarId:   source["id"].(string),
+		Name:        source["name"].(string),
+		Institution: institutions,
+		Position:    NilHandler(source["position"], "string").(string),
+		RefNum:      int(source["n_citation"].(float64)),
+		AchNum:      int(source["n_pubs"].(float64)),
+		HIndex:      int(source["h_index"].(float64)),
+		Years:       years,
+		Tags:        tags,
 	}
 	return
 }

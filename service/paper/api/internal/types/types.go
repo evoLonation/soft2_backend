@@ -110,16 +110,15 @@ type ScholarBasicRequest struct {
 }
 
 type ScholarBasicResponse struct {
-	ScholarId    string    `json:"scholar_id"`
-	Name         string    `json:"name"`
-	Institution  []string  `json:"institution"`
-	Position     string    `json:"position"`
-	RefNum       int       `json:"ref_num"`
-	AchNum       int       `json:"ach_num"`
-	HIndex       int       `json:"h_index"`
-	IsIdentified bool      `json:"is_identified"`
-	Years        []int     `json:"years"`
-	Tags         []TagJSON `json:"tags"`
+	ScholarId   string    `json:"scholar_id"`
+	Name        string    `json:"name"`
+	Institution []string  `json:"institution"`
+	Position    string    `json:"position"`
+	RefNum      int       `json:"ref_num"`
+	AchNum      int       `json:"ach_num"`
+	HIndex      int       `json:"h_index"`
+	Years       []int     `json:"years"`
+	Tags        []TagJSON `json:"tags"`
 }
 
 type TagJSON struct {
