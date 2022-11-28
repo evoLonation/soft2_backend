@@ -22,6 +22,9 @@ service paper-api {
 	
 	@handler ScholarPapers
 	post /api/scholar/papers (ScholarPapersRequest) returns (ScholarPapersResponse);
+	
+	@handler ScholarBarchart
+	post /api/scholar/barchart (ScholarBarchartRequest) returns (ScholarBarchartResponse);
 }
 
 type PaperRequest {
@@ -176,4 +179,13 @@ type ScholarPapersRequest {
 type ScholarPapersResponse {
 	PaperNum int                 `json:"paper_num"`
 	Papers   []PaperResponseJSON `json:"papers"`
+}
+
+type ScholarBarchartRequest {
+	ScholarId string `json:"scholar_id"`
+}
+
+type ScholarBarchartResponse {
+	Achievements int `json:"achievements"`
+	References   int `json:"references"`
 }

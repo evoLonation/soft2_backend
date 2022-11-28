@@ -154,3 +154,12 @@ type ScholarPapersResponse struct {
 	PaperNum int                 `json:"paper_num"`
 	Papers   []PaperResponseJSON `json:"papers"`
 }
+
+type ScholarBarchartRequest struct {
+	ScholarId string `json:"scholar_id"`
+}
+
+type ScholarBarchartResponse struct {
+	Achievements int `json:"achievements"`
+	References   int `json:"references"`
+}
