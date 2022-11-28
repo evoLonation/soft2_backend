@@ -25,6 +25,8 @@ type (
 	literatureHelpModel interface {
 		Insert(ctx context.Context, data *LiteratureHelp) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*LiteratureHelp, error)
+		FindOneByReqId(ctx context.Context, id int64) (*LiteratureHelp, error)
+		FindByUserId(ctx context.Context, userId int64, status int64) ([]LiteratureHelp, error)
 		Update(ctx context.Context, data *LiteratureHelp) error
 		Delete(ctx context.Context, id int64) error
 	}
@@ -63,6 +65,39 @@ func (m *defaultLiteratureHelpModel) FindOne(ctx context.Context, id int64) (*Li
 	switch err {
 	case nil:
 		return &resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
+
+func (m *defaultLiteratureHelpModel) FindOneByReqId(ctx context.Context, id int64) (*LiteratureHelp, error) {
+	query := fmt.Sprintf("select %s from %s where `request_id` = ? limit 1", literatureHelpRows, m.table)
+	var resp LiteratureHelp
+	err := m.conn.QueryRowCtx(ctx, &resp, query, id)
+	switch err {
+	case nil:
+		return &resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
+
+func (m *defaultLiteratureHelpModel) FindByUserId(ctx context.Context, userId int64, status int64) ([]LiteratureHelp, error) {
+	var resp []LiteratureHelp
+	var query string
+	if status == 0 {
+		query = fmt.Sprintf("select %s from %s where user_id = %d", literatureHelpRows, m.table, userId)
+	} else {
+		query = fmt.Sprintf("select %s from %s where user_id = %d and request_status = %d", literatureHelpRows, m.table, userId, status-1)
+	}
+	err := m.conn.QueryRowsCtx(ctx, &resp, query)
+	switch err {
+	case nil:
+		return resp, nil
 	case sqlc.ErrNotFound:
 		return nil, ErrNotFound
 	default:

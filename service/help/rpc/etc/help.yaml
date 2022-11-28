@@ -2,5 +2,5 @@ Name: help.rpc
 ListenOn: 0.0.0.0:8084
 Etcd:
   Hosts:
-  - etcd:2379
+  - 127.0.0.1:2379
   Key: help.rpc

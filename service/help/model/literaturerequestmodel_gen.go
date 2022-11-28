@@ -26,6 +26,9 @@ type (
 	literatureRequestModel interface {
 		Insert(ctx context.Context, data *LiteratureRequest) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*LiteratureRequest, error)
+		FindAll(ctx context.Context, order int64) ([]LiteratureRequest, error)
+		FindByContent(ctx context.Context, content string) ([]LiteratureRequest, error)
+		FindByUser(ctx context.Context, userId int64, status int64) ([]LiteratureRequest, error)
 		Update(ctx context.Context, data *LiteratureRequest) error
 		Delete(ctx context.Context, id int64) error
 	}
@@ -69,6 +72,59 @@ func (m *defaultLiteratureRequestModel) FindOne(ctx context.Context, id int64) (
 	switch err {
 	case nil:
 		return &resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
+
+func (m *defaultLiteratureRequestModel) FindAll(ctx context.Context, order int64) ([]LiteratureRequest, error) {
+	var resp []LiteratureRequest
+	var query string
+	if order == 0 {
+		query = fmt.Sprintf("select %s from %s order by request_time", literatureRequestRows, m.table)
+	} else {
+		query = fmt.Sprintf("select %s from %s order by wealth", literatureRequestRows, m.table)
+	}
+	err := m.conn.QueryRowsCtx(ctx, &resp, query)
+	switch err {
+	case nil:
+		return resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
+
+func (m *defaultLiteratureRequestModel) FindByContent(ctx context.Context, content string) ([]LiteratureRequest, error) {
+	var resp []LiteratureRequest
+	var query string
+	query = fmt.Sprintf("(select %s from %s where title = %s) union (select %s from %s where request_content = %s)", literatureRequestRows, m.table, content, literatureRequestRows, m.table, content)
+	err := m.conn.QueryRowsCtx(ctx, &resp, query)
+	switch err {
+	case nil:
+		return resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
+
+func (m *defaultLiteratureRequestModel) FindByUser(ctx context.Context, userId int64, status int64) ([]LiteratureRequest, error) {
+	var resp []LiteratureRequest
+	var query string
+	if status == 0 {
+		query = fmt.Sprintf("select %s from %s where user_id = %d", literatureRequestRows, m.table, userId)
+	} else {
+		query = fmt.Sprintf("select %s from %s where user_id = %d and request_status = %d", literatureRequestRows, m.table, userId, status-1)
+	}
+	err := m.conn.QueryRowsCtx(ctx, &resp, query)
+	switch err {
+	case nil:
+		return resp, nil
 	case sqlc.ErrNotFound:
 		return nil, ErrNotFound
 	default:

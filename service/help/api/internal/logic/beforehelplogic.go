@@ -25,6 +25,14 @@ func NewBeforeHelpLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Before
 
 func (l *BeforeHelpLogic) BeforeHelp(req *types.BeforeHelpReq) (resp *types.BeforeHelpReply, err error) {
 	// todo: add your logic here and delete this line
-
-	return
+	theReq, err := l.svcCtx.LiteratureRequestModel.FindOne(l.ctx, req.RequestId)
+	var ret int64
+	if theReq.RequestStatus == 1 {
+		ret = 0
+	} else {
+		ret = 1
+	}
+	return &types.BeforeHelpReply{
+		Status: ret,
+	}, nil
 }

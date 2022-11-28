@@ -32,12 +32,25 @@ type BeforeHelpReply struct {
 }
 
 type UserInfoReq struct {
+	UserId int64 `json:"user_id"`
 }
 
 type UserInfoReply struct {
 	Request int64 `json:"request"`
 	Help    int64 `json:"help"`
 	Wealth  int64 `json:"wealth"`
+}
+
+type UserReqReq struct {
+	UserId int64 `json:"user_id"`
+	Start  int64 `json:"start"`
+	End    int64 `json:"end"`
+	Type   int64 `json:"type"`
+}
+
+type UserReqReply struct {
+	Requests   []UserReq `json:"requests"`
+	RequestNum int64     `json:"request_num"`
 }
 
 type AddRequestsReq struct {
@@ -51,7 +64,18 @@ type AddRequestsReq struct {
 }
 
 type AddRequestsReply struct {
-	Code int64 `json:"code"`
+}
+
+type UserHelpReq struct {
+	UserId int64 `json:"user_id"`
+	Start  int64 `json:"start"`
+	End    int64 `json:"end"`
+	Type   int64 `json:"type"`
+}
+
+type UserHelpReply struct {
+	Requests []UserReq `json:"requests"`
+	HelpNum  int64     `json:"help_num"`
 }
 
 type Request struct {
@@ -72,4 +96,13 @@ type Search struct {
 	RequestContent string `json:"request_content"`
 	Wealth         int64  `json:"wealth"`
 	RequestStatus  int64  `json:"request_status"`
+}
+
+type UserReq struct {
+	Type           int64  `json:"type"`
+	HelpId         int64  `json:"help_id"`
+	RequestId      int64  `json:"request_id"`
+	RequestTime    string `json:"request_time"`
+	RequestContent string `json:"request_content"`
+	Wealth         int64  `json:"wealth"`
 }
