@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type StreamGreeterClient interface {
 	CheckScholar(ctx context.Context, in *CheckScholarReq, opts ...grpc.CallOption) (*CreateScholarReply, error)
 	MovePaper(ctx context.Context, in *MovePaperReq, opts ...grpc.CallOption) (*MovePaperReply, error)
+	GetPaperName(ctx context.Context, in *GetPaperNameReq, opts ...grpc.CallOption) (*GetPaperNameReply, error)
 }
 
 type streamGreeterClient struct {
@@ -52,12 +53,22 @@ func (c *streamGreeterClient) MovePaper(ctx context.Context, in *MovePaperReq, o
 	return out, nil
 }
 
+func (c *streamGreeterClient) GetPaperName(ctx context.Context, in *GetPaperNameReq, opts ...grpc.CallOption) (*GetPaperNameReply, error) {
+	out := new(GetPaperNameReply)
+	err := c.cc.Invoke(ctx, "/paper.StreamGreeter/GetPaperName", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // StreamGreeterServer is the server API for StreamGreeter service.
 // All implementations must embed UnimplementedStreamGreeterServer
 // for forward compatibility
 type StreamGreeterServer interface {
 	CheckScholar(context.Context, *CheckScholarReq) (*CreateScholarReply, error)
 	MovePaper(context.Context, *MovePaperReq) (*MovePaperReply, error)
+	GetPaperName(context.Context, *GetPaperNameReq) (*GetPaperNameReply, error)
 	mustEmbedUnimplementedStreamGreeterServer()
 }
 
@@ -70,6 +81,9 @@ func (UnimplementedStreamGreeterServer) CheckScholar(context.Context, *CheckScho
 }
 func (UnimplementedStreamGreeterServer) MovePaper(context.Context, *MovePaperReq) (*MovePaperReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MovePaper not implemented")
+}
+func (UnimplementedStreamGreeterServer) GetPaperName(context.Context, *GetPaperNameReq) (*GetPaperNameReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPaperName not implemented")
 }
 func (UnimplementedStreamGreeterServer) mustEmbedUnimplementedStreamGreeterServer() {}
 
@@ -120,6 +134,24 @@ func _StreamGreeter_MovePaper_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _StreamGreeter_GetPaperName_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetPaperNameReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StreamGreeterServer).GetPaperName(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/paper.StreamGreeter/GetPaperName",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StreamGreeterServer).GetPaperName(ctx, req.(*GetPaperNameReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // StreamGreeter_ServiceDesc is the grpc.ServiceDesc for StreamGreeter service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -134,6 +166,10 @@ var StreamGreeter_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "MovePaper",
 			Handler:    _StreamGreeter_MovePaper_Handler,
+		},
+		{
+			MethodName: "GetPaperName",
+			Handler:    _StreamGreeter_GetPaperName_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
