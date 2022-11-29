@@ -18,8 +18,8 @@ import (
 var (
 	applyFieldNames          = builder.RawFieldNames(&Apply{})
 	applyRows                = strings.Join(applyFieldNames, ",")
-	applyRowsExpectAutoSet   = strings.Join(stringx.Remove(applyFieldNames, "`applyId`", "`create_time`", "`update_at`", "`updated_at`", "`update_time`", "`create_at`", "`created_at`"), ",")
-	applyRowsWithPlaceHolder = strings.Join(stringx.Remove(applyFieldNames, "`applyId`", "`create_time`", "`update_at`", "`updated_at`", "`update_time`", "`create_at`", "`created_at`"), "=?,") + "=?"
+	applyRowsExpectAutoSet   = strings.Join(stringx.Remove(applyFieldNames, "`applyId`", "`create_at`", "`created_at`", "`create_time`", "`update_at`", "`updated_at`", "`update_time`"), ",")
+	applyRowsWithPlaceHolder = strings.Join(stringx.Remove(applyFieldNames, "`applyId`", "`create_at`", "`created_at`", "`create_time`", "`update_at`", "`updated_at`", "`update_time`"), "=?,") + "=?"
 )
 
 type (

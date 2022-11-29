@@ -3,9 +3,9 @@ package logic
 import (
 	"context"
 	"database/sql"
-	"go-zero-share/apply/api/internal/svc"
-	"go-zero-share/apply/api/internal/types"
-	"go-zero-share/apply/model"
+	"soft2_backend/service/apply/api/internal/svc"
+	"soft2_backend/service/apply/api/internal/types"
+	"soft2_backend/service/apply/model"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

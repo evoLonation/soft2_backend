@@ -6,9 +6,9 @@ package server
 import (
 	"context"
 
-	"go-zero-share/message/rpc/internal/logic"
-	"go-zero-share/message/rpc/internal/svc"
-	"go-zero-share/message/rpc/types/message"
+	"soft2_backend/service/message/rpc/internal/logic"
+	"soft2_backend/service/message/rpc/internal/svc"
+	"soft2_backend/service/message/rpc/types/message"
 )
 
 type MessageServer struct {

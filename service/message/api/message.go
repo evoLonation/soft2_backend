@@ -4,15 +4,15 @@ import (
 	"flag"
 	"fmt"
 
-	"go-zero-share/message/api/internal/config"
-	"go-zero-share/message/api/internal/handler"
-	"go-zero-share/message/api/internal/svc"
+	"soft2_backend/service/message/api/internal/config"
+	"soft2_backend/service/message/api/internal/handler"
+	"soft2_backend/service/message/api/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/rest"
 )
 
-var configFile = flag.String("f", "etc/message.yaml", "the config file")
+var configFile = flag.String("f", "etc/message-api.yaml", "the config file")
 
 func main() {
 	flag.Parse()

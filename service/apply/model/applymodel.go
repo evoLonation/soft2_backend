@@ -41,9 +41,9 @@ func (m *customApplyModel) FindAll(ctx context.Context) ([]*Apply, error) {
 }
 
 func (m *customApplyModel) FindByUserId(ctx context.Context, userId int64) (*Apply, error) {
-	query := fmt.Sprintf("select %s from %s where `userId` = ? and `status` = 1 limit 1", applyRows, m.table)
+	query := fmt.Sprintf("select %s from %s where `userId` = ? and `status` = 1", applyRows, m.table)
 	var resp Apply
-	err := m.conn.QueryRowsCtx(ctx, &resp, query, userId)
+	err := m.conn.QueryRowCtx(ctx, &resp, query, userId)
 	switch err {
 	case nil:
 		return &resp, nil
@@ -55,9 +55,9 @@ func (m *customApplyModel) FindByUserId(ctx context.Context, userId int64) (*App
 }
 
 func (m *customApplyModel) FindByScholarId(ctx context.Context, scholarId int64) (*Apply, error) {
-	query := fmt.Sprintf("select %s from %s where `scholarId` = ? and `status` = 1 limit 1", applyRows, m.table)
+	query := fmt.Sprintf("select %s from %s where `scholarId` = ? and `status` = 1", applyRows, m.table)
 	var resp Apply
-	err := m.conn.QueryRowsCtx(ctx, &resp, query, scholarId)
+	err := m.conn.QueryRowCtx(ctx, &resp, query, scholarId)
 	switch err {
 	case nil:
 		return &resp, nil

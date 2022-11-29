@@ -5,6 +5,7 @@ package applyclient
 
 import (
 	"context"
+
 	"soft2_backend/service/apply/rpc/types/apply"
 
 	"github.com/zeromicro/go-zero/zrpc"
@@ -14,12 +15,15 @@ import (
 type (
 	CheckIdentifyReply  = apply.CheckIdentifyReply
 	CheckIdentifyReq    = apply.CheckIdentifyReq
+	CheckUserReply      = apply.CheckUserReply
+	CheckUserReq        = apply.CheckUserReq
 	CreateIdentifyReply = apply.CreateIdentifyReply
 	CreateIdentifyReq   = apply.CreateIdentifyReq
 
 	Apply interface {
 		CreateIdentify(ctx context.Context, in *CreateIdentifyReq, opts ...grpc.CallOption) (*CreateIdentifyReply, error)
 		CheckIdentify(ctx context.Context, in *CheckIdentifyReq, opts ...grpc.CallOption) (*CheckIdentifyReply, error)
+		CheckUser(ctx context.Context, in *CheckUserReq, opts ...grpc.CallOption) (*CheckUserReply, error)
 	}
 
 	defaultApply struct {
@@ -41,4 +45,9 @@ func (m *defaultApply) CreateIdentify(ctx context.Context, in *CreateIdentifyReq
 func (m *defaultApply) CheckIdentify(ctx context.Context, in *CheckIdentifyReq, opts ...grpc.CallOption) (*CheckIdentifyReply, error) {
 	client := apply.NewApplyClient(m.cli.Conn())
 	return client.CheckIdentify(ctx, in, opts...)
+}
+
+func (m *defaultApply) CheckUser(ctx context.Context, in *CheckUserReq, opts ...grpc.CallOption) (*CheckUserReply, error) {
+	client := apply.NewApplyClient(m.cli.Conn())
+	return client.CheckUser(ctx, in, opts...)
 }

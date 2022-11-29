@@ -3,8 +3,9 @@ package logic
 import (
 	"context"
 	"github.com/zeromicro/go-zero/core/logx"
-	"go-zero-share/apply/api/internal/svc"
-	"go-zero-share/apply/api/internal/types"
+	"soft2_backend/service/apply/api/internal/svc"
+	"soft2_backend/service/apply/api/internal/types"
+	"soft2_backend/service/paper/rpc/types/paper"
 )
 
 type GetApplyLogic struct {
@@ -34,12 +35,15 @@ func (l *GetApplyLogic) GetApply(req *types.GetApplyRequest) (resp *types.GetApp
 	count := end - i
 
 	for ; i < end; i++ {
-		// todo 调用学者rpc查找scholarname和institution
+		scholar, err := l.svcCtx.PaperRpc.CheckScholar(l.ctx, &paper.CheckScholarReq{ScholarId: list[i].ScholarId})
+		if err != nil {
+			return nil, err
+		}
 
 		info := types.ApplyInfo{
 			ApplyId:     list[i].ApplyId,
-			ScholarName: "lll",
-			Institution: "www",
+			ScholarName: scholar.ScholarName,
+			Institution: scholar.Institution,
 			ApplyType:   list[i].ApplyType,
 		}
 

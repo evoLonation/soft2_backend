@@ -6,7 +6,7 @@ package messageclient
 import (
 	"context"
 
-	"go-zero-share/message/rpc/types/message"
+	"soft2_backend/service/message/rpc/types/message"
 
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"

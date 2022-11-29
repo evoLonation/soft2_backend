@@ -9,6 +9,7 @@ CREATE TABLE `literature_request` (
     `request_content` varchar(255)  NOT NULL DEFAULT '' COMMENT '求助描述',
     `wealth` bigint NOT NULL COMMENT '财富值',
     `request_status` bigint NULL DEFAULT 0 COMMENT '求助状态',
+    `complaint` varchar(255)  NOT NULL DEFAULT '' COMMENT '投诉内容',
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 ;
 CREATE TABLE `literature_help` (

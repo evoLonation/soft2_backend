@@ -18,8 +18,8 @@ import (
 var (
 	literatureRequestFieldNames          = builder.RawFieldNames(&LiteratureRequest{})
 	literatureRequestRows                = strings.Join(literatureRequestFieldNames, ",")
-	literatureRequestRowsExpectAutoSet   = strings.Join(stringx.Remove(literatureRequestFieldNames, "`id`", "`update_time`", "`create_at`", "`created_at`", "`create_time`", "`update_at`", "`updated_at`"), ",")
-	literatureRequestRowsWithPlaceHolder = strings.Join(stringx.Remove(literatureRequestFieldNames, "`id`", "`update_time`", "`create_at`", "`created_at`", "`create_time`", "`update_at`", "`updated_at`"), "=?,") + "=?"
+	literatureRequestRowsExpectAutoSet   = strings.Join(stringx.Remove(literatureRequestFieldNames, "`id`", "`create_at`", "`created_at`", "`create_time`", "`update_at`", "`updated_at`", "`update_time`"), ",")
+	literatureRequestRowsWithPlaceHolder = strings.Join(stringx.Remove(literatureRequestFieldNames, "`id`", "`create_at`", "`created_at`", "`create_time`", "`update_at`", "`updated_at`", "`update_time`"), "=?,") + "=?"
 )
 
 type (
@@ -49,6 +49,7 @@ type (
 		RequestContent string    `db:"request_content"` // 求助描述
 		Wealth         int64     `db:"wealth"`          // 财富值
 		RequestStatus  int64     `db:"request_status"`  // 求助状态
+		Complaint      string    `db:"complaint"`       // 投诉内容
 	}
 )
 
@@ -133,14 +134,14 @@ func (m *defaultLiteratureRequestModel) FindByUser(ctx context.Context, userId i
 }
 
 func (m *defaultLiteratureRequestModel) Insert(ctx context.Context, data *LiteratureRequest) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, literatureRequestRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.UserId, data.Title, data.Author, data.Magazine, data.Link, data.RequestTime, data.RequestContent, data.Wealth, data.RequestStatus)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, literatureRequestRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.UserId, data.Title, data.Author, data.Magazine, data.Link, data.RequestTime, data.RequestContent, data.Wealth, data.RequestStatus, data.Complaint)
 	return ret, err
 }
 
 func (m *defaultLiteratureRequestModel) Update(ctx context.Context, data *LiteratureRequest) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, literatureRequestRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.UserId, data.Title, data.Author, data.Magazine, data.Link, data.RequestTime, data.RequestContent, data.Wealth, data.RequestStatus, data.Id)
+	_, err := m.conn.ExecCtx(ctx, query, data.UserId, data.Title, data.Author, data.Magazine, data.Link, data.RequestTime, data.RequestContent, data.Wealth, data.RequestStatus, data.Complaint, data.Id)
 	return err
 }
 

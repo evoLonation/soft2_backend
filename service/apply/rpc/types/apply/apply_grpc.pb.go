@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type ApplyClient interface {
 	CreateIdentify(ctx context.Context, in *CreateIdentifyReq, opts ...grpc.CallOption) (*CreateIdentifyReply, error)
 	CheckIdentify(ctx context.Context, in *CheckIdentifyReq, opts ...grpc.CallOption) (*CheckIdentifyReply, error)
+	CheckUser(ctx context.Context, in *CheckUserReq, opts ...grpc.CallOption) (*CheckUserReply, error)
 }
 
 type applyClient struct {
@@ -52,12 +53,22 @@ func (c *applyClient) CheckIdentify(ctx context.Context, in *CheckIdentifyReq, o
 	return out, nil
 }
 
+func (c *applyClient) CheckUser(ctx context.Context, in *CheckUserReq, opts ...grpc.CallOption) (*CheckUserReply, error) {
+	out := new(CheckUserReply)
+	err := c.cc.Invoke(ctx, "/apply.Apply/CheckUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ApplyServer is the server API for Apply service.
 // All implementations must embed UnimplementedApplyServer
 // for forward compatibility
 type ApplyServer interface {
 	CreateIdentify(context.Context, *CreateIdentifyReq) (*CreateIdentifyReply, error)
 	CheckIdentify(context.Context, *CheckIdentifyReq) (*CheckIdentifyReply, error)
+	CheckUser(context.Context, *CheckUserReq) (*CheckUserReply, error)
 	mustEmbedUnimplementedApplyServer()
 }
 
@@ -70,6 +81,9 @@ func (UnimplementedApplyServer) CreateIdentify(context.Context, *CreateIdentifyR
 }
 func (UnimplementedApplyServer) CheckIdentify(context.Context, *CheckIdentifyReq) (*CheckIdentifyReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckIdentify not implemented")
+}
+func (UnimplementedApplyServer) CheckUser(context.Context, *CheckUserReq) (*CheckUserReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CheckUser not implemented")
 }
 func (UnimplementedApplyServer) mustEmbedUnimplementedApplyServer() {}
 
@@ -120,6 +134,24 @@ func _Apply_CheckIdentify_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Apply_CheckUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CheckUserReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ApplyServer).CheckUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/apply.Apply/CheckUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ApplyServer).CheckUser(ctx, req.(*CheckUserReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Apply_ServiceDesc is the grpc.ServiceDesc for Apply service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -134,6 +166,10 @@ var Apply_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CheckIdentify",
 			Handler:    _Apply_CheckIdentify_Handler,
+		},
+		{
+			MethodName: "CheckUser",
+			Handler:    _Apply_CheckUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

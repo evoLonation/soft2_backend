@@ -3,9 +3,9 @@ package logic
 import (
 	"context"
 	"database/sql"
-	"go-zero-share/message/model"
-	"go-zero-share/message/rpc/internal/svc"
-	"go-zero-share/message/rpc/types/message"
+	"soft2_backend/service/message/model"
+	"soft2_backend/service/message/rpc/internal/svc"
+	"soft2_backend/service/message/rpc/types/message"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
