@@ -4,10 +4,12 @@ LABEL stage=gobuilder
 
 ENV CGO_ENABLED 0
 ENV GOPROXY https://goproxy.cn,direct
+ENV GOCACHE /root/.cache/go-build
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 
 RUN apk update --no-cache && apk add --no-cache tzdata
 
+VOLUME ./cache:/root/.cache/go-build
 WORKDIR /build
 
 ADD go.mod .
@@ -15,6 +17,7 @@ ADD go.sum .
 RUN go mod download
 COPY . .
 COPY service/paper/api/etc /app/etc
+RUN cp service/paper/api/main.go /root/.cache/go-build
 RUN go build -ldflags="-s -w" -o /app/main service/paper/api/main.go
 
 
