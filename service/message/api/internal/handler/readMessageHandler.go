@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
-	"go-zero-share/message/api/internal/logic"
-	"go-zero-share/message/api/internal/svc"
-	"go-zero-share/message/api/internal/types"
+	"soft2_backend/service/message/api/internal/logic"
+	"soft2_backend/service/message/api/internal/svc"
+	"soft2_backend/service/message/api/internal/types"
 )
 
 func ReadMessageHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {

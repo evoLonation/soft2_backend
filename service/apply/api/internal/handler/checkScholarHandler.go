@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
-	"go-zero-share/apply/api/internal/logic"
-	"go-zero-share/apply/api/internal/svc"
+	"soft2_backend/service/apply/api/internal/logic"
+	"soft2_backend/service/apply/api/internal/svc"
 )
 
 func CheckScholarHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {

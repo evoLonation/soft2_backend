@@ -2,19 +2,24 @@ package svc
 
 import (
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
-	"go-zero-share/apply/api/internal/config"
-	"go-zero-share/apply/model"
+	"github.com/zeromicro/go-zero/zrpc"
+	"soft2_backend/service/apply/api/internal/config"
+	"soft2_backend/service/apply/model"
+	"soft2_backend/service/paper/rpc/streamgreeter"
 )
 
 type ServiceContext struct {
 	Config     config.Config
 	ApplyModel model.ApplyModel
+
+	PaperRpc streamgreeter.StreamGreeter
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	conn := sqlx.NewMysql(c.Mysql.DataSource)
 	return &ServiceContext{
 		Config:     c,
-		ApplyModel: model.NewApplyModel(conn, c.CacheRedis),
+		ApplyModel: model.NewApplyModel(conn),
+		PaperRpc:   streamgreeter.NewStreamGreeter(zrpc.MustNewClient(c.PaperRpc)),
 	}
 }

@@ -1,6 +1,6 @@
 package svc
 
-import "go-zero-share/message/rpc/internal/config"
+import "soft2_backend/service/message/rpc/internal/config"
 
 type ServiceContext struct {
 	Config config.Config

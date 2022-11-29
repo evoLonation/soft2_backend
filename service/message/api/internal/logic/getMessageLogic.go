@@ -3,8 +3,8 @@ package logic
 import (
 	"context"
 	"encoding/json"
-	"go-zero-share/message/api/internal/svc"
-	"go-zero-share/message/api/internal/types"
+	"soft2_backend/service/message/api/internal/svc"
+	"soft2_backend/service/message/api/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

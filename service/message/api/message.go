@@ -4,9 +4,9 @@ import (
 	"flag"
 	"fmt"
 
-	"go-zero-share/message/api/internal/config"
-	"go-zero-share/message/api/internal/handler"
-	"go-zero-share/message/api/internal/svc"
+	"soft2_backend/service/message/api/internal/config"
+	"soft2_backend/service/message/api/internal/handler"
+	"soft2_backend/service/message/api/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/rest"

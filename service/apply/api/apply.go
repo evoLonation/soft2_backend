@@ -3,9 +3,9 @@ package main
 import (
 	"flag"
 	"fmt"
-	"go-zero-share/apply/api/internal/config"
-	"go-zero-share/apply/api/internal/handler"
-	"go-zero-share/apply/api/internal/svc"
+	"soft2_backend/service/apply/api/internal/config"
+	"soft2_backend/service/apply/api/internal/handler"
+	"soft2_backend/service/apply/api/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/rest"

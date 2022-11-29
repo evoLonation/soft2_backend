@@ -6,9 +6,9 @@ package server
 import (
 	"context"
 
-	"go-zero-share/apply/rpc/internal/logic"
-	"go-zero-share/apply/rpc/internal/svc"
-	"go-zero-share/apply/rpc/types/apply"
+	"soft2_backend/service/apply/rpc/internal/logic"
+	"soft2_backend/service/apply/rpc/internal/svc"
+	"soft2_backend/service/apply/rpc/types/apply"
 )
 
 type ApplyServer struct {
@@ -30,4 +30,9 @@ func (s *ApplyServer) CreateIdentify(ctx context.Context, in *apply.CreateIdenti
 func (s *ApplyServer) CheckIdentify(ctx context.Context, in *apply.CheckIdentifyReq) (*apply.CheckIdentifyReply, error) {
 	l := logic.NewCheckIdentifyLogic(ctx, s.svcCtx)
 	return l.CheckIdentify(in)
+}
+
+func (s *ApplyServer) CheckUser(ctx context.Context, in *apply.CheckUserReq) (*apply.CheckUserReply, error) {
+	l := logic.NewCheckUserLogic(ctx, s.svcCtx)
+	return l.CheckUser(in)
 }

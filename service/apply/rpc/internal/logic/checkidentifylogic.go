@@ -4,8 +4,8 @@ import (
 	"context"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
 
-	"go-zero-share/apply/rpc/internal/svc"
-	"go-zero-share/apply/rpc/types/apply"
+	"soft2_backend/service/apply/rpc/internal/svc"
+	"soft2_backend/service/apply/rpc/types/apply"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
