@@ -14,8 +14,8 @@ ADD go.mod .
 ADD go.sum .
 RUN go mod download
 COPY . .
-COPY message/rpc/etc /app/etc
-RUN go build -ldflags="-s -w" -o /app/message message/rpc/message.go
+COPY service/message/rpc/etc /app/etc
+RUN go build -ldflags="-s -w" -o /app/message service/message/rpc/message.go
 
 
 FROM scratch

@@ -14,8 +14,8 @@ ADD go.mod .
 ADD go.sum .
 RUN go mod download
 COPY . .
-COPY message/api/etc /app/etc
-RUN go build -ldflags="-s -w" -o /app/message message/api/message.go
+COPY service/message/api/etc /app/etc
+RUN go build -ldflags="-s -w" -o /app/message service/message/api/message.go
 
 
 FROM scratch
