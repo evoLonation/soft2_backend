@@ -40,6 +40,7 @@ func (l *UpDateStatusLogic) UpDateStatus(in *help.UpdateReq) (*help.Reply, error
 	}
 	user, _ := l.svcCtx.UserHelpModel.FindOne(l.ctx, in.UserId)
 	user.Help += 1
+	user.Wealth += theRequest.Wealth
 	err = l.svcCtx.UserHelpModel.Update(l.ctx, user)
 	if err != nil {
 		return nil, err

@@ -78,6 +78,23 @@ type UserHelpReply struct {
 	HelpNum  int64     `json:"help_num"`
 }
 
+type DownloadReq struct {
+	RequestId int64 `json:"request_id"`
+}
+
+type DownloadReply struct {
+	Url string `json:"url"`
+}
+
+type ConfirmedReq struct {
+	RequestId int64 `json:"request_id"`
+}
+
+type ComplaintReq struct {
+	RequestId int64  `json:"request_id"`
+	Content   string `json:"content"`
+}
+
 type Request struct {
 	Id             int64  `json:"request_id"`
 	Title          string `json:"title"`
