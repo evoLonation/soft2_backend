@@ -11,3 +11,8 @@ FileRpc:
     Hosts:
       - 120.46.220.182:2379
     Key: file.rpc
+MessageRpc:
+  Etcd:
+    Hosts:
+      - 120.46.220.182:2379
+    Key: message.rpc

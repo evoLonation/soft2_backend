@@ -75,6 +75,23 @@ type (
 		Requests []UserReq `json:"requests"`
 		HelpNum  int64     `json:"help_num"`
 	}
+
+	DownloadReq {
+		RequestId int64 `json:"request_id"`
+	}
+
+	DownloadReply {
+		Url string `json:"url"`
+	}
+
+	ConfirmedReq {
+		RequestId int64 `json:"request_id"`
+	}
+
+	ComplaintReq {
+		RequestId int64  `json:"request_id"`
+		Content   string `json:"content"`
+	}
 )
 type Request {
 	Id             int64  `json:"request_id"`
@@ -157,4 +174,28 @@ service help-api {
 service help-api {
 	@handler userHelp
 	post /api/help/user-help (UserHelpReq) returns (UserHelpReply)
+}
+
+@server(
+	jwt: Auth
+)
+service help-api {
+	@handler download
+	post /api/help/download (DownloadReq) returns (DownloadReply)
+}
+
+@server(
+	jwt: Auth
+)
+service help-api {
+	@handler confirmed
+	post /api/help/confirmed (ConfirmedReq) returns ()
+}
+
+@server(
+	jwt: Auth
+)
+service help-api {
+	@handler complaint
+	post /api/help/complaint (ComplaintReq) returns ()
 }

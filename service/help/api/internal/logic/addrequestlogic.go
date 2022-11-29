@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"errors"
 	"soft2_backend/service/help/model"
 
 	"soft2_backend/service/help/api/internal/svc"
@@ -44,6 +45,23 @@ func (l *AddRequestLogic) AddRequest(req *types.AddRequestsReq) (resp *types.Add
 	newRequest.RequestContent = req.Content
 	newRequest.Wealth = req.Wealth
 	_, err = l.svcCtx.LiteratureRequestModel.Insert(l.ctx, newRequest)
+	if err != nil {
+		return nil, err
+	}
+	user, err := l.svcCtx.UserHelpModel.FindOne(l.ctx, req.UserId)
+	if err != nil {
+		return nil, err
+	}
+	user.Request += 1
+	if user.Wealth < req.Wealth {
+		err := errors.New("财富之不足")
+		if err != nil {
+			return nil, err
+		}
+		return nil, err
+	}
+	user.Wealth -= req.Wealth
+	err = l.svcCtx.UserHelpModel.Update(l.ctx, user)
 	if err != nil {
 		return nil, err
 	}
