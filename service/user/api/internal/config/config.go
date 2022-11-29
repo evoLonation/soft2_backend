@@ -3,6 +3,7 @@ package config
 import (
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/rest"
+	"github.com/zeromicro/go-zero/zrpc"
 )
 
 type Config struct {
@@ -15,4 +16,7 @@ type Config struct {
 		AccessSecret string
 		AccessExpire int64
 	}
+	ApplyRpc   zrpc.RpcClientConf
+	MessageRpc zrpc.RpcClientConf
+	PaperRoc   zrpc.RpcClientConf
 }

@@ -22,6 +22,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/api/user/register",
 				Handler: RegisterHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/api/paper/get-comment",
+				Handler: GetCommentHandler(serverCtx),
+			},
 		},
 	)
 
@@ -61,6 +66,31 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodPost,
 				Path:    "/api/paper/comment/cancel",
 				Handler: CancelLikeHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/api/scholar/subscribe",
+				Handler: SubscribeHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/api/scholar/delete-subscribe",
+				Handler: DeleteSubscribeHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/api/paper/grievance",
+				Handler: LaunchGrievanceHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/api/grievance/accept",
+				Handler: GrievanceAcceptHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/api/grievance/refuse",
+				Handler: GrievanceRefuseHandler(serverCtx),
 			},
 		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),

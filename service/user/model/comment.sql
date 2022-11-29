@@ -1,6 +1,7 @@
 create table comment(
     comment_id int primary key auto_increment,
     user_id int not null ,
+    user_nickname varchar(20) not null ,
     paper_id int not null ,
     content varchar(255) not null ,
     likes int not null default 0, #点赞量

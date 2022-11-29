@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"encoding/json"
 	"soft2_backend/service/user/model"
 	"time"
 
@@ -27,12 +28,15 @@ func NewCommentPaperLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Comm
 
 func (l *CommentPaperLogic) CommentPaper(req *types.CommentPaperRequest) (resp *types.CommentPaperResponse, err error) {
 	// todo: add your logic here and delete this line
+	userId, _ := l.ctx.Value("UserId").(json.Number).Int64()
+	user, _ := l.svcCtx.UserModel.FindOne(l.ctx, userId)
 	newComment := model.Comment{
-		UserId:     3,
-		PaperId:    req.PaperId,
-		Content:    req.Content,
-		Likes:      0,
-		CreateTime: time.Time{},
+		UserId:       userId,
+		UserNickname: user.Nickname,
+		PaperId:      req.PaperId,
+		Content:      req.Content,
+		Likes:        0,
+		CreateTime:   time.Time{},
 	}
 	_, err = l.svcCtx.CommentModel.Insert(l.ctx, &newComment)
 	return &types.CommentPaperResponse{Code: 0}, nil
