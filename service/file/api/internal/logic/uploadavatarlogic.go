@@ -2,14 +2,11 @@ package logic
 
 import (
 	"context"
-	uuid "github.com/nu7hatch/gouuid"
-	"mime/multipart"
-	"os"
-	"soft2_backend/service/file/api/internal/common"
-	"strings"
-
 	"github.com/zeromicro/go-zero/core/logx"
+	"mime/multipart"
 	"soft2_backend/service/file/api/internal/svc"
+	"soft2_backend/service/file/filecommon"
+	"soft2_backend/service/file/model"
 )
 
 type UploadAvatarLogic struct {
@@ -28,33 +25,20 @@ func NewUploadAvatarLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Uplo
 }
 
 func (l *UploadAvatarLogic) UploadAvatar() error {
-	file, err := l.File.Open()
-
+	filename, err := filecommon.CreateFile(l.File)
 	if err != nil {
 		return err
 	}
-	var content [common.DefaultMultipartMemory]byte
-
-	fileLen, err := file.Read(content[:])
-	if err != nil {
+	userId := l.ctx.Value("userId").(int64)
+	err = l.svcCtx.UserAvatarModel.Delete(l.ctx, userId)
+	err = filecommon.SqlErrorCheck(err)
+	if err != nil && err != filecommon.NoRowError {
 		return err
 	}
-	newUuid, err := uuid.NewV4()
+	_, err = l.svcCtx.UserAvatarModel.Insert(l.ctx, &model.UserAvatar{UserId: userId, FileName: filename})
+	err = filecommon.SqlErrorCheck(err)
 	if err != nil {
 		return err
-	}
-	tmp := strings.Split(l.File.Filename, ".")
-	suffix := tmp[len(tmp)-1]
-	newFile, err := os.Create("./localfile/" + newUuid.String() + "." + suffix)
-	if err != nil {
-		panic(err)
-	}
-	if _, err := newFile.Write(content[:fileLen]); err != nil {
-		panic(err)
-	}
-	err = newFile.Close()
-	if err != nil {
-		panic(err)
 	}
 	return nil
 }

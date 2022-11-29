@@ -24,9 +24,9 @@ var (
 type (
 	userAvatarModel interface {
 		Insert(ctx context.Context, data *UserAvatar) (sql.Result, error)
-		FindOne(ctx context.Context, userId string) (*UserAvatar, error)
+		FindOne(ctx context.Context, userId int64) (*UserAvatar, error)
 		Update(ctx context.Context, data *UserAvatar) error
-		Delete(ctx context.Context, userId string) error
+		Delete(ctx context.Context, userId int64) error
 	}
 
 	defaultUserAvatarModel struct {
@@ -35,7 +35,7 @@ type (
 	}
 
 	UserAvatar struct {
-		UserId   string `db:"user_id"`
+		UserId   int64  `db:"user_id"`
 		FileName string `db:"file_name"`
 	}
 )
@@ -47,13 +47,13 @@ func newUserAvatarModel(conn sqlx.SqlConn) *defaultUserAvatarModel {
 	}
 }
 
-func (m *defaultUserAvatarModel) Delete(ctx context.Context, userId string) error {
+func (m *defaultUserAvatarModel) Delete(ctx context.Context, userId int64) error {
 	query := fmt.Sprintf("delete from %s where `user_id` = ?", m.table)
 	_, err := m.conn.ExecCtx(ctx, query, userId)
 	return err
 }
 
-func (m *defaultUserAvatarModel) FindOne(ctx context.Context, userId string) (*UserAvatar, error) {
+func (m *defaultUserAvatarModel) FindOne(ctx context.Context, userId int64) (*UserAvatar, error) {
 	query := fmt.Sprintf("select %s from %s where `user_id` = ? limit 1", userAvatarRows, m.table)
 	var resp UserAvatar
 	err := m.conn.QueryRowCtx(ctx, &resp, query, userId)

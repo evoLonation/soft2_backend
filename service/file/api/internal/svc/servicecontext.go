@@ -2,23 +2,28 @@ package svc
 
 import (
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
+	"github.com/zeromicro/go-zero/zrpc"
+	"soft2_backend/service/apply/rpc/applyclient"
 	"soft2_backend/service/file/api/internal/config"
 	"soft2_backend/service/file/model"
+	"soft2_backend/service/help/rpc/helpclient"
 )
 
 type ServiceContext struct {
-	Config          config.Config
-	ApplyFileModel  model.ApplyFileModel
-	HelpFileModel   model.HelpFileModel
-	UserAvatarModel model.UserAvatarModel
+	config.Config
+	model.HelpFileModel
+	model.UserAvatarModel
+	helpclient.Help
+	applyclient.Apply
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	conn := sqlx.NewMysql(c.Mysql.DataSource)
 	return &ServiceContext{
 		Config:          c,
-		ApplyFileModel:  model.NewApplyFileModel(conn),
 		UserAvatarModel: model.NewUserAvatarModel(conn),
 		HelpFileModel:   model.NewHelpFileModel(conn),
+		Help:            helpclient.NewHelp(zrpc.MustNewClient(c.HelpRpcConf)),
+		Apply:           applyclient.NewApply(zrpc.MustNewClient(c.ApplyRpcConf)),
 	}
 }

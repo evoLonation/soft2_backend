@@ -1,0 +1,6 @@
+syntax = "v1"
+
+service template {
+	@handler rpcTest
+	get /api/rpctest () returns ()
+}

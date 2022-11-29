@@ -22,9 +22,10 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type FileClient interface {
-	GetAvatar(ctx context.Context, in *UserIdReq, opts ...grpc.CallOption) (*UrlReply, error)
-	GetHelpFile(ctx context.Context, in *UserIdReq, opts ...grpc.CallOption) (*UrlReply, error)
-	GetApplyFile(ctx context.Context, in *UserIdReq, opts ...grpc.CallOption) (*UrlReply, error)
+	GetUserAvatar(ctx context.Context, in *UserIdReq, opts ...grpc.CallOption) (*UrlReply, error)
+	GetScholarAvatar(ctx context.Context, in *ScholarIdReq, opts ...grpc.CallOption) (*UrlReply, error)
+	GetHelpFile(ctx context.Context, in *ApplyIdReq, opts ...grpc.CallOption) (*UrlReply, error)
+	GetApplyFile(ctx context.Context, in *HelpIdReq, opts ...grpc.CallOption) (*UrlReply, error)
 }
 
 type fileClient struct {
@@ -35,16 +36,25 @@ func NewFileClient(cc grpc.ClientConnInterface) FileClient {
 	return &fileClient{cc}
 }
 
-func (c *fileClient) GetAvatar(ctx context.Context, in *UserIdReq, opts ...grpc.CallOption) (*UrlReply, error) {
+func (c *fileClient) GetUserAvatar(ctx context.Context, in *UserIdReq, opts ...grpc.CallOption) (*UrlReply, error) {
 	out := new(UrlReply)
-	err := c.cc.Invoke(ctx, "/file.file/getAvatar", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/file.file/getUserAvatar", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *fileClient) GetHelpFile(ctx context.Context, in *UserIdReq, opts ...grpc.CallOption) (*UrlReply, error) {
+func (c *fileClient) GetScholarAvatar(ctx context.Context, in *ScholarIdReq, opts ...grpc.CallOption) (*UrlReply, error) {
+	out := new(UrlReply)
+	err := c.cc.Invoke(ctx, "/file.file/getScholarAvatar", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *fileClient) GetHelpFile(ctx context.Context, in *ApplyIdReq, opts ...grpc.CallOption) (*UrlReply, error) {
 	out := new(UrlReply)
 	err := c.cc.Invoke(ctx, "/file.file/getHelpFile", in, out, opts...)
 	if err != nil {
@@ -53,7 +63,7 @@ func (c *fileClient) GetHelpFile(ctx context.Context, in *UserIdReq, opts ...grp
 	return out, nil
 }
 
-func (c *fileClient) GetApplyFile(ctx context.Context, in *UserIdReq, opts ...grpc.CallOption) (*UrlReply, error) {
+func (c *fileClient) GetApplyFile(ctx context.Context, in *HelpIdReq, opts ...grpc.CallOption) (*UrlReply, error) {
 	out := new(UrlReply)
 	err := c.cc.Invoke(ctx, "/file.file/getApplyFile", in, out, opts...)
 	if err != nil {
@@ -66,9 +76,10 @@ func (c *fileClient) GetApplyFile(ctx context.Context, in *UserIdReq, opts ...gr
 // All implementations must embed UnimplementedFileServer
 // for forward compatibility
 type FileServer interface {
-	GetAvatar(context.Context, *UserIdReq) (*UrlReply, error)
-	GetHelpFile(context.Context, *UserIdReq) (*UrlReply, error)
-	GetApplyFile(context.Context, *UserIdReq) (*UrlReply, error)
+	GetUserAvatar(context.Context, *UserIdReq) (*UrlReply, error)
+	GetScholarAvatar(context.Context, *ScholarIdReq) (*UrlReply, error)
+	GetHelpFile(context.Context, *ApplyIdReq) (*UrlReply, error)
+	GetApplyFile(context.Context, *HelpIdReq) (*UrlReply, error)
 	mustEmbedUnimplementedFileServer()
 }
 
@@ -76,13 +87,16 @@ type FileServer interface {
 type UnimplementedFileServer struct {
 }
 
-func (UnimplementedFileServer) GetAvatar(context.Context, *UserIdReq) (*UrlReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAvatar not implemented")
+func (UnimplementedFileServer) GetUserAvatar(context.Context, *UserIdReq) (*UrlReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserAvatar not implemented")
 }
-func (UnimplementedFileServer) GetHelpFile(context.Context, *UserIdReq) (*UrlReply, error) {
+func (UnimplementedFileServer) GetScholarAvatar(context.Context, *ScholarIdReq) (*UrlReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetScholarAvatar not implemented")
+}
+func (UnimplementedFileServer) GetHelpFile(context.Context, *ApplyIdReq) (*UrlReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetHelpFile not implemented")
 }
-func (UnimplementedFileServer) GetApplyFile(context.Context, *UserIdReq) (*UrlReply, error) {
+func (UnimplementedFileServer) GetApplyFile(context.Context, *HelpIdReq) (*UrlReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetApplyFile not implemented")
 }
 func (UnimplementedFileServer) mustEmbedUnimplementedFileServer() {}
@@ -98,26 +112,44 @@ func RegisterFileServer(s grpc.ServiceRegistrar, srv FileServer) {
 	s.RegisterService(&File_ServiceDesc, srv)
 }
 
-func _File_GetAvatar_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _File_GetUserAvatar_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserIdReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(FileServer).GetAvatar(ctx, in)
+		return srv.(FileServer).GetUserAvatar(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/file.file/getAvatar",
+		FullMethod: "/file.file/getUserAvatar",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(FileServer).GetAvatar(ctx, req.(*UserIdReq))
+		return srv.(FileServer).GetUserAvatar(ctx, req.(*UserIdReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _File_GetScholarAvatar_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ScholarIdReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FileServer).GetScholarAvatar(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/file.file/getScholarAvatar",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FileServer).GetScholarAvatar(ctx, req.(*ScholarIdReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _File_GetHelpFile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserIdReq)
+	in := new(ApplyIdReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -129,13 +161,13 @@ func _File_GetHelpFile_Handler(srv interface{}, ctx context.Context, dec func(in
 		FullMethod: "/file.file/getHelpFile",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(FileServer).GetHelpFile(ctx, req.(*UserIdReq))
+		return srv.(FileServer).GetHelpFile(ctx, req.(*ApplyIdReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _File_GetApplyFile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserIdReq)
+	in := new(HelpIdReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -147,7 +179,7 @@ func _File_GetApplyFile_Handler(srv interface{}, ctx context.Context, dec func(i
 		FullMethod: "/file.file/getApplyFile",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(FileServer).GetApplyFile(ctx, req.(*UserIdReq))
+		return srv.(FileServer).GetApplyFile(ctx, req.(*HelpIdReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -160,8 +192,12 @@ var File_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*FileServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "getAvatar",
-			Handler:    _File_GetAvatar_Handler,
+			MethodName: "getUserAvatar",
+			Handler:    _File_GetUserAvatar_Handler,
+		},
+		{
+			MethodName: "getScholarAvatar",
+			Handler:    _File_GetScholarAvatar_Handler,
 		},
 		{
 			MethodName: "getHelpFile",

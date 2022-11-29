@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"errors"
 
 	"soft2_backend/service/file/rpc/internal/svc"
 	"soft2_backend/service/file/rpc/types/file"
@@ -23,8 +24,6 @@ func NewGetApplyFileLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetA
 	}
 }
 
-func (l *GetApplyFileLogic) GetApplyFile(in *file.UserIdReq) (*file.UrlReply, error) {
-	// todo: add your logic here and delete this line
-
-	return &file.UrlReply{Url: "hello, world!"}, nil
+func (l *GetApplyFileLogic) GetApplyFile(in *file.HelpIdReq) (*file.UrlReply, error) {
+	return nil, errors.New("该接口已被启用！")
 }

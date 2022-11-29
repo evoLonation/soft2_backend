@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-
+	"soft2_backend/service/file/filecommon"
 	"soft2_backend/service/file/rpc/internal/config"
 	"soft2_backend/service/file/rpc/internal/server"
 	"soft2_backend/service/file/rpc/internal/svc"
@@ -33,6 +33,8 @@ func main() {
 		}
 	})
 	defer s.Stop()
+
+	filecommon.InitFile()
 
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
 	s.Start()

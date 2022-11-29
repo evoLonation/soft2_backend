@@ -13,15 +13,17 @@ import (
 )
 
 type (
-	HelpIdReq       = file.HelpIdReq
-	ScholarApplyReq = file.ScholarApplyReq
-	UrlReply        = file.UrlReply
-	UserIdReq       = file.UserIdReq
+	ApplyIdReq   = file.ApplyIdReq
+	HelpIdReq    = file.HelpIdReq
+	ScholarIdReq = file.ScholarIdReq
+	UrlReply     = file.UrlReply
+	UserIdReq    = file.UserIdReq
 
 	File interface {
-		GetAvatar(ctx context.Context, in *UserIdReq, opts ...grpc.CallOption) (*UrlReply, error)
-		GetHelpFile(ctx context.Context, in *UserIdReq, opts ...grpc.CallOption) (*UrlReply, error)
-		GetApplyFile(ctx context.Context, in *UserIdReq, opts ...grpc.CallOption) (*UrlReply, error)
+		GetUserAvatar(ctx context.Context, in *UserIdReq, opts ...grpc.CallOption) (*UrlReply, error)
+		GetScholarAvatar(ctx context.Context, in *ScholarIdReq, opts ...grpc.CallOption) (*UrlReply, error)
+		GetHelpFile(ctx context.Context, in *ApplyIdReq, opts ...grpc.CallOption) (*UrlReply, error)
+		GetApplyFile(ctx context.Context, in *HelpIdReq, opts ...grpc.CallOption) (*UrlReply, error)
 	}
 
 	defaultFile struct {
@@ -35,17 +37,22 @@ func NewFile(cli zrpc.Client) File {
 	}
 }
 
-func (m *defaultFile) GetAvatar(ctx context.Context, in *UserIdReq, opts ...grpc.CallOption) (*UrlReply, error) {
+func (m *defaultFile) GetUserAvatar(ctx context.Context, in *UserIdReq, opts ...grpc.CallOption) (*UrlReply, error) {
 	client := file.NewFileClient(m.cli.Conn())
-	return client.GetAvatar(ctx, in, opts...)
+	return client.GetUserAvatar(ctx, in, opts...)
 }
 
-func (m *defaultFile) GetHelpFile(ctx context.Context, in *UserIdReq, opts ...grpc.CallOption) (*UrlReply, error) {
+func (m *defaultFile) GetScholarAvatar(ctx context.Context, in *ScholarIdReq, opts ...grpc.CallOption) (*UrlReply, error) {
+	client := file.NewFileClient(m.cli.Conn())
+	return client.GetScholarAvatar(ctx, in, opts...)
+}
+
+func (m *defaultFile) GetHelpFile(ctx context.Context, in *ApplyIdReq, opts ...grpc.CallOption) (*UrlReply, error) {
 	client := file.NewFileClient(m.cli.Conn())
 	return client.GetHelpFile(ctx, in, opts...)
 }
 
-func (m *defaultFile) GetApplyFile(ctx context.Context, in *UserIdReq, opts ...grpc.CallOption) (*UrlReply, error) {
+func (m *defaultFile) GetApplyFile(ctx context.Context, in *HelpIdReq, opts ...grpc.CallOption) (*UrlReply, error) {
 	client := file.NewFileClient(m.cli.Conn())
 	return client.GetApplyFile(ctx, in, opts...)
 }

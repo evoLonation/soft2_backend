@@ -5,8 +5,7 @@ package applyclient
 
 import (
 	"context"
-
-	"go-zero-share/apply/rpc/types/apply"
+	"soft2_backend/service/apply/rpc/types/apply"
 
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"

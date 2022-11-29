@@ -7,4 +7,5 @@ type Config struct {
 	Mysql struct {
 		DataSource string
 	}
+	ApplyRpcConf zrpc.RpcClientConf
 }

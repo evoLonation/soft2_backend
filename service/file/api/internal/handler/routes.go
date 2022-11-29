@@ -16,6 +16,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodPost,
 				Path:    "/api/user/upload-avatar",
 				Handler: UploadAvatarHandler(serverCtx),
+
 			},
 			{
 				Method:  http.MethodPost,
@@ -27,7 +28,18 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/api/scholar/file-identify",
 				Handler: UploadApplyHandler(serverCtx),
 			},
+			
+
 		},
-		//rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+	)
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/api/get-file/:name/:suffix",
+				Handler: GetFileHandler(serverCtx),
+			},
+		},
 	)
 }
