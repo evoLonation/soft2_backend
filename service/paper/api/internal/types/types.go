@@ -164,6 +164,16 @@ type ScholarBarchartResponse struct {
 	References   int `json:"references"`
 }
 
+type ScholarClaimRequest struct {
+	PaperId   string `json:"paper_id"`
+	ScholarId string `json:"scholar_id"`
+}
+
+type ScholarClaimResponse struct {
+	Code      int    `json:"code"`
+	ScholarId string `json:"scholar_id"`
+}
+
 type MovePaperRequest struct {
 	PaperId  string `json:"paper_id"`
 	OwnerId  string `json:"owner_id"`
