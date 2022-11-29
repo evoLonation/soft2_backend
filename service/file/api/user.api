@@ -1,19 +1,11 @@
 syntax = "v1"
 
 type (
-	UploadAvatarReq {
-	}
-	UploadAvatarRes {
-	}
 	UploadHelpReq {
 		RequestId int64 `json:"request_id"`
 	}
-	UploadHelpRes {
-	}
 	UploadApplyReq {
-		ApplyId int64 `json:"apply_id"`
-	}
-	UploadApplyRes {
+		ScholarId int64 `json:"scholar_id"`
 	}
 )
 

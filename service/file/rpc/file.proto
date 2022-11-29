@@ -5,19 +5,29 @@ package file;
 option go_package = "./file";
 
 message UserIdReq{
+  int64 id = 1;
+}
+
+message ScholarIdReq{
   string id = 1;
 }
-message UrlReply{
-  string url = 1;
-}
+
 message HelpIdReq{
   int64 id = 1;
 }
-message ScholarApplyReq{
+
+message ApplyIdReq{
   int64 id = 1;
 }
+
+message UrlReply{
+  string url = 1;
+}
+
+
 service file {
-  rpc getAvatar(UserIdReq) returns(UrlReply);
-  rpc getHelpFile(UserIdReq) returns(UrlReply);
-  rpc getApplyFile(UserIdReq) returns(UrlReply);
+  rpc getUserAvatar(UserIdReq) returns(UrlReply);
+  rpc getScholarAvatar(ScholarIdReq) returns(UrlReply);
+  rpc getHelpFile(ApplyIdReq) returns(UrlReply);
+  rpc getApplyFile(HelpIdReq) returns(UrlReply);
 }

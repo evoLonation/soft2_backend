@@ -2,7 +2,17 @@ Name: user-api
 Host: 0.0.0.0
 Port: 8894
 Mysql:
-  DataSource: root:2002116yy@tcp(127.0.0.1:3309)/soft2_backend?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+  DataSource: root:DiamondPick@tcp(120.46.220.182:3306)/zzy?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
 Auth:
   AccessSecret: BUAADIAMONDPICK
   AccessExpire: 3600
+HelpRpc:
+  Etcd:
+    Hosts:
+      - 120.46.220.182:2379
+    Key: help.rpc
+ApplyRpc:
+  Etcd:
+    Hosts:
+      - 120.46.220.182:2379
+    Key: apply.rpc

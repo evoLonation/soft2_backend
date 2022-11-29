@@ -26,7 +26,7 @@ func NewGetJwtLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetJwtLogi
 
 func (l *GetJwtLogic) GetJwt(req *types.Request) (resp *types.Response, err error) {
 	token, err := common.GetJwt(req.UserId, l.svcCtx.Config.Auth.AccessSecret)
-	nickname, err := l.svcCtx.FileRpc.GetApplyFile(l.ctx, &file.UserIdReq{Id: "123"})
+	nickname, err := l.svcCtx.FileRpc.GetApplyFile(l.ctx, &file.HelpIdReq{Id: 123})
 	resp = &types.Response{Code: 0, Token: token, UserId: req.UserId, NickName: nickname.Url}
 	return
 }
