@@ -32,13 +32,7 @@ func NewScholarPapersLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Sch
 
 func (l *ScholarPapersLogic) ScholarPapers(req *types.ScholarPapersRequest) (resp *types.ScholarPapersResponse, err error) {
 	// todo: add your logic here and delete this line
-	log.Println(req.ScholarId)
-	log.Println(req.IsFirst)
-	log.Println(req.Year)
-	log.Println(req.TimeOrder)
-	log.Println(req.Start)
-	log.Println(req.End)
-	var buf bytes.Buffer
+	var authorBuf bytes.Buffer
 	query := map[string]interface{}{
 		"from": req.Start,
 		"size": req.End - req.Start,
@@ -48,11 +42,11 @@ func (l *ScholarPapersLogic) ScholarPapers(req *types.ScholarPapersRequest) (res
 			},
 		},
 	}
-	if err := json.NewEncoder(&buf).Encode(query); err != nil {
+	if err := json.NewEncoder(&authorBuf).Encode(query); err != nil {
 		log.Printf("Error encoding query: %s\n", err)
 	}
-	log.Println(buf.String())
-	res := database.SearchAuthor(buf)
+	log.Println(authorBuf.String())
+	res := database.SearchAuthor(authorBuf)
 
 	var papers Papers
 	pubs := res["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})["pubs"].([]interface{})
@@ -60,6 +54,7 @@ func (l *ScholarPapersLogic) ScholarPapers(req *types.ScholarPapersRequest) (res
 		if req.IsFirst && pub.(map[string]interface{})["r"] != 0 {
 			continue
 		}
+		var paperBuf bytes.Buffer
 		paperQuery := map[string]interface{}{
 			"query": map[string]interface{}{
 				"match": map[string]interface{}{
@@ -67,11 +62,11 @@ func (l *ScholarPapersLogic) ScholarPapers(req *types.ScholarPapersRequest) (res
 				},
 			},
 		}
-		if err := json.NewEncoder(&buf).Encode(paperQuery); err != nil {
+		if err := json.NewEncoder(&paperBuf).Encode(paperQuery); err != nil {
 			log.Printf("Error encoding query: %s\n", err)
 		}
-		log.Println(buf.String())
-		paperRes := database.SearchPaper(buf)
+		log.Println(paperBuf.String())
+		paperRes := database.SearchPaper(paperBuf)
 		paper := paperRes["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})
 		if req.Year != 0 && NilHandler(paper["year"], "int").(int) != req.Year {
 			continue

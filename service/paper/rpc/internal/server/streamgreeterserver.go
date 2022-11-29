@@ -5,14 +5,15 @@ package server
 
 import (
 	"context"
+
 	"soft2_backend/service/paper/rpc/internal/logic"
 	"soft2_backend/service/paper/rpc/internal/svc"
-	paper2 "soft2_backend/service/paper/rpc/types/paper"
+	"soft2_backend/service/paper/rpc/types/paper"
 )
 
 type StreamGreeterServer struct {
 	svcCtx *svc.ServiceContext
-	paper2.UnimplementedStreamGreeterServer
+	paper.UnimplementedStreamGreeterServer
 }
 
 func NewStreamGreeterServer(svcCtx *svc.ServiceContext) *StreamGreeterServer {
@@ -21,7 +22,12 @@ func NewStreamGreeterServer(svcCtx *svc.ServiceContext) *StreamGreeterServer {
 	}
 }
 
-func (s *StreamGreeterServer) CheckScholar(ctx context.Context, in *paper2.CheckScholarReq) (*paper2.CreateScholarReply, error) {
+func (s *StreamGreeterServer) CheckScholar(ctx context.Context, in *paper.CheckScholarReq) (*paper.CreateScholarReply, error) {
 	l := logic.NewCheckScholarLogic(ctx, s.svcCtx)
 	return l.CheckScholar(in)
+}
+
+func (s *StreamGreeterServer) MovePaper(ctx context.Context, in *paper.MovePaperReq) (*paper.MovePaperReply, error) {
+	l := logic.NewMovePaperLogic(ctx, s.svcCtx)
+	return l.MovePaper(in)
 }

@@ -5,18 +5,22 @@ package streamgreeter
 
 import (
 	"context"
-	paper2 "soft2_backend/service/paper/rpc/types/paper"
+
+	"soft2_backend/service/paper/rpc/types/paper"
 
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"
 )
 
 type (
-	CheckScholarReq    = paper2.CheckScholarReq
-	CreateScholarReply = paper2.CreateScholarReply
+	CheckScholarReq    = paper.CheckScholarReq
+	CreateScholarReply = paper.CreateScholarReply
+	MovePaperReply     = paper.MovePaperReply
+	MovePaperReq       = paper.MovePaperReq
 
 	StreamGreeter interface {
 		CheckScholar(ctx context.Context, in *CheckScholarReq, opts ...grpc.CallOption) (*CreateScholarReply, error)
+		MovePaper(ctx context.Context, in *MovePaperReq, opts ...grpc.CallOption) (*MovePaperReply, error)
 	}
 
 	defaultStreamGreeter struct {
@@ -31,6 +35,11 @@ func NewStreamGreeter(cli zrpc.Client) StreamGreeter {
 }
 
 func (m *defaultStreamGreeter) CheckScholar(ctx context.Context, in *CheckScholarReq, opts ...grpc.CallOption) (*CreateScholarReply, error) {
-	client := paper2.NewStreamGreeterClient(m.cli.Conn())
+	client := paper.NewStreamGreeterClient(m.cli.Conn())
 	return client.CheckScholar(ctx, in, opts...)
+}
+
+func (m *defaultStreamGreeter) MovePaper(ctx context.Context, in *MovePaperReq, opts ...grpc.CallOption) (*MovePaperReply, error) {
+	client := paper.NewStreamGreeterClient(m.cli.Conn())
+	return client.MovePaper(ctx, in, opts...)
 }

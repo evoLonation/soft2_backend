@@ -29,7 +29,7 @@ func NewScholarCooperationLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 
 func (l *ScholarCooperationLogic) ScholarCooperation(req *types.ScholarCooperationRequest) (resp *types.ScholarCooperationResponse, err error) {
 	// todo: add your logic here and delete this line
-	var buf bytes.Buffer
+	var authorBuf bytes.Buffer
 	query := map[string]interface{}{
 		"query": map[string]interface{}{
 			"match": map[string]interface{}{
@@ -37,11 +37,11 @@ func (l *ScholarCooperationLogic) ScholarCooperation(req *types.ScholarCooperati
 			},
 		},
 	}
-	if err := json.NewEncoder(&buf).Encode(query); err != nil {
+	if err := json.NewEncoder(&authorBuf).Encode(query); err != nil {
 		log.Printf("Error encoding query: %s\n", err)
 	}
-	log.Println(buf.String())
-	res := database.SearchAuthor(buf)
+	log.Println(authorBuf.String())
+	res := database.SearchAuthor(authorBuf)
 
 	source := res["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})
 	pubs := source["pubs"].([]interface{})
@@ -49,14 +49,15 @@ func (l *ScholarCooperationLogic) ScholarCooperation(req *types.ScholarCooperati
 	for _, pub := range pubs {
 		pubIds = append(pubIds, pub.(map[string]interface{})["i"].(string))
 	}
+	var paperBuf bytes.Buffer
 	mget := map[string]interface{}{
 		"ids": pubIds,
 	}
-	if err := json.NewEncoder(&buf).Encode(mget); err != nil {
+	if err := json.NewEncoder(&paperBuf).Encode(mget); err != nil {
 		log.Printf("Error encoding query: %s\n", err)
 	}
-	log.Println(buf.String())
-	res = database.MgetPaper(buf)
+	log.Println(paperBuf.String())
+	res = database.MgetPaper(paperBuf)
 
 	papers := res["docs"].([]interface{})
 	coopList := make(map[string]types.CoopJSON)
@@ -73,6 +74,7 @@ func (l *ScholarCooperationLogic) ScholarCooperation(req *types.ScholarCooperati
 					Name:      author.(map[string]interface{})["name"].(string),
 					Time:      1,
 				}
+				var coopBuf bytes.Buffer
 				authorQuery := map[string]interface{}{
 					"query": map[string]interface{}{
 						"match": map[string]interface{}{
@@ -80,11 +82,11 @@ func (l *ScholarCooperationLogic) ScholarCooperation(req *types.ScholarCooperati
 						},
 					},
 				}
-				if err := json.NewEncoder(&buf).Encode(authorQuery); err != nil {
+				if err := json.NewEncoder(&coopBuf).Encode(authorQuery); err != nil {
 					log.Printf("Error encoding query: %s\n", err)
 				}
-				log.Println(buf.String())
-				res = database.SearchAuthor(buf)
+				log.Println(coopBuf.String())
+				res = database.SearchAuthor(coopBuf)
 				source := res["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})
 				coopJSON.Institution = source["orgs"].([]interface{})[0].(string)
 				coopList[author.(map[string]interface{})["id"].(string)] = coopJSON

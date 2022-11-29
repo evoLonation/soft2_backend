@@ -29,7 +29,7 @@ func NewScholarBasicLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Scho
 
 func (l *ScholarBasicLogic) ScholarBasic(req *types.ScholarBasicRequest) (resp *types.ScholarBasicResponse, err error) {
 	// todo: add your logic here and delete this line
-	var buf bytes.Buffer
+	var authorBuf bytes.Buffer
 	query := map[string]interface{}{
 		"query": map[string]interface{}{
 			"match": map[string]interface{}{
@@ -37,11 +37,11 @@ func (l *ScholarBasicLogic) ScholarBasic(req *types.ScholarBasicRequest) (resp *
 			},
 		},
 	}
-	if err := json.NewEncoder(&buf).Encode(query); err != nil {
+	if err := json.NewEncoder(&authorBuf).Encode(query); err != nil {
 		log.Printf("Error encoding query: %s\n", err)
 	}
-	log.Println(buf.String())
-	res := database.SearchAuthor(buf)
+	log.Println(authorBuf.String())
+	res := database.SearchAuthor(authorBuf)
 
 	source := res["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})
 	var tags []types.TagJSON
@@ -57,6 +57,7 @@ func (l *ScholarBasicLogic) ScholarBasic(req *types.ScholarBasicRequest) (resp *
 	}
 	var years []int
 	for _, pub := range source["pubs"].([]interface{}) {
+		var paperBuf bytes.Buffer
 		query = map[string]interface{}{
 			"query": map[string]interface{}{
 				"match": map[string]interface{}{
@@ -64,11 +65,11 @@ func (l *ScholarBasicLogic) ScholarBasic(req *types.ScholarBasicRequest) (resp *
 				},
 			},
 		}
-		if err := json.NewEncoder(&buf).Encode(query); err != nil {
+		if err := json.NewEncoder(&paperBuf).Encode(query); err != nil {
 			log.Printf("Error encoding query: %s\n", err)
 		}
-		log.Println(buf.String())
-		res := database.SearchPaper(buf)
+		log.Println(paperBuf.String())
+		res := database.SearchPaper(paperBuf)
 		source := res["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})
 		if NilHandler(source["year"], "int") != nil {
 			years = append(years, NilHandler(source["year"], "int").(int))

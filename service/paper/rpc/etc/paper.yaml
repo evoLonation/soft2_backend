@@ -2,7 +2,7 @@ Name: paper.rpc
 ListenOn: 0.0.0.0:8085
 Etcd:
   Hosts:
-  - etcd:2379
+  - 120.46.220.182:2379
   Key: paper.rpc
 elasticsearch:
   host:

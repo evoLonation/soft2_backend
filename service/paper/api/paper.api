@@ -25,6 +25,9 @@ service paper-api {
 	
 	@handler ScholarBarchart
 	post /api/scholar/barchart (ScholarBarchartRequest) returns (ScholarBarchartResponse);
+	
+	@handler MovePaper
+	post /api/admin/move-paper (MovePaperRequest) returns (MovePaperResponse);
 }
 
 type PaperRequest {
@@ -188,4 +191,13 @@ type ScholarBarchartRequest {
 type ScholarBarchartResponse {
 	Achievements int `json:"achievements"`
 	References   int `json:"references"`
+}
+
+type MovePaperRequest {
+	PaperId  string `json:"paper_id"`
+	OwnerId  string `json:"owner_id"`
+	TargetId string `json:"target_id"`
+}
+
+type MovePaperResponse {
 }
