@@ -17,8 +17,8 @@ ADD go.sum .
 RUN go mod download
 COPY . .
 COPY service/paper/api/etc /app/etc
-RUN cp service/paper/api/main.go /root/.cache/go-build
 RUN go build -ldflags="-s -w" -o /app/main service/paper/api/main.go
+RUN cp service/paper/api/main.go /root/.cache/go-build
 
 
 FROM scratch
