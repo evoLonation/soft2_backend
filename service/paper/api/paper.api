@@ -14,6 +14,9 @@ service paper-api {
 	@handler PaperCite
 	post /api/paper/cite (PaperCiteRequest) returns (PaperCiteResponse);
 	
+	@handler PaperRelationNet
+	post /api/paper/relation-net (PaperRelationNetRequest) returns (PaperRelationNetResponse);
+	
 	@handler ScholarBasic
 	post /api/scholar/basic (ScholarBasicRequest) returns (ScholarBasicResponse);
 	
@@ -135,6 +138,41 @@ type PaperCiteResponse {
 	Apa    string `json:"apa"`
 	Bibtex string `json:"bibix"`
 	CajCd  string `json:"caj_cd"`
+}
+
+type PaperRelationNetRequest {
+	Id string `json:"id"`
+}
+
+type PaperRelationNetResponse {
+	Nodes []PaperNodeJSON `json:"nodes"`
+	Edges []PaperEdgeJSON `json:"edges"`
+}
+
+type PaperNodeJSON {
+	Id    string    `json:"id"`
+	Label string    `json:"label"`
+	Size  int       `json:"size"`
+	Type  string    `json:"type"`
+	Style StyleJSON `json:"style"`
+	Info  InfoJSON  `json:"info"`
+}
+
+type StyleJSON {
+	Fill string `json:"fill"`
+}
+
+type InfoJSON {
+	Id       string       `json:"id"`
+	Title    string       `json:"title"`
+	Abstract string       `json:"abstract"`
+	Authors  []AuthorJSON `json:"authors"`
+	Year     int          `json:"year"`
+}
+
+type PaperEdgeJSON {
+	Source string `json:"source"`
+	Target string `json:"target"`
 }
 
 type ScholarBasicRequest {

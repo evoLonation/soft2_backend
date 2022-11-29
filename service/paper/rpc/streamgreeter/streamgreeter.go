@@ -15,12 +15,15 @@ import (
 type (
 	CheckScholarReq    = paper.CheckScholarReq
 	CreateScholarReply = paper.CreateScholarReply
+	GetPaperNameReply  = paper.GetPaperNameReply
+	GetPaperNameReq    = paper.GetPaperNameReq
 	MovePaperReply     = paper.MovePaperReply
 	MovePaperReq       = paper.MovePaperReq
 
 	StreamGreeter interface {
 		CheckScholar(ctx context.Context, in *CheckScholarReq, opts ...grpc.CallOption) (*CreateScholarReply, error)
 		MovePaper(ctx context.Context, in *MovePaperReq, opts ...grpc.CallOption) (*MovePaperReply, error)
+		GetPaperName(ctx context.Context, in *GetPaperNameReq, opts ...grpc.CallOption) (*GetPaperNameReply, error)
 	}
 
 	defaultStreamGreeter struct {
@@ -42,4 +45,9 @@ func (m *defaultStreamGreeter) CheckScholar(ctx context.Context, in *CheckSchola
 func (m *defaultStreamGreeter) MovePaper(ctx context.Context, in *MovePaperReq, opts ...grpc.CallOption) (*MovePaperReply, error) {
 	client := paper.NewStreamGreeterClient(m.cli.Conn())
 	return client.MovePaper(ctx, in, opts...)
+}
+
+func (m *defaultStreamGreeter) GetPaperName(ctx context.Context, in *GetPaperNameReq, opts ...grpc.CallOption) (*GetPaperNameReply, error) {
+	client := paper.NewStreamGreeterClient(m.cli.Conn())
+	return client.GetPaperName(ctx, in, opts...)
 }
