@@ -29,7 +29,7 @@ type (
 	commentModel interface {
 		Insert(ctx context.Context, data *Comment) (sql.Result, error)
 		FindOne(ctx context.Context, commentId int64) (*Comment, error)
-		FindCommentId(ctx context.Context, userId int64, paperId int64) (*Comment, error)
+		FindByPaperId(ctx context.Context, paperId int64) ([]Comment, error)
 		Update(ctx context.Context, data *Comment) error
 		Delete(ctx context.Context, commentId int64) error
 	}
@@ -40,12 +40,13 @@ type (
 	}
 
 	Comment struct {
-		CommentId  int64     `db:"comment_id"`
-		UserId     int64     `db:"user_id"`
-		PaperId    int64     `db:"paper_id"`
-		Content    string    `db:"content"`
-		Likes      int64     `db:"likes"`
-		CreateTime time.Time `db:"create_time"`
+		CommentId    int64     `db:"comment_id"`
+		UserId       int64     `db:"user_id"`
+		UserNickname string    `db:"user_nickname"`
+		PaperId      int64     `db:"paper_id"`
+		Content      string    `db:"content"`
+		Likes        int64     `db:"likes"`
+		CreateTime   time.Time `db:"create_time"`
 	}
 )
 
@@ -81,27 +82,27 @@ func (m *defaultCommentModel) FindOne(ctx context.Context, commentId int64) (*Co
 		return nil, err
 	}
 }
-func (m *defaultCommentModel) FindCommentId(ctx context.Context, userId int64, paperId int64) (*Comment, error) {
-	commentCommentIdKey := fmt.Sprintf("%s%v%v", cacheCommentCommentIdPrefix, userId, paperId)
-	var resp Comment
-	err := m.QueryRowCtx(ctx, &resp, commentCommentIdKey, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
-		query := fmt.Sprintf("select %s from %s where `user_id` = ? and `paperId`=? limit 2", commentRows, m.table)
-		return conn.QueryRowCtx(ctx, v, query, userId, paperId)
-	})
+
+func (m *defaultCommentModel) FindByPaperId(ctx context.Context, paperId int64) ([]Comment, error) {
+	var resp []Comment
+	var query string
+	query = fmt.Sprintf("select %s from %s where paperId=%d", commentRows, m.table, paperId)
+	err := m.CachedConn.QueryRowsNoCacheCtx(ctx, &resp, query)
 	switch err {
 	case nil:
-		return &resp, nil
+		return resp, nil
 	case sqlc.ErrNotFound:
 		return nil, ErrNotFound
 	default:
 		return nil, err
 	}
 }
+
 func (m *defaultCommentModel) Insert(ctx context.Context, data *Comment) (sql.Result, error) {
 	commentCommentIdKey := fmt.Sprintf("%s%v", cacheCommentCommentIdPrefix, data.CommentId)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?)", m.table, commentRowsExpectAutoSet)
-		return conn.ExecCtx(ctx, query, data.UserId, data.PaperId, data.Content, data.Likes)
+		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?)", m.table, commentRowsExpectAutoSet)
+		return conn.ExecCtx(ctx, query, data.UserId, data.UserNickname, data.PaperId, data.Content, data.Likes)
 	}, commentCommentIdKey)
 	return ret, err
 }
@@ -110,7 +111,7 @@ func (m *defaultCommentModel) Update(ctx context.Context, data *Comment) error {
 	commentCommentIdKey := fmt.Sprintf("%s%v", cacheCommentCommentIdPrefix, data.CommentId)
 	_, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where `comment_id` = ?", m.table, commentRowsWithPlaceHolder)
-		return conn.ExecCtx(ctx, query, data.UserId, data.PaperId, data.Content, data.Likes, data.CommentId)
+		return conn.ExecCtx(ctx, query, data.UserId, data.UserNickname, data.PaperId, data.Content, data.Likes, data.CommentId)
 	}, commentCommentIdKey)
 	return err
 }

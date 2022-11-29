@@ -88,3 +88,63 @@ type CancelLikeRequest struct {
 type CancelLikeResponse struct {
 	Code int64 `json:"code"`
 }
+
+type SubscribeRequest struct {
+	UserId    int64 `json:"user_id"`
+	ScholarId int64 `json:"scholar_id"`
+}
+
+type SubscribeResponse struct {
+	Code int64 `json:"code"` //0订阅成功 1订阅收藏过
+}
+
+type DeleteSubscribeRequest struct {
+	UserId    int64 `json:"user_id"`
+	ScholarId int64 `json:"scholar_id"`
+}
+
+type DeleteSubscribeResponse struct {
+	Code int64 `json:"code"` //0取消成功 1没有订阅过
+}
+
+type LaunchGrievanceRequest struct {
+	PaperId   int64 `json:"paper_id"`
+	ScholarId int64 `json:"scholar_id"` //被申诉学者id
+}
+
+type LaunchGrievanceResponse struct {
+}
+
+type GrievanceAcceptRequest struct {
+	GrievanceId int64 `json:"grievance_id"`
+}
+
+type GrievanceAcceptResponse struct {
+}
+
+type GrievanceRefuseRequest struct {
+	GrievanceId int64 `json:"grievance_id"`
+}
+
+type GrievanceRefuseResponse struct {
+}
+
+type GetCommentRequest struct {
+	Start   int64 `json:"start"`
+	End     int64 `json:"end"`
+	PaperId int64 `json:"paper_id"`
+}
+
+type GetCommentReply struct {
+	Comments []CommentReply `json:"requests"`
+}
+
+type CommentReply struct {
+	CommentId int64  `json:"comment_id"`
+	UserName  string `json:"username"`
+	UserId    int64  `json:"user_id"`
+	Content   string `json:"content"`
+	Date      string `json:"date"`
+	Likes     int64  `json:"likes"`
+	Liked     int64  `json:"liked"`
+}

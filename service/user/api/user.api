@@ -88,15 +88,71 @@ type (
 		Code int64 `json:"code"`
 	}
 	//取消点赞
-
+	//订阅
+	SubscribeRequest {
+		UserId    int64 `json:"user_id"`
+		ScholarId int64 `json:"scholar_id"`
+	}
+	SubscribeResponse {
+		Code int64 `json:"code"` //0订阅成功 1订阅收藏过
+	}
+	//订阅
+	//取消订阅
+	DeleteSubscribeRequest {
+		UserId    int64 `json:"user_id"`
+		ScholarId int64 `json:"scholar_id"`
+	}
+	DeleteSubscribeResponse {
+		Code int64 `json:"code"` //0取消成功 1没有订阅过
+	}
+	//取消订阅
+	//发起误认领申诉
+	LaunchGrievanceRequest {
+		PaperId   int64 `json:"paper_id"`
+		ScholarId int64 `json:"scholar_id"` //被申诉学者id
+	}
+	LaunchGrievanceResponse {
+	}
+	//发起误认领申诉
+	//同意误认领申诉
+	GrievanceAcceptRequest {
+		GrievanceId int64 `json:"grievance_id"`
+	}
+	GrievanceAcceptResponse {
+	}
+	//同意误认领申诉
+	//拒绝误认领申诉
+	GrievanceRefuseRequest {
+		GrievanceId int64 `json:"grievance_id"`
+	}
+	GrievanceRefuseResponse {
+	}
+	//拒绝误认领申诉
+	GetCommentRequest {
+		Start   int64 `json:"start"`
+		End     int64 `json:"end"`
+		PaperId int64 `json:"paper_id"`
+	}
+	GetCommentReply {
+		Comments []CommentReply `json:"requests"`
+	}
 )
-
+type CommentReply {
+	CommentId int64  `json:"comment_id"`
+	UserName  string `json:"username"`
+	UserId    int64  `json:"user_id"`
+	Content   string `json:"content"`
+	Date      string `json:"date"`
+	Likes     int64  `json:"likes"`
+	Liked     int64  `json:"liked"`
+}
 service User {
 	@handler Login
 	post /api/user/login(LoginRequest) returns (LoginResponse)
 	@handler Register
 	post /api/user/register(RegisterRequest) returns (RegisterResponse)
-	
+	@handler GetComment
+	post /api/paper/get-comment (GetCommentRequest) returns (GetCommentReply)
 }
 
 @server(
@@ -117,5 +173,14 @@ service User {
 	post /api/paper/comment/like(LikeCommentRequest) returns(LikeCommentResponse)
 	@handler CancelLike
 	post /api/paper/comment/cancel(CancelLikeRequest) returns(CancelLikeResponse)
-	
+	@handler Subscribe
+	post /api/scholar/subscribe(SubscribeRequest) returns(SubscribeResponse)
+	@handler DeleteSubscribe
+	post /api/scholar/delete-subscribe(DeleteSubscribeRequest) returns(DeleteSubscribeResponse)
+	@handler LaunchGrievance
+	post /api/paper/grievance(LaunchGrievanceRequest) returns(LaunchGrievanceResponse)
+	@handler GrievanceAccept
+	post /api/grievance/accept(GrievanceAcceptRequest) returns(GrievanceAcceptResponse)
+	@handler GrievanceRefuse
+	post /api/grievance/refuse(GrievanceRefuseRequest) returns(GrievanceRefuseResponse)
 }
