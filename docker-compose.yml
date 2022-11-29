@@ -173,7 +173,7 @@ services:
     stdin_open: true
     tty: true
     volumes:
-      - go-cache:/root/.cache/go-build
+      - go-cache:/app/cache
     networks:
       - backend
     restart: always
@@ -188,7 +188,7 @@ services:
     stdin_open: true
     tty: true
     volumes:
-      - go-cache:/root/.cache/go-build
+      - go-cache:/app/cache
     networks:
       - backend
     restart: always
