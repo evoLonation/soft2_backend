@@ -6,3 +6,8 @@ Etcd:
   Hosts:
   - 120.46.220.182:2379
   Key: file.rpc
+ApplyRpcConf:
+  Etcd:
+    Hosts:
+      - 120.46.220.182:2379
+    Key: apply.rpc

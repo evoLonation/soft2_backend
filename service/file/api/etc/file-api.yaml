@@ -6,12 +6,12 @@ Mysql:
 Auth:
   AccessSecret: BUAADIAMONDPICK
   AccessExpire: 3600
-HelpRpc:
+HelpRpcConf:
   Etcd:
     Hosts:
       - 120.46.220.182:2379
     Key: help.rpc
-ApplyRpc:
+ApplyRpcConf:
   Etcd:
     Hosts:
       - 120.46.220.182:2379
