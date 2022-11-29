@@ -17,8 +17,8 @@ import (
 var (
 	literatureHelpFieldNames          = builder.RawFieldNames(&LiteratureHelp{})
 	literatureHelpRows                = strings.Join(literatureHelpFieldNames, ",")
-	literatureHelpRowsExpectAutoSet   = strings.Join(stringx.Remove(literatureHelpFieldNames, "`id`", "`updated_at`", "`update_time`", "`create_at`", "`created_at`", "`create_time`", "`update_at`"), ",")
-	literatureHelpRowsWithPlaceHolder = strings.Join(stringx.Remove(literatureHelpFieldNames, "`id`", "`updated_at`", "`update_time`", "`create_at`", "`created_at`", "`create_time`", "`update_at`"), "=?,") + "=?"
+	literatureHelpRowsExpectAutoSet   = strings.Join(stringx.Remove(literatureHelpFieldNames, "`id`", "`create_time`", "`update_at`", "`updated_at`", "`update_time`", "`create_at`", "`created_at`"), ",")
+	literatureHelpRowsWithPlaceHolder = strings.Join(stringx.Remove(literatureHelpFieldNames, "`id`", "`create_time`", "`update_at`", "`updated_at`", "`update_time`", "`create_at`", "`created_at`"), "=?,") + "=?"
 )
 
 type (
