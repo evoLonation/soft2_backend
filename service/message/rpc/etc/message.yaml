@@ -5,4 +5,4 @@ Etcd:
   - 0.0.0.0:2379
   Key: message.rpc
 Mysql:
-  DataSource: root:@DiamondPick@tcp(120.46.220.182:3306)/wyx?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+  DataSource: root:DiamondPick@tcp(120.46.220.182:3306)/wyx?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
