@@ -73,3 +73,39 @@ func MgetPaper(query bytes.Buffer) map[string]interface{} {
 	}
 	return res
 }
+
+func UpdatePaper(query bytes.Buffer, id string) map[string]interface{} {
+	var res map[string]interface{}
+	resp, err := es.Update(
+		"papers",
+		id,
+		io.Reader(&query),
+		es.Update.WithContext(context.Background()),
+		es.Update.WithPretty(),
+	)
+	if err != nil {
+		log.Printf("Error getting response: %s\n", err)
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&res); err != nil {
+		log.Printf("Error parsing the response body: %s\n", err)
+	}
+	return res
+}
+
+func UpdateAuthor(query bytes.Buffer, id string) map[string]interface{} {
+	var res map[string]interface{}
+	resp, err := es.Update(
+		"authors",
+		id,
+		io.Reader(&query),
+		es.Update.WithContext(context.Background()),
+		es.Update.WithPretty(),
+	)
+	if err != nil {
+		log.Printf("Error getting response: %s\n", err)
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&res); err != nil {
+		log.Printf("Error parsing the response body: %s\n", err)
+	}
+	return res
+}
