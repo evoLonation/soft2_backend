@@ -3,7 +3,8 @@ version: '3.5'
 networks:
   backend:
     driver: bridge
-
+volumes:
+  go-cache:
 # 服务容器配置
 services:
 #  etcd:                                  # 自定义容器名称
@@ -173,6 +174,8 @@ services:
       - "8890:8890"  # rpc或者api服务的自己的端口
     stdin_open: true
     tty: true
+    volumes:
+      - go-cache:/root/.cache/go-build
     networks:
       - backend
     restart: always
@@ -186,6 +189,8 @@ services:
       - "8082:8082"  # rpc或者api服务的自己的端口
     stdin_open: true
     tty: true
+    volumes:
+      - go-cache:/root/.cache/go-build
     networks:
       - backend
     restart: always
