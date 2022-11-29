@@ -57,6 +57,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/api/scholar/barchart",
 				Handler: ScholarBarchartHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/api/admin/move-paper",
+				Handler: MovePaperHandler(serverCtx),
+			},
 		},
 	)
 }
