@@ -3,6 +3,11 @@ syntax = "proto3";
 package paper;
 option go_package = "./paper";
 
+service StreamGreeter {
+  rpc CheckScholar(CheckScholarReq) returns (CreateScholarReply);
+  rpc MovePaper(MovePaperReq) returns (MovePaperReply);
+}
+
 message CheckScholarReq {
   int64 scholarId = 1;
 }
@@ -11,6 +16,11 @@ message CreateScholarReply {
   string institution = 2;
 }
 
-service StreamGreeter {
-  rpc CheckScholar(CheckScholarReq) returns (CreateScholarReply);
+message MovePaperReq {
+  string paperId = 1;
+  string ownerId = 2;
+  string targetId = 3;
+}
+
+message MovePaperReply {
 }
