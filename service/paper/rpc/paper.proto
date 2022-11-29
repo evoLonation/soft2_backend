@@ -6,6 +6,7 @@ option go_package = "./paper";
 service StreamGreeter {
   rpc CheckScholar(CheckScholarReq) returns (CreateScholarReply);
   rpc MovePaper(MovePaperReq) returns (MovePaperReply);
+  rpc GetPaperName(GetPaperNameReq) returns (GetPaperNameReply);
 }
 
 message CheckScholarReq {
@@ -23,4 +24,12 @@ message MovePaperReq {
 }
 
 message MovePaperReply {
+}
+
+message GetPaperNameReq {
+  string paperId = 1;
+}
+
+message GetPaperNameReply {
+  string paperName = 1;
 }

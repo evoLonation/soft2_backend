@@ -105,6 +105,41 @@ type PaperCiteResponse struct {
 	CajCd  string `json:"caj_cd"`
 }
 
+type PaperRelationNetRequest struct {
+	Id string `json:"id"`
+}
+
+type PaperRelationNetResponse struct {
+	Nodes []PaperNodeJSON `json:"nodes"`
+	Edges []PaperEdgeJSON `json:"edges"`
+}
+
+type PaperNodeJSON struct {
+	Id    string    `json:"id"`
+	Label string    `json:"label"`
+	Size  int       `json:"size"`
+	Type  string    `json:"type"`
+	Style StyleJSON `json:"style"`
+	Info  InfoJSON  `json:"info"`
+}
+
+type StyleJSON struct {
+	Fill string `json:"fill"`
+}
+
+type InfoJSON struct {
+	Id       string       `json:"id"`
+	Title    string       `json:"title"`
+	Abstract string       `json:"abstract"`
+	Authors  []AuthorJSON `json:"authors"`
+	Year     int          `json:"year"`
+}
+
+type PaperEdgeJSON struct {
+	Source string `json:"source"`
+	Target string `json:"target"`
+}
+
 type ScholarBasicRequest struct {
 	ScholarId string `json:"scholar_id"`
 }

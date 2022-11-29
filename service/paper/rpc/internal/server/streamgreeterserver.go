@@ -31,3 +31,8 @@ func (s *StreamGreeterServer) MovePaper(ctx context.Context, in *paper.MovePaper
 	l := logic.NewMovePaperLogic(ctx, s.svcCtx)
 	return l.MovePaper(in)
 }
+
+func (s *StreamGreeterServer) GetPaperName(ctx context.Context, in *paper.GetPaperNameReq) (*paper.GetPaperNameReply, error) {
+	l := logic.NewGetPaperNameLogic(ctx, s.svcCtx)
+	return l.GetPaperName(in)
+}
