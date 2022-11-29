@@ -2,8 +2,8 @@ package svc
 
 import (
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
-	"go-zero-share/message/api/internal/config"
-	"go-zero-share/message/model"
+	"soft2_backend/service/message/api/internal/config"
+	"soft2_backend/service/message/model"
 )
 
 type ServiceContext struct {

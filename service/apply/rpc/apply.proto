@@ -23,7 +23,17 @@ message CheckIdentifyReply {
   int64 scholarId = 2;
 }
 
+// 查看学者的认证用户
+message CheckUserReq {
+  int64 scholarId = 1;
+}
+message CheckUserReply {
+  bool isVerified=1;
+  int64 userId = 2;
+}
+
 service Apply {
   rpc CreateIdentify(CreateIdentifyReq) returns(CreateIdentifyReply);
   rpc CheckIdentify(CheckIdentifyReq) returns(CheckIdentifyReply);
+  rpc CheckUser(CheckUserReq) returns(CheckUserReply);
 }

@@ -1,10 +1,10 @@
 package handler
 
 import (
-	"go-zero-share/apply/api/internal/logic"
-	"go-zero-share/apply/api/internal/svc"
-	"go-zero-share/apply/api/internal/types"
 	"net/http"
+	"soft2_backend/service/apply/api/internal/logic"
+	"soft2_backend/service/apply/api/internal/svc"
+	"soft2_backend/service/apply/api/internal/types"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
 )

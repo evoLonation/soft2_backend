@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
-	"go-zero-share/apply/api/internal/logic"
-	"go-zero-share/apply/api/internal/svc"
-	"go-zero-share/apply/api/internal/types"
+	"soft2_backend/service/apply/api/internal/logic"
+	"soft2_backend/service/apply/api/internal/svc"
+	"soft2_backend/service/apply/api/internal/types"
 )
 
 func CheckUserHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
