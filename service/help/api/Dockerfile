@@ -15,7 +15,7 @@ ADD go.sum .
 RUN go mod download
 COPY . .
 COPY api/etc /app/etc
-RUN go build -ldflags="-s -w" -o /app/main api/main.go
+RUN go build -ldflags="-s -w" -o /app/main api/help.go
 
 
 FROM scratch
