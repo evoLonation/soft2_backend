@@ -17,7 +17,6 @@ RUN go mod download
 COPY . .
 COPY service/file/rpc/etc /app/etc
 RUN go build -ldflags="-s -w" -o /app/file service/file/rpc/main.go
-RUN cp service/file/rpc/main.go /root/.cache/go-build
 
 
 FROM scratch

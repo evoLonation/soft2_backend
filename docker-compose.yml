@@ -34,136 +34,134 @@ services:
 #      - backend
 #    restart: always                      # 指定容器退出后的重启策略为始终重启
 
-  file-api: # 自定义容器名称
-    build:
-      # context: service/file                  # 指定构建使用的 Dockerfile 文件
-      dockerfile: service/file/api/Dockerfile
-    environment: # 设置环境变量
-      - TZ=Asia/Shanghai
-    privileged: true
-    ports: # 设置端口映射
-      - "8894:8894"  # 课件服务api端口
-    stdin_open: true                     # 打开标准输入，可以接受外部输入
-    tty: true
-    volumes:
-      - ./localfile:/app/localfile
-    networks:
-      - backend
-    restart: always                      # 指定容器退出后的重启策略为始终重启
-
-  file-rpc: # 自定义容器名称
-    build:
-      # context: service/file                  # 指定构建使用的 Dockerfile 文件
-      dockerfile: service/file/rpc/Dockerfile
-    environment: # 设置环境变量
-      - TZ=Asia/Shanghai
-    privileged: true
-    ports: # 设置端口映射
-      - "8086:8086"  # 课件服务api端口
-    stdin_open: true                     # 打开标准输入，可以接受外部输入
-    tty: true
-    volumes:
-      - ./localfile:/app/localfile
-    networks:
-      - backend
-    restart: always                      # 指定容器退出后的重启策略为始终重启
-
-  help-api: # {服务名称}.rpc或者 {服务名称}.api
-    build:
-      dockerfile: service/help/api/Dockerfile # service/{服务名称}/{rpc|api}/Dockerfile
-    environment:
-      - TZ=Asia/Shanghai
-    privileged: true
-    ports:
-      - "8892:8892"  # rpc或者api服务的自己的端口
-    stdin_open: true
-    tty: true
-    networks:
-      - backend
-    restart: always
-
-  help-rpc: # {服务名称}.rpc或者 {服务名称}.api
-    build:
-      dockerfile: service/help/rpc/Dockerfile # service/{服务名称}/{rpc|api}/Dockerfile
-    environment:
-      - TZ=Asia/Shanghai
-    privileged: true
-    ports:
-      - "8084:8084"  # rpc或者api服务的自己的端口
-    stdin_open: true
-    tty: true
-    networks:
-      - backend
-    restart: always
-
-  user-api: # {服务名称}.rpc或者 {服务名称}.api
-    build:
-      dockerfile: service/user/api/Dockerfile # service/{服务名称}/{rpc|api}/Dockerfile
-    environment:
-      - TZ=Asia/Shanghai
-    privileged: true
-    ports:
-      - "8889:8889"  # rpc或者api服务的自己的端口
-    stdin_open: true
-    tty: true
-    networks:
-      - backend
-    restart: always
-
-  paper-rpc: # {服务名称}.rpc或者 {服务名称}.api
-    build:
-      dockerfile: service/paper/rpc/Dockerfile # service/{服务名称}/{rpc|api}/Dockerfile
-    environment:
-      - TZ=Asia/Shanghai
-    privileged: true
-    ports:
-      - "8085:8085"  # rpc或者api服务的自己的端口
-    stdin_open: true
-    tty: true
-    networks:
-      - backend
-    restart: always
-
-  paper-api: # {服务名称}.rpc或者 {服务名称}.api
-    build:
-      dockerfile: service/paper/api/Dockerfile # service/{服务名称}/{rpc|api}/Dockerfile
-    environment:
-      - TZ=Asia/Shanghai
-    privileged: true
-    ports:
-      - "8893:8893"  # rpc或者api服务的自己的端口
-    stdin_open: true
-    tty: true
-    networks:
-      - backend
-    restart: always
-
-  apply-api: # {服务名称}.rpc或者 {服务名称}.api
-    build:
-      dockerfile: service/apply/api/Dockerfile # service/{服务名称}/{rpc|api}/Dockerfile
-    environment:
-      - TZ=Asia/Shanghai
-    privileged: true
-    ports:
-      - "8891:8891"  # rpc或者api服务的自己的端口
-    stdin_open: true
-    tty: true
-    networks:
-      - backend
-    restart: always
-  apply-rpc: # {服务名称}.rpc或者 {服务名称}.api
-    build:
-      dockerfile: service/apply/rpc/Dockerfile # service/{服务名称}/{rpc|api}/Dockerfile
-    environment:
-      - TZ=Asia/Shanghai
-    privileged: true
-    ports:
-      - "8083:8083"  # rpc或者api服务的自己的端口
-    stdin_open: true
-    tty: true
-    networks:
-      - backend
-    restart: always
+#  file-api: # 自定义容器名称
+#    build:
+#      dockerfile: service/file/api/Dockerfile
+#    environment: # 设置环境变量
+#      - TZ=Asia/Shanghai
+#    privileged: true
+#    ports: # 设置端口映射
+#      - "8894:8894"  # 课件服务api端口
+#    stdin_open: true                     # 打开标准输入，可以接受外部输入
+#    tty: true
+#    volumes:
+#      - ./localfile:/app/localfile
+#    networks:
+#      - backend
+#    restart: always                      # 指定容器退出后的重启策略为始终重启
+#
+#  file-rpc: # 自定义容器名称
+#    build:
+#      dockerfile: service/file/rpc/Dockerfile
+#    environment: # 设置环境变量
+#      - TZ=Asia/Shanghai
+#    privileged: true
+#    ports: # 设置端口映射
+#      - "8086:8086"  # 课件服务api端口
+#    stdin_open: true                     # 打开标准输入，可以接受外部输入
+#    tty: true
+#    volumes:
+#      - ./localfile:/app/localfile
+#    networks:
+#      - backend
+#    restart: always                      # 指定容器退出后的重启策略为始终重启
+#
+#  help-api: # {服务名称}.rpc或者 {服务名称}.api
+#    build:
+#      dockerfile: service/help/api/Dockerfile # service/{服务名称}/{rpc|api}/Dockerfile
+#    environment:
+#      - TZ=Asia/Shanghai
+#    privileged: true
+#    ports:
+#      - "8892:8892"  # rpc或者api服务的自己的端口
+#    stdin_open: true
+#    tty: true
+#    networks:
+#      - backend
+#    restart: always
+#
+#  help-rpc: # {服务名称}.rpc或者 {服务名称}.api
+#    build:
+#      dockerfile: service/help/rpc/Dockerfile # service/{服务名称}/{rpc|api}/Dockerfile
+#    environment:
+#      - TZ=Asia/Shanghai
+#    privileged: true
+#    ports:
+#      - "8084:8084"  # rpc或者api服务的自己的端口
+#    stdin_open: true
+#    tty: true
+#    networks:
+#      - backend
+#    restart: always
+#
+#  user-api: # {服务名称}.rpc或者 {服务名称}.api
+#    build:
+#      dockerfile: service/user/api/Dockerfile # service/{服务名称}/{rpc|api}/Dockerfile
+#    environment:
+#      - TZ=Asia/Shanghai
+#    privileged: true
+#    ports:
+#      - "8889:8889"  # rpc或者api服务的自己的端口
+#    stdin_open: true
+#    tty: true
+#    networks:
+#      - backend
+#    restart: always
+#
+#  paper-rpc: # {服务名称}.rpc或者 {服务名称}.api
+#    build:
+#      dockerfile: service/paper/rpc/Dockerfile # service/{服务名称}/{rpc|api}/Dockerfile
+#    environment:
+#      - TZ=Asia/Shanghai
+#    privileged: true
+#    ports:
+#      - "8085:8085"  # rpc或者api服务的自己的端口
+#    stdin_open: true
+#    tty: true
+#    networks:
+#      - backend
+#    restart: always
+#
+#  paper-api: # {服务名称}.rpc或者 {服务名称}.api
+#    build:
+#      dockerfile: service/paper/api/Dockerfile # service/{服务名称}/{rpc|api}/Dockerfile
+#    environment:
+#      - TZ=Asia/Shanghai
+#    privileged: true
+#    ports:
+#      - "8893:8893"  # rpc或者api服务的自己的端口
+#    stdin_open: true
+#    tty: true
+#    networks:
+#      - backend
+#    restart: always
+#
+#  apply-api: # {服务名称}.rpc或者 {服务名称}.api
+#    build:
+#      dockerfile: service/apply/api/Dockerfile # service/{服务名称}/{rpc|api}/Dockerfile
+#    environment:
+#      - TZ=Asia/Shanghai
+#    privileged: true
+#    ports:
+#      - "8891:8891"  # rpc或者api服务的自己的端口
+#    stdin_open: true
+#    tty: true
+#    networks:
+#      - backend
+#    restart: always
+#  apply-rpc: # {服务名称}.rpc或者 {服务名称}.api
+#    build:
+#      dockerfile: service/apply/rpc/Dockerfile # service/{服务名称}/{rpc|api}/Dockerfile
+#    environment:
+#      - TZ=Asia/Shanghai
+#    privileged: true
+#    ports:
+#      - "8083:8083"  # rpc或者api服务的自己的端口
+#    stdin_open: true
+#    tty: true
+#    networks:
+#      - backend
+#    restart: always
   message-api: # {服务名称}.rpc或者 {服务名称}.api
     build:
       dockerfile: service/message/api/Dockerfile # service/{服务名称}/{rpc|api}/Dockerfile
