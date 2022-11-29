@@ -6,3 +6,8 @@ Mysql:
 Auth:
   AccessSecret: BUAADIAMONDPICK
   AccessExpire: 3600
+FileRpc:
+  Etcd:
+    Hosts:
+      - 120.46.220.182:2379
+    Key: file.rpc

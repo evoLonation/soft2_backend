@@ -2,6 +2,8 @@ package svc
 
 import (
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
+	"github.com/zeromicro/go-zero/zrpc"
+	"soft2_backend/service/file/rpc/fileclient"
 	"soft2_backend/service/help/api/internal/config"
 	"soft2_backend/service/help/model"
 )
@@ -11,6 +13,7 @@ type ServiceContext struct {
 	LiteratureRequestModel model.LiteratureRequestModel
 	UserHelpModel          model.UserHelpModel
 	LiteratureHelpModel    model.LiteratureHelpModel
+	FileRpc                fileclient.File
 	Auth                   struct {
 		AccessSecret string
 		AccessExpire int64
@@ -24,5 +27,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		LiteratureRequestModel: model.NewLiteratureRequestModel(conn),
 		UserHelpModel:          model.NewUserHelpModel(conn),
 		LiteratureHelpModel:    model.NewLiteratureHelpModel(conn),
+		FileRpc:                fileclient.NewFile(zrpc.MustNewClient(c.FireRpc)),
 	}
 }
