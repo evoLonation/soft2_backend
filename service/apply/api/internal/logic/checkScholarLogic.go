@@ -26,7 +26,7 @@ func NewCheckScholarLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Chec
 }
 
 func (l *CheckScholarLogic) CheckScholar() (resp *types.CheckScholarResponse, err error) {
-	userId, _ := l.ctx.Value("user_id").(json.Number).Int64()
+	userId, _ := l.ctx.Value("UserId").(json.Number).Int64()
 	apply, err := l.svcCtx.ApplyModel.FindByUserId(l.ctx, userId)
 	if err == nil {
 		return &types.CheckScholarResponse{
