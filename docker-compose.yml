@@ -4,78 +4,18 @@ networks:
   backend:
     driver: bridge
 volumes:
-  cache-message-rpc:
+  localfile:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /home/diamond/soft2/soft2_backend/cache/message/rpc
-  cache-message-api:
+      device: /home/diamond/soft2/localfile
+  go-cache:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /home/diamond/soft2/soft2_backend/cache/message/api
-  cache-file-rpc:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/diamond/soft2/soft2_backend/cache/file/rpc
-  cache-file-api:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/diamond/soft2/soft2_backend/cache/file/api
-  cache-user-rpc:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/diamond/soft2/soft2_backend/cache/user/rpc
-  cache-user-api:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/diamond/soft2/soft2_backend/cache/user/api
-  cache-paper-rpc:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/diamond/soft2/soft2_backend/cache/paper/rpc
-  cache-paper-api:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/diamond/soft2/soft2_backend/cache/paper/api
-  cache-help-rpc:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/diamond/soft2/soft2_backend/cache/help/rpc
-  cache-help-api:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/diamond/soft2/soft2_backend/cache/help/api
-  cache-apply-rpc:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/diamond/soft2/soft2_backend/cache/apply/rpc
-  cache-apply-api:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/diamond/soft2/soft2_backend/cache/apply/api
+      device: /home/diamond/soft2/soft2_backend/cache
 
 
 
@@ -120,8 +60,8 @@ services:
     stdin_open: true                     # 打开标准输入，可以接受外部输入
     tty: true
     volumes:
-      - ./localfile:/app/localfile
-      - cache-file-api:/app/cache
+      - localfile:/app/localfile
+      - go-cache:/build/cache
     networks:
       - backend
     restart: always                      # 指定容器退出后的重启策略为始终重启
@@ -137,8 +77,8 @@ services:
     stdin_open: true                     # 打开标准输入，可以接受外部输入
     tty: true
     volumes:
-      - ./localfile:/app/localfile
-      - cache-file-rpc:/app/cache
+      - localfile:/app/localfile
+      - go-cache:/build/cache
     networks:
       - backend
     restart: always                      # 指定容器退出后的重启策略为始终重启
@@ -154,7 +94,7 @@ services:
     stdin_open: true
     tty: true
     volumes:
-      - cache-help-api:/app/cache
+      - go-cache:/build/cache
     networks:
       - backend
     restart: always
@@ -170,7 +110,7 @@ services:
     stdin_open: true
     tty: true
     volumes:
-      - cache-help-rpc:/app/cache
+      - go-cache:/build/cache
     networks:
       - backend
     restart: always
@@ -186,7 +126,7 @@ services:
     stdin_open: true
     tty: true
     volumes:
-      - cache-user-api:/app/cache
+      - go-cache:/build/cache
     networks:
       - backend
     restart: always
@@ -202,7 +142,7 @@ services:
     stdin_open: true
     tty: true
     volumes:
-      - cache-user-rpc:/app/cache
+      - go-cache:/build/cache
     networks:
       - backend
     restart: always
@@ -218,7 +158,7 @@ services:
     stdin_open: true
     tty: true
     volumes:
-      - cache-paper-rpc:/app/cache
+      - go-cache:/build/cache
     networks:
       - backend
     restart: always
@@ -234,7 +174,7 @@ services:
     stdin_open: true
     tty: true
     volumes:
-      - cache-paper-api:/app/cache
+      - go-cache:/build/cache
     networks:
       - backend
     restart: always
@@ -250,7 +190,7 @@ services:
     stdin_open: true
     tty: true
     volumes:
-      - cache-apply-api:/app/cache
+      - go-cache:/build/cache
     networks:
       - backend
     restart: always
@@ -265,7 +205,7 @@ services:
     stdin_open: true
     tty: true
     volumes:
-      - cache-apply-rpc:/app/cache
+      - go-cache:/build/cache
     networks:
       - backend
     restart: always
@@ -280,7 +220,7 @@ services:
     stdin_open: true
     tty: true
     volumes:
-      - cache-message-api:/app/cache
+      - go-cache:/build/cache
     networks:
       - backend
     restart: always
@@ -295,7 +235,7 @@ services:
     stdin_open: true
     tty: true
     volumes:
-      - cache-message-rpc:/app/cache
+      - go-cache:/build/cache
     networks:
       - backend
     restart: always

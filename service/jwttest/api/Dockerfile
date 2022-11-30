@@ -16,16 +16,5 @@ RUN go mod download
 COPY . .
 COPY service/jwttest/api/etc /app/etc
 RUN go build -ldflags="-s -w" -o /app/jwt service/jwttest/api/jwt.go
-
-
-FROM scratch
-
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=builder /usr/share/zoneinfo/Asia/Shanghai /usr/share/zoneinfo/Asia/Shanghai
-ENV TZ Asia/Shanghai
-
 WORKDIR /app
-COPY --from=builder /app/jwt /app/jwt
-COPY --from=builder /app/etc /app/etc
-
 CMD ["./jwt", "-f", "etc/jwt-api.yaml"]
