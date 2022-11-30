@@ -29,7 +29,7 @@ func (l *RegisterUserLogic) RegisterUser(in *help.IdReq) (*help.Reply, error) {
 	var newUser = new(model.UserHelp)
 	newUser.UserId = in.Id
 	newUser.Help = 0
-	newUser.Wealth = 0
+	newUser.Wealth = 100
 	newUser.Request = 0
 	_, err := l.svcCtx.UserHelpModel.Insert(l.ctx, newUser)
 	if err != nil {
