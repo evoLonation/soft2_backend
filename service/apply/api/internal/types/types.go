@@ -8,6 +8,7 @@ type ApplyInfo struct {
 	ApplyType   int64  `json:"apply_type"`
 	Email       string `json:"email,optional"`
 	URL         string `json:"url,optional"`
+	ApplyTime   string `json:"time"`
 }
 
 type GetApplyRequest struct {
