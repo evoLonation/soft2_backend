@@ -37,6 +37,7 @@ func (l *RegisterLogic) getJwtToken(secretKey string, iat, seconds, UserId int64
 }
 func (l *RegisterLogic) Register(req *types.RegisterRequest) (resp *types.RegisterResponse, err error) {
 	// todo: add your logic here and delete this line
+	// todo: add your logic here and delete this line
 	_, err = l.svcCtx.UserModel.FindOneByLoginId(l.ctx, req.LoginId)
 	if err == nil {
 		return nil, errors.New("用户名已注册")
@@ -45,7 +46,6 @@ func (l *RegisterLogic) Register(req *types.RegisterRequest) (resp *types.Regist
 		LoginId:  req.LoginId,
 		Password: req.Password,
 		Nickname: req.Nickname,
-		Email:    req.Email,
 	}
 	res, err := l.svcCtx.UserModel.Insert(l.ctx, &newUser)
 	newUser.UserId, err = res.LastInsertId()

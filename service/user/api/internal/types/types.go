@@ -17,7 +17,6 @@ type RegisterRequest struct {
 	LoginId  string `json:"login_id"`
 	Nickname string `json:"nickname"`
 	Password string `json:"password"`
-	Email    string `json:"email"`
 }
 
 type RegisterResponse struct {
