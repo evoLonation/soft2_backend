@@ -14,6 +14,6 @@ type Config struct {
 		AccessSecret string
 		AccessExpire int64
 	}
-	FireRpc    zrpc.RpcClientConf
+	FileRpc    zrpc.RpcClientConf
 	MessageRpc zrpc.RpcClientConf
 }

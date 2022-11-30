@@ -29,7 +29,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		LiteratureRequestModel: model.NewLiteratureRequestModel(conn),
 		UserHelpModel:          model.NewUserHelpModel(conn),
 		LiteratureHelpModel:    model.NewLiteratureHelpModel(conn),
-		FileRpc:                fileclient.NewFile(zrpc.MustNewClient(c.FireRpc)),
+		FileRpc:                fileclient.NewFile(zrpc.MustNewClient(c.FileRpc)),
 		MessageRpc:             messageclient.NewMessage(zrpc.MustNewClient(c.MessageRpc)),
 	}
 }
