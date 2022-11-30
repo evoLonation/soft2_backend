@@ -17,7 +17,9 @@ jobs:
         uses: fifsky/ssh-action@master
         with:
           command: | # down命令必须在pull前进行
-            cd soft2/soft2_backend/  
+            cd soft2
+            sudo mkdir localfile
+            cd soft2_backend/  
             sudo mkdir cache
             sudo docker compose down
             sudo git fetch --all
