@@ -162,21 +162,21 @@ services:
 #    networks:
 #      - backend
 #    restart: always
-  message-api: # {服务名称}.rpc或者 {服务名称}.api
-    build:
-      dockerfile: service/message/api/Dockerfile # service/{服务名称}/{rpc|api}/Dockerfile
-    environment:
-      - TZ=Asia/Shanghai
-    privileged: true
-    ports:
-      - "8890:8890"  # rpc或者api服务的自己的端口
-    stdin_open: true
-    tty: true
-    volumes:
-      - go-cache:/app/cache
-    networks:
-      - backend
-    restart: always
+#  message-api: # {服务名称}.rpc或者 {服务名称}.api
+#    build:
+#      dockerfile: service/message/api/Dockerfile # service/{服务名称}/{rpc|api}/Dockerfile
+#    environment:
+#      - TZ=Asia/Shanghai
+#    privileged: true
+#    ports:
+#      - "8890:8890"  # rpc或者api服务的自己的端口
+#    stdin_open: true
+#    tty: true
+#    volumes:
+#      - go-cache:/app/cache
+#    networks:
+#      - backend
+#    restart: always
   message-rpc: # {服务名称}.rpc或者 {服务名称}.api
     build:
       dockerfile: service/message/rpc/Dockerfile # service/{服务名称}/{rpc|api}/Dockerfile
