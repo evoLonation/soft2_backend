@@ -26,7 +26,7 @@ type (
 func (m *customMessageModel) FindAllByUser(ctx context.Context, userId int64) ([]*Message, error) {
 	var resp []*Message
 
-	query := fmt.Sprintf("select %s from %s where `userId` = ?", messageRows, m.table)
+	query := fmt.Sprintf("select %s from %s where `receiverId` = ?", messageRows, m.table)
 	err := m.conn.QueryRowsCtx(ctx, &resp, query, userId)
 	switch err {
 	case nil:
