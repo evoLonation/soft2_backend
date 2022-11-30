@@ -4,6 +4,7 @@ LABEL stage=gobuilder
 
 ENV CGO_ENABLED 0
 ENV GOPROXY https://goproxy.cn,direct
+ENV GOCACHE /app/cache
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 
 RUN apk update --no-cache && apk add --no-cache tzdata
@@ -15,6 +16,7 @@ ADD go.sum .
 RUN go mod download
 COPY . .
 COPY service/user/rpc/etc /app/etc
+COPY cache/user/rpc /app/cache
 RUN go build -ldflags="-s -w" -o /app/user service/user/rpc/user.go
 
 
@@ -25,6 +27,7 @@ COPY --from=builder /usr/share/zoneinfo/Asia/Shanghai /usr/share/zoneinfo/Asia/S
 ENV TZ Asia/Shanghai
 
 WORKDIR /app
+COPY --from=builder /app/cache /app/cache
 COPY --from=builder /app/user /app/user
 COPY --from=builder /app/etc /app/etc
 

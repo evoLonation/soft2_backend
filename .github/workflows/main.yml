@@ -3,7 +3,7 @@ name: Java CI with Maven
 on:
   push:
     # 分支
-    branches: [ dev ]
+    branches: [ main ]
   pull_request:
     branches: [ main ]
 
@@ -18,6 +18,18 @@ jobs:
         with:
           command: | # down命令必须在pull前进行
             cd soft2/soft2_backend/  
+            sudo mkdir cache/message/api
+            sudo mkdir cache/message/rpc
+            sudo mkdir cache/file/api
+            sudo mkdir cache/file/rpc
+            sudo mkdir cache/paper/api
+            sudo mkdir cache/paper/rpc
+            sudo mkdir cache/user/api
+            sudo mkdir cache/user/rpc
+            sudo mkdir cache/apply/api
+            sudo mkdir cache/apply/rpc
+            sudo mkdir cache/help/api
+            sudo mkdir cache/help/rpc
             sudo docker compose down
             sudo git fetch --all
             sudo git checkout main

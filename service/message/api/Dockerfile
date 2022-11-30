@@ -16,6 +16,7 @@ ADD go.sum .
 RUN go mod download
 COPY . .
 COPY service/message/api/etc /app/etc
+COPY cache/message/api /app/cache
 RUN go build -ldflags="-s -w" -o /app/message service/message/api/message.go
 
 
@@ -26,6 +27,7 @@ COPY --from=builder /usr/share/zoneinfo/Asia/Shanghai /usr/share/zoneinfo/Asia/S
 ENV TZ Asia/Shanghai
 
 WORKDIR /app
+COPY --from=builder /app/cache /app/cache
 COPY --from=builder /app/message /app/message
 COPY --from=builder /app/etc /app/etc
 
