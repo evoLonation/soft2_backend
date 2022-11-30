@@ -28,7 +28,7 @@ func NewPaperRelationNetLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 }
 
 var nodes []types.PaperNodeJSON
-var edges []types.PaperEdgeJSON
+var edges []types.EdgeJSON
 var maxYear = 0
 var minYear = 3000
 var maxCitation = 0
@@ -80,8 +80,8 @@ func (l *PaperRelationNetLogic) PaperRelationNet(req *types.PaperRelationNetRequ
 	DFS(referenceIds, majorNode, 0)
 
 	for _, node := range nodes {
-		node.Size = GetSize(node.Size)
-		node.Style.Fill = GetColor(GetD(node.Info.Year))
+		node.Size = GetSize(node.Size, maxCitation, minCitation)
+		node.Style.Fill = GetColor(GetD(node.Info.Year, maxYear, minYear))
 	}
 
 	resp = &types.PaperRelationNetResponse{
@@ -127,7 +127,7 @@ func DFS(referenceIds []string, fatherNode types.PaperNodeJSON, level int) {
 		UpdateMaxMin(&maxYear, &minYear, node.Info.Year)
 		UpdateMaxMin(&maxCitation, &minCitation, node.Size)
 
-		edges = append(edges, types.PaperEdgeJSON{
+		edges = append(edges, types.EdgeJSON{
 			Source: fatherNode.Id,
 			Target: node.Id,
 		})
@@ -164,38 +164,5 @@ func UpdateMaxMin(max *int, min *int, d int) {
 	}
 	if d < *min {
 		*min = d
-	}
-}
-
-func GetSize(NCitation int) int {
-	return int((float64(NCitation-minCitation)/float64(maxCitation-minCitation) + 1) * 20)
-}
-
-func GetD(year int) int {
-	return int((float64(year-minYear) / float64(maxYear-minYear)) * 10)
-}
-
-func GetColor(d int) string {
-	switch d {
-	case 0:
-		return "#1C1C1C"
-	case 1:
-		return "#363636"
-	case 2:
-		return "#4F4F4F"
-	case 3:
-		return "#696969"
-	case 4:
-		return "#828282"
-	case 5:
-		return "#9C9C9C"
-	case 6:
-		return "#B5B5B5"
-	case 7:
-		return "#CFCFCF"
-	case 8:
-		return "#E8E8E8"
-	default:
-		return "#FFFFFF"
 	}
 }

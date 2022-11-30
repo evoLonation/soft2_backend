@@ -111,7 +111,7 @@ type PaperRelationNetRequest struct {
 
 type PaperRelationNetResponse struct {
 	Nodes []PaperNodeJSON `json:"nodes"`
-	Edges []PaperEdgeJSON `json:"edges"`
+	Edges []EdgeJSON      `json:"edges"`
 }
 
 type PaperNodeJSON struct {
@@ -135,7 +135,7 @@ type InfoJSON struct {
 	Year     int          `json:"year"`
 }
 
-type PaperEdgeJSON struct {
+type EdgeJSON struct {
 	Source string `json:"source"`
 	Target string `json:"target"`
 }
@@ -197,6 +197,43 @@ type ScholarBarchartRequest struct {
 type ScholarBarchartResponse struct {
 	Achievements int `json:"achievements"`
 	References   int `json:"references"`
+}
+
+type ScholarRelationNetRequest struct {
+	ScholarId string `json:"scholar_id"`
+}
+
+type ScholarRelationNetResponse struct {
+	CoNet CoNetJSON `json:"co_net"`
+	CiNet CiNetJSON `json:"ci_net"`
+}
+
+type CoNetJSON struct {
+	CoNetNodes []CoNetNodeJSON `json:"nodes"`
+	CoNetEdges []EdgeJSON      `json:"edges"`
+}
+
+type CoNetNodeJSON struct {
+	Id    string    `json:"id"`
+	Label string    `json:"label"`
+	Size  int       `json:"size"`
+	CoNum int       `json:"co_num"`
+	Type  string    `json:"type"`
+	Style StyleJSON `json:"style"`
+}
+
+type CiNetJSON struct {
+	CiNetNodes []CiNetNodeJSON `json:"nodes"`
+	CiNetEdges []EdgeJSON      `json:"edges"`
+}
+
+type CiNetNodeJSON struct {
+	Id    string    `json:"id"`
+	Label string    `json:"label"`
+	Size  int       `json:"size"`
+	CiNum int       `json:"ci_num"`
+	Type  string    `json:"type"`
+	Style StyleJSON `json:"style"`
 }
 
 type ScholarClaimRequest struct {
