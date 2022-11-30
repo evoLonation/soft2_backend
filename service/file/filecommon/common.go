@@ -95,7 +95,7 @@ func InitFile() {
 	if err != nil {
 		panic(err)
 	}
-	dst, err := os.Open(FilePath + DefaultAvatarName)
+	dst, err := os.Create(FilePath + DefaultAvatarName)
 	if err != nil {
 		panic(err)
 	}
