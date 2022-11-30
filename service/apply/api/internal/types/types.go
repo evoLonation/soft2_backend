@@ -25,9 +25,14 @@ type DealApplyRequest struct {
 	IsAgree bool  `json:"is_agree"`
 }
 
+type EmailVerifyCodeRequest struct {
+	Email string `json:"email"`
+}
+
 type EmailIdentifyRequest struct {
-	Email     string `json:"email"`
-	ScholarId int64  `json:"scholar_id"`
+	Email      string `json:"email"`
+	ScholarId  int64  `json:"scholar_id"`
+	VerifyCode string `json:"verify_code"`
 }
 
 type CheckScholarResponse struct {

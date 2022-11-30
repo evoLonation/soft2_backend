@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"soft2_backend/common"
 	"soft2_backend/service/apply/api/internal/config"
 	"soft2_backend/service/apply/api/internal/handler"
 	"soft2_backend/service/apply/api/internal/svc"
@@ -24,6 +25,8 @@ func main() {
 
 	ctx := svc.NewServiceContext(c)
 	handler.RegisterHandlers(server, ctx)
+
+	common.InitHttpErrorHandler()
 
 	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
 	server.Start()

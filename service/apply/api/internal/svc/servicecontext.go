@@ -9,8 +9,9 @@ import (
 )
 
 type ServiceContext struct {
-	Config     config.Config
-	ApplyModel model.ApplyModel
+	Config          config.Config
+	ApplyModel      model.ApplyModel
+	VerifycodeModel model.VerifycodeModel
 
 	PaperRpc streamgreeter.StreamGreeter
 }
@@ -18,8 +19,9 @@ type ServiceContext struct {
 func NewServiceContext(c config.Config) *ServiceContext {
 	conn := sqlx.NewMysql(c.Mysql.DataSource)
 	return &ServiceContext{
-		Config:     c,
-		ApplyModel: model.NewApplyModel(conn),
-		PaperRpc:   streamgreeter.NewStreamGreeter(zrpc.MustNewClient(c.PaperRpc)),
+		Config:          c,
+		ApplyModel:      model.NewApplyModel(conn),
+		VerifycodeModel: model.NewVerifycodeModel(conn),
+		PaperRpc:        streamgreeter.NewStreamGreeter(zrpc.MustNewClient(c.PaperRpc)),
 	}
 }
