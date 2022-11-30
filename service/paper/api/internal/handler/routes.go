@@ -64,6 +64,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodPost,
+				Path:    "/api/scholar/relation-net",
+				Handler: ScholarRelationNetHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
 				Path:    "/api/scholar/claim",
 				Handler: ScholarClaimHandler(serverCtx),
 			},

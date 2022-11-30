@@ -29,6 +29,9 @@ service paper-api {
 	@handler ScholarBarchart
 	post /api/scholar/barchart (ScholarBarchartRequest) returns (ScholarBarchartResponse);
 	
+	@handler ScholarRelationNet
+	post /api/scholar/relation-net (ScholarRelationNetRequest) returns (ScholarRelationNetResponse);
+	
 	@handler ScholarClaim
 	post /api/scholar/claim (ScholarClaimRequest) returns (ScholarClaimResponse);
 	
@@ -146,7 +149,7 @@ type PaperRelationNetRequest {
 
 type PaperRelationNetResponse {
 	Nodes []PaperNodeJSON `json:"nodes"`
-	Edges []PaperEdgeJSON `json:"edges"`
+	Edges []EdgeJSON      `json:"edges"`
 }
 
 type PaperNodeJSON {
@@ -170,7 +173,7 @@ type InfoJSON {
 	Year     int          `json:"year"`
 }
 
-type PaperEdgeJSON {
+type EdgeJSON {
 	Source string `json:"source"`
 	Target string `json:"target"`
 }
@@ -232,6 +235,43 @@ type ScholarBarchartRequest {
 type ScholarBarchartResponse {
 	Achievements int `json:"achievements"`
 	References   int `json:"references"`
+}
+
+type ScholarRelationNetRequest {
+	ScholarId string `json:"scholar_id"`
+}
+
+type ScholarRelationNetResponse {
+	CoNet CoNetJSON `json:"co_net"`
+	CiNet CiNetJSON `json:"ci_net"`
+}
+
+type CoNetJSON {
+	CoNetNodes []CoNetNodeJSON `json:"nodes"`
+	CoNetEdges []EdgeJSON      `json:"edges"`
+}
+
+type CoNetNodeJSON {
+	Id    string    `json:"id"`
+	Label string    `json:"label"`
+	Size  int       `json:"size"`
+	CoNum int       `json:"co_num"`
+	Type  string    `json:"type"`
+	Style StyleJSON `json:"style"`
+}
+
+type CiNetJSON {
+	CiNetNodes []CiNetNodeJSON `json:"nodes"`
+	CiNetEdges []EdgeJSON      `json:"edges"`
+}
+
+type CiNetNodeJSON {
+	Id    string    `json:"id"`
+	Label string    `json:"label"`
+	Size  int       `json:"size"`
+	CiNum int       `json:"ci_num"`
+	Type  string    `json:"type"`
+	Style StyleJSON `json:"style"`
 }
 
 type ScholarClaimRequest {
