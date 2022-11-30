@@ -45,6 +45,7 @@ func (l *GetApplyLogic) GetApply(req *types.GetApplyRequest) (resp *types.GetApp
 			ScholarName: scholar.ScholarName,
 			Institution: scholar.Institution,
 			ApplyType:   list[i].ApplyType,
+			ApplyTime:   list[i].ApplyTime.Format("2006-01-02 15:04:05"),
 		}
 
 		if list[i].Email.Valid {

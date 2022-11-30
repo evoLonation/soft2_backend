@@ -7,6 +7,7 @@ type (
 		ApplyType   int64  `json:"apply_type"`
 		Email       string `json:"email,optional"`
 		URL         string `json:"url,optional"`
+		ApplyTime   string `json:"time"`
 	}
 
 	// 获得所有学者认证

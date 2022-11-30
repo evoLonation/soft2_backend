@@ -42,7 +42,7 @@ func (l *GetMessageLogic) GetMessage(req *types.GetMessageRequest) (resp *types.
 			MessageType: list[i].MessageType,
 			Content:     list[i].Content,
 			Read:        list[i].Read,
-			MessageTime: list[i].MsgTime.String(),
+			MessageTime: list[i].MsgTime.Format("2006-01-02 15:04:05"),
 		}
 
 		if list[i].UId.Valid {
