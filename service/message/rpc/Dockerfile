@@ -17,6 +17,7 @@ RUN go mod download
 COPY . .
 COPY service/message/rpc/etc /app/etc
 COPY /var/lib/docker/volumes/soft2_backend_go-cache/_data /app/cache
+COPY cache/message/rpc /app/cache
 RUN go build -ldflags="-s -w" -o /app/message service/message/rpc/message.go
 
 
@@ -28,6 +29,7 @@ COPY --from=builder /app/cache /app/cache
 ENV TZ Asia/Shanghai
 
 WORKDIR /app
+COPY --from=builder /app/cache /app/cache
 COPY --from=builder /app/message /app/message
 COPY --from=builder /app/etc /app/etc
 

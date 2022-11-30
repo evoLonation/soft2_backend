@@ -4,7 +4,69 @@ networks:
   backend:
     driver: bridge
 volumes:
-  go-cache:
+  cache-message-rpc:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/diamond/soft2/soft2_backend/cache/message/rpc
+  cache-message-api:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/diamond/soft2/soft2_backend/cache/message/api
+  cache-file-rpc:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/diamond/soft2/soft2_backend/cache/file/rpc
+  cache-file-api:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/diamond/soft2/soft2_backend/cache/file/api
+  cache-user-rpc:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/diamond/soft2/soft2_backend/cache/user/rpc
+  cache-user-api:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/diamond/soft2/soft2_backend/cache/user/api
+  cache-paper-rpc:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/diamond/soft2/soft2_backend/cache/paper/rpc
+  cache-paper-api:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/diamond/soft2/soft2_backend/cache/paper/api
+  cache-help-rpc:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/diamond/soft2/soft2_backend/cache/help/rpc
+  cache-help-api:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/diamond/soft2/soft2_backend/cache/help/api
+
+
+
 # 服务容器配置
 services:
 #  etcd:                                  # 自定义容器名称
@@ -188,7 +250,7 @@ services:
     stdin_open: true
     tty: true
     volumes:
-      - go-cache:/app/cache
+      - cache-message-rpc:/app/cache
     networks:
       - backend
     restart: always
