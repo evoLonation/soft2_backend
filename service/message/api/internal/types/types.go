@@ -2,8 +2,8 @@
 package types
 
 type MessageInfo struct {
-	MessageId   int64  `json:"apply_id"`
-	MessageType int64  `json:"scholar_name"`
+	MessageId   int64  `json:"id"`
+	MessageType int64  `json:"type"`
 	UId         int64  `json:"uid,optional"`
 	GId         int64  `json:"gid,optional"`
 	PId         int64  `json:"pid,optional"`
@@ -20,14 +20,14 @@ type GetMessageRequest struct {
 }
 
 type GetMessageResponse struct {
-	Count       int64         `json:"count"`
+	Count       int64         `json:"msg_num"`
 	MessageList []MessageInfo `json:"messages"`
 }
 
 type ReadMessageRequest struct {
-	MessageId int64 `json:"apply_id"`
+	MessageId int64 `json:"id"`
 }
 
 type DeleteMessageRequest struct {
-	MessageId int64 `json:"apply_id"`
+	MessageId int64 `json:"id"`
 }
