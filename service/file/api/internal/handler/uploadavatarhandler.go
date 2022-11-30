@@ -17,12 +17,13 @@ func UploadAvatarHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := logic.NewUploadAvatarLogic(r.Context(), svcCtx)
 
-		l.File = filecommon.GetFormFile(w, r.MultipartForm)
-		if l.File == nil {
-			return
+		var err error
+		l.File.File, l.File.FileHeader, err = r.FormFile("file")
+		if err != nil {
+			httpx.Error(w, err)
 		}
 
-		err := l.UploadAvatar()
+		err = l.UploadAvatar()
 
 		if err != nil {
 			httpx.Error(w, err)

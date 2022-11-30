@@ -11,9 +11,12 @@ import (
 
 type UploadApplyLogic struct {
 	logx.Logger
-	ctx       context.Context
-	svcCtx    *svc.ServiceContext
-	File      *multipart.FileHeader
+	ctx    context.Context
+	svcCtx *svc.ServiceContext
+	File   struct {
+		*multipart.FileHeader
+		multipart.File
+	}
 	ScholarId int64
 }
 
@@ -27,7 +30,7 @@ func NewUploadApplyLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Uploa
 
 // 学者认证的上传与其他上传不一样的是url还是存在了学者认证那里
 func (l *UploadApplyLogic) UploadApply() error {
-	filename, err := filecommon.CreateFile(l.File)
+	filename, err := filecommon.CreateUUidFile(l.File.File, l.File.FileHeader)
 	if err != nil {
 		return err
 	}

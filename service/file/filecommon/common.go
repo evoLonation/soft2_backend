@@ -3,10 +3,8 @@ package filecommon
 import (
 	"errors"
 	uuid "github.com/nu7hatch/gouuid"
-	"github.com/zeromicro/go-zero/rest/httpx"
 	"io"
 	"mime/multipart"
-	"net/http"
 	"os"
 	"strings"
 )
@@ -42,25 +40,22 @@ func SqlErrorCheck(err error) error {
 	return nil
 }
 
-func CreateFile(fileHeader *multipart.FileHeader) (string, error) {
-	file, err := fileHeader.Open()
-	if err != nil {
-		return "", err
-	}
+func CreateFile(file multipart.File, fileHeader *multipart.FileHeader, dir string, prefix string) (string, error) {
+	defer func() {
+		if err := file.Close(); err != nil {
+			panic(err)
+		}
+	}()
 	var content [DefaultMultipartMemory]byte
 
 	fileLen, err := file.Read(content[:])
 	if err != nil {
 		return "", err
 	}
-	newUuid, err := uuid.NewV4()
-	if err != nil {
-		return "", err
-	}
 	tmp := strings.Split(fileHeader.Filename, ".")
 	suffix := tmp[len(tmp)-1]
-	filename := newUuid.String() + "." + suffix
-	newFile, err := os.Create(FilePath + filename)
+	filename := prefix + "." + suffix
+	newFile, err := os.Create(dir + filename)
 	if err != nil {
 		panic(err)
 	}
@@ -71,24 +66,47 @@ func CreateFile(fileHeader *multipart.FileHeader) (string, error) {
 	if err != nil {
 		panic(err)
 	}
+
 	return filename, nil
 }
-
-func GetFormFile(w http.ResponseWriter, form *multipart.Form) *multipart.FileHeader {
-	if form.File["file"] == nil {
-		httpx.Error(w, errors.New("请求的form-data请包含file字段"))
-		return nil
-	}
-	return form.File["file"][0]
+func CreateLocalFile(file multipart.File, fileHeader *multipart.FileHeader, prefix string) (string, error) {
+	return CreateFile(file, fileHeader, FilePath, prefix)
 }
 
-func GetFormValue(w http.ResponseWriter, form *multipart.Form, key string) (string, bool) {
-	if form.Value[key] == nil {
-		httpx.Error(w, errors.New("请求的form-data请包含"+key+"字段"))
-		return "", false
-	}
-	return form.Value[key][0], true
+func CreateUUidFile(file multipart.File, fileHeader *multipart.FileHeader) (string, error) {
+	return CreateLocalFile(file, fileHeader, NewUUid())
 }
+func CreateTempFile(file multipart.File, fileHeader *multipart.FileHeader, prefix string) (string, error) {
+	return CreateFile(file, fileHeader, FilePath+"temp/", prefix)
+}
+
+func RemoveTempFile(filename string) {
+	os.Remove(FilePath + "temp/" + filename)
+}
+
+func NewUUid() string {
+	newUuid, err := uuid.NewV4()
+	if err != nil {
+		panic(err)
+	}
+	return newUuid.String()
+}
+
+//func GetFormFile(w http.ResponseWriter, form *multipart.Form) *multipart.FileHeader {
+//	if form.File["file"] == nil {
+//		httpx.Error(w, errors.New("请求的form-data请包含file字段"))
+//		return nil
+//	}
+//	return form.File["file"][0]
+//}
+//
+//func GetFormValue(w http.ResponseWriter, form *multipart.Form, key string) (string, bool) {
+//	if form.Value[key] == nil {
+//		httpx.Error(w, errors.New("请求的form-data请包含"+key+"字段"))
+//		return "", false
+//	}
+//	return form.Value[key][0], true
+//}
 
 func InitFile() {
 	src, err := os.Open("etc/" + DefaultAvatarName)

@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"mime/multipart"
 	"net/http"
 	"soft2_backend/service/file/api/internal/logic"
 	"soft2_backend/service/file/filecommon"
@@ -18,17 +19,23 @@ func UploadHelpHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		}
 
 		l := logic.NewUploadHelpLogic(r.Context(), svcCtx)
-
-		l.File = filecommon.GetFormFile(w, r.MultipartForm)
-		if l.File == nil {
-			return
+		fileNum, err := strconv.ParseInt(r.FormValue("file_num"), 10, 64)
+		if err != nil {
+			httpx.Error(w, err)
+		}
+		var index = 1
+		for index <= int(fileNum) {
+			file, header, err := r.FormFile("file" + strconv.Itoa(index))
+			if err != nil {
+				httpx.Error(w, err)
+			}
+			l.Files = append(l.Files, struct {
+				*multipart.FileHeader
+				multipart.File
+			}{FileHeader: header, File: file})
 		}
 
-		id, success := filecommon.GetFormValue(w, r.MultipartForm, "request_id")
-		if !success {
-			return
-		}
-		var err error
+		id := r.FormValue("request_id")
 		l.RequestId, err = strconv.ParseInt(id, 10, 64)
 		if err != nil {
 			httpx.Error(w, err)

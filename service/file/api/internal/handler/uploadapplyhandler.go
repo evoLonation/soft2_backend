@@ -18,17 +18,13 @@ func UploadApplyHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		}
 
 		l := logic.NewUploadApplyLogic(r.Context(), svcCtx)
-
-		l.File = filecommon.GetFormFile(w, r.MultipartForm)
-		if l.File == nil {
-			return
-		}
-
-		id, success := filecommon.GetFormValue(w, r.MultipartForm, "scholar_id")
-		if !success {
-			return
-		}
 		var err error
+		l.File.File, l.File.FileHeader, err = r.FormFile("file")
+		if err != nil {
+			httpx.Error(w, err)
+		}
+
+		id := r.FormValue("scholar_id")
 		l.ScholarId, err = strconv.ParseInt(id, 10, 64)
 		if err != nil {
 			httpx.Error(w, err)

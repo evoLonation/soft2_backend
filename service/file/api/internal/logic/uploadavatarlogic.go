@@ -13,7 +13,10 @@ type UploadAvatarLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
-	File   *multipart.FileHeader
+	File   struct {
+		*multipart.FileHeader
+		multipart.File
+	}
 }
 
 func NewUploadAvatarLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UploadAvatarLogic {
@@ -25,7 +28,7 @@ func NewUploadAvatarLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Uplo
 }
 
 func (l *UploadAvatarLogic) UploadAvatar() error {
-	filename, err := filecommon.CreateFile(l.File)
+	filename, err := filecommon.CreateUUidFile(l.File.File, l.File.FileHeader)
 	if err != nil {
 		return err
 	}
