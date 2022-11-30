@@ -18,8 +18,8 @@ import (
 var (
 	applyFieldNames          = builder.RawFieldNames(&Apply{})
 	applyRows                = strings.Join(applyFieldNames, ",")
-	applyRowsExpectAutoSet   = strings.Join(stringx.Remove(applyFieldNames, "`applyId`", "`create_at`", "`created_at`", "`create_time`", "`update_at`", "`updated_at`", "`update_time`"), ",")
-	applyRowsWithPlaceHolder = strings.Join(stringx.Remove(applyFieldNames, "`applyId`", "`create_at`", "`created_at`", "`create_time`", "`update_at`", "`updated_at`", "`update_time`"), "=?,") + "=?"
+	applyRowsExpectAutoSet   = strings.Join(stringx.Remove(applyFieldNames, "`applyId`", "`status`", "`applyTime`"), ",")
+	applyRowsWithPlaceHolder = strings.Join(stringx.Remove(applyFieldNames, "`applyId`", "`create_at`", "`created_at`", "`create_time`", "`update_at`", "`updated_at`", "`update_time`", "`applyTime`"), "=?,") + "=?"
 )
 
 type (
@@ -75,14 +75,14 @@ func (m *defaultApplyModel) FindOne(ctx context.Context, applyId int64) (*Apply,
 }
 
 func (m *defaultApplyModel) Insert(ctx context.Context, data *Apply) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?)", m.table, applyRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.UserId, data.ScholarId, data.Status, data.ApplyType, data.Email, data.Url, data.ApplyTime)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?)", m.table, applyRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.UserId, data.ScholarId, data.ApplyType, data.Email, data.Url)
 	return ret, err
 }
 
 func (m *defaultApplyModel) Update(ctx context.Context, data *Apply) error {
 	query := fmt.Sprintf("update %s set %s where `applyId` = ?", m.table, applyRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.UserId, data.ScholarId, data.Status, data.ApplyType, data.Email, data.Url, data.ApplyTime, data.ApplyId)
+	_, err := m.conn.ExecCtx(ctx, query, data.UserId, data.ScholarId, data.Status, data.ApplyType, data.Email, data.Url, data.ApplyId)
 	return err
 }
 
