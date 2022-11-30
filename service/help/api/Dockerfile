@@ -18,4 +18,4 @@ COPY . .
 COPY service/help/api/etc /app/etc
 RUN go build -ldflags="-s -w" -o /app/main service/help/api/help.go
 WORKDIR /app
-CMD ["./main", "-f", "etc/request-api.yaml"]
+CMD ["./main", "-f", "etc/help-api.yaml"]
