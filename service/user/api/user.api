@@ -17,7 +17,6 @@ type (
 		LoginId  string `json:"login_id"`
 		Nickname string `json:"nickname"`
 		Password string `json:"password"`
-		Email    string `json:"email"`
 	}
 	RegisterResponse {
 		Code     int64  `json:"code"`

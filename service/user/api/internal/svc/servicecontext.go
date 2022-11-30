@@ -35,6 +35,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		GrievanceModel: model.NewGrievanceModel(conn, c.CacheRedis),
 		ApplyRpc:       applyclient.NewApply(zrpc.MustNewClient(c.ApplyRpc)),
 		MessageRpc:     messageclient.NewMessage(zrpc.MustNewClient(c.MessageRpc)),
-		PaperRpc:       streamgreeter.NewStreamGreeter(zrpc.MustNewClient(c.PaperRoc)),
+		PaperRpc:       streamgreeter.NewStreamGreeter(zrpc.MustNewClient(c.PaperRpc)),
 	}
 }
