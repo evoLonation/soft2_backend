@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"soft2_backend/service/apply/api/internal/svc"
 	"soft2_backend/service/apply/api/internal/types"
 	"soft2_backend/service/apply/model"
@@ -25,10 +26,7 @@ func NewEmailIdentifyLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ema
 }
 
 func (l *EmailIdentifyLogic) EmailIdentify(req *types.EmailIdentifyRequest) error {
-	// 与user合并后改为token
-	var userId int64 = 0
-	//userId, _ := l.ctx.Value("user_id").(json.Number).Int64()
-
+	userId, _ := l.ctx.Value("UserId").(json.Number).Int64()
 	newApply := model.Apply{
 		UserId:    userId,
 		ScholarId: req.ScholarId,

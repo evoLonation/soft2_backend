@@ -18,4 +18,4 @@ COPY . .
 COPY service/message/api/etc /app/etc
 RUN go build -ldflags="-s -w" -o /app/message service/message/api/message.go
 WORKDIR /app
-CMD ["./message", "-f", "etc/message.yaml"]
+CMD ["./message", "-f", "etc/message-api.yaml"]

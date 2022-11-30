@@ -29,11 +29,20 @@ service paper-api {
 	@handler ScholarBarchart
 	post /api/scholar/barchart (ScholarBarchartRequest) returns (ScholarBarchartResponse);
 	
+	@handler ScholarRelationNet
+	post /api/scholar/relation-net (ScholarRelationNetRequest) returns (ScholarRelationNetResponse);
+	
 	@handler ScholarClaim
 	post /api/scholar/claim (ScholarClaimRequest) returns (ScholarClaimResponse);
 	
 	@handler MovePaper
 	post /api/admin/move-paper (MovePaperRequest) returns (MovePaperResponse);
+	
+	@handler FieldPaper
+	post /api/field/paper (FieldPaperRequest) returns (FieldPaperResponse);
+	
+	@handler FieldScholar
+	post /api/field/scholar (FieldScholarRequest) returns (FieldScholarResponse);
 }
 
 type PaperRequest {
@@ -146,7 +155,7 @@ type PaperRelationNetRequest {
 
 type PaperRelationNetResponse {
 	Nodes []PaperNodeJSON `json:"nodes"`
-	Edges []PaperEdgeJSON `json:"edges"`
+	Edges []EdgeJSON      `json:"edges"`
 }
 
 type PaperNodeJSON {
@@ -170,7 +179,7 @@ type InfoJSON {
 	Year     int          `json:"year"`
 }
 
-type PaperEdgeJSON {
+type EdgeJSON {
 	Source string `json:"source"`
 	Target string `json:"target"`
 }
@@ -234,6 +243,43 @@ type ScholarBarchartResponse {
 	References   int `json:"references"`
 }
 
+type ScholarRelationNetRequest {
+	ScholarId string `json:"scholar_id"`
+}
+
+type ScholarRelationNetResponse {
+	CoNet CoNetJSON `json:"co_net"`
+	CiNet CiNetJSON `json:"ci_net"`
+}
+
+type CoNetJSON {
+	CoNetNodes []CoNetNodeJSON `json:"nodes"`
+	CoNetEdges []EdgeJSON      `json:"edges"`
+}
+
+type CoNetNodeJSON {
+	Id    string    `json:"id"`
+	Label string    `json:"label"`
+	Size  int       `json:"size"`
+	CoNum int       `json:"co_num"`
+	Type  string    `json:"type"`
+	Style StyleJSON `json:"style"`
+}
+
+type CiNetJSON {
+	CiNetNodes []CiNetNodeJSON `json:"nodes"`
+	CiNetEdges []EdgeJSON      `json:"edges"`
+}
+
+type CiNetNodeJSON {
+	Id    string    `json:"id"`
+	Label string    `json:"label"`
+	Size  int       `json:"size"`
+	CiNum int       `json:"ci_num"`
+	Type  string    `json:"type"`
+	Style StyleJSON `json:"style"`
+}
+
 type ScholarClaimRequest {
 	PaperId   string `json:"paper_id"`
 	ScholarId string `json:"scholar_id"`
@@ -251,4 +297,34 @@ type MovePaperRequest {
 }
 
 type MovePaperResponse {
+}
+
+type FieldPaperRequest {
+	Field string `json:"field"`
+	Start int    `json:"start"`
+	End   int    `json:"end"`
+}
+
+type FieldPaperResponse {
+	PaperNum int                 `json:"paper_num"`
+	Papers   []PaperResponseJSON `json:"papers"`
+}
+
+type FieldScholarRequest {
+	Field string `json:"field"`
+	Start int    `json:"start"`
+	End   int    `json:"end"`
+}
+
+type FieldScholarResponse {
+	ScholarNum int                `json:"scholar_num"`
+	Scholars   []FieldScholarJSON `json:"scholars"`
+}
+
+type FieldScholarJSON {
+	ScholarId string  `json:"scholar_id"`
+	Name      string  `json:"name"`
+	NPaper    int     `json:"n_paper"`
+	NCitation int     `json:"n_citation"`
+	Weight    float64 `json:"weight"`
 }

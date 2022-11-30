@@ -24,7 +24,7 @@ func NewGetMessageLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetMes
 }
 
 func (l *GetMessageLogic) GetMessage(req *types.GetMessageRequest) (resp *types.GetMessageResponse, err error) {
-	userId, _ := l.ctx.Value("user_id").(json.Number).Int64()
+	userId, _ := l.ctx.Value("UserId").(json.Number).Int64()
 	list, err := l.svcCtx.MessageModel.FindAllByUser(l.ctx, userId)
 
 	infoList := make([]types.MessageInfo, 0)
