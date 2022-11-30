@@ -156,7 +156,6 @@ func (l *PaperLogic) Paper(req *types.PaperRequest) (resp *types.PaperResponse, 
 			NCitation: NilHandler(source["n_citation"], "int").(int),
 			Publisher: NilHandler(source["venue"].(map[string]interface{})["raw"], "string").(string),
 		})
-		log.Println(papers)
 
 		keywords := NilHandler(source["keywords"], "list").([]interface{})
 		cnt := 0

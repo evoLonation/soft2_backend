@@ -37,6 +37,12 @@ service paper-api {
 	
 	@handler MovePaper
 	post /api/admin/move-paper (MovePaperRequest) returns (MovePaperResponse);
+	
+	@handler FieldPaper
+	post /api/field/paper (FieldPaperRequest) returns (FieldPaperResponse);
+	
+	@handler FieldScholar
+	post /api/field/scholar (FieldScholarRequest) returns (FieldScholarResponse);
 }
 
 type PaperRequest {
@@ -291,4 +297,34 @@ type MovePaperRequest {
 }
 
 type MovePaperResponse {
+}
+
+type FieldPaperRequest {
+	Field string `json:"field"`
+	Start int    `json:"start"`
+	End   int    `json:"end"`
+}
+
+type FieldPaperResponse {
+	PaperNum int                 `json:"paper_num"`
+	Papers   []PaperResponseJSON `json:"papers"`
+}
+
+type FieldScholarRequest {
+	Field string `json:"field"`
+	Start int    `json:"start"`
+	End   int    `json:"end"`
+}
+
+type FieldScholarResponse {
+	ScholarNum int                `json:"scholar_num"`
+	Scholars   []FieldScholarJSON `json:"scholars"`
+}
+
+type FieldScholarJSON {
+	ScholarId string  `json:"scholar_id"`
+	Name      string  `json:"name"`
+	NPaper    int     `json:"n_paper"`
+	NCitation int     `json:"n_citation"`
+	Weight    float64 `json:"weight"`
 }

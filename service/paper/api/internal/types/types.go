@@ -254,3 +254,33 @@ type MovePaperRequest struct {
 
 type MovePaperResponse struct {
 }
+
+type FieldPaperRequest struct {
+	Field string `json:"field"`
+	Start int    `json:"start"`
+	End   int    `json:"end"`
+}
+
+type FieldPaperResponse struct {
+	PaperNum int                 `json:"paper_num"`
+	Papers   []PaperResponseJSON `json:"papers"`
+}
+
+type FieldScholarRequest struct {
+	Field string `json:"field"`
+	Start int    `json:"start"`
+	End   int    `json:"end"`
+}
+
+type FieldScholarResponse struct {
+	ScholarNum int                `json:"scholar_num"`
+	Scholars   []FieldScholarJSON `json:"scholars"`
+}
+
+type FieldScholarJSON struct {
+	ScholarId string  `json:"scholar_id"`
+	Name      string  `json:"name"`
+	NPaper    int     `json:"n_paper"`
+	NCitation int     `json:"n_citation"`
+	Weight    float64 `json:"weight"`
+}
