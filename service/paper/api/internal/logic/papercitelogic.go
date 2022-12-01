@@ -8,6 +8,7 @@ import (
 	"soft2_backend/service/paper/api/internal/svc"
 	"soft2_backend/service/paper/api/internal/types"
 	"soft2_backend/service/paper/database"
+	"strconv"
 	"strings"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -54,9 +55,10 @@ func (l *PaperCiteLogic) PaperCite(req *types.PaperCiteRequest) (resp *types.Pap
 	gbCite += source["title"].(string)
 	gbCite += "[" + ParseGBDocType(NilHandler(source["doc_type"], "string").(string)) + "]."
 	gbCite += source["venue"].(map[string]interface{})["raw"].(string) + ", "
-	gbCite += source["year"].(string) + ", "
+	gbCite += strconv.Itoa(NilHandler(source["year"], "int").(int)) + ", "
 	gbCite += source["volume"].(string) + "(" + source["issue"].(string) + "): "
 	gbCite += source["page_start"].(string) + "-" + source["page_end"].(string) + "."
+	log.Println(gbCite)
 	// MLA
 	var mlaCite string
 	author := NilHandler(source["authors"].([]interface{})[0].(map[string]interface{})["name"], "string").(string)
@@ -70,8 +72,9 @@ func (l *PaperCiteLogic) PaperCite(req *types.PaperCiteRequest) (resp *types.Pap
 	mlaCite += "\"" + source["title"].(string) + ".\" "
 	mlaCite += source["venue"].(map[string]interface{})["raw"].(string) + ", "
 	mlaCite += "vol. " + source["volume"].(string) + ", no. " + source["issue"].(string) + ", "
-	mlaCite += source["year"].(string) + ", "
+	mlaCite += strconv.Itoa(NilHandler(source["year"], "int").(int)) + ", "
 	mlaCite += "pp. " + source["page_start"].(string) + "-" + source["page_end"].(string) + "."
+	log.Println(mlaCite)
 	// APA
 	var apaCite string
 	author = NilHandler(source["authors"].([]interface{})[0].(map[string]interface{})["name"], "string").(string)
@@ -84,22 +87,24 @@ func (l *PaperCiteLogic) PaperCite(req *types.PaperCiteRequest) (resp *types.Pap
 	} else {
 		author = authorName[0] + ", "
 	}
-	apaCite += author + "(" + source["year"].(string) + "). "
+	apaCite += author + "(" + strconv.Itoa(NilHandler(source["year"], "int").(int)) + "). "
 	apaCite += source["title"].(string) + ". "
 	apaCite += source["venue"].(map[string]interface{})["raw"].(string) + ", "
 	apaCite += "(" + source["issue"].(string) + "), "
 	apaCite += source["page_start"].(string) + "-" + source["page_end"].(string) + "."
+	log.Println(apaCite)
 	// Bibtex
 	var bibtex string
 	bibtex += "@" + ParseBibtexDocType(NilHandler(source["doc_type"], "string").(string)) + "{CiteKey" + ParseBibtexDocType(NilHandler(source["doc_type"], "string").(string)) + ",\n"
 	bibtex += "  title\t= " + source["title"].(string) + ",\n"
 	bibtex += "  author\t= " + NilHandler(source["authors"].([]interface{})[0].(map[string]interface{})["name"], "string").(string) + ",\n"
 	bibtex += "  journal\t= " + source["venue"].(map[string]interface{})["raw"].(string) + ",\n"
-	bibtex += "  year\t= " + source["year"].(string) + ",\n"
+	bibtex += "  year\t= " + strconv.Itoa(NilHandler(source["year"], "int").(int)) + ",\n"
 	bibtex += "  volume\t= " + source["volume"].(string) + ",\n"
 	bibtex += "  number\t= " + source["issue"].(string) + ",\n"
 	bibtex += "  pages\t= " + source["page_start"].(string) + "-" + source["page_end"].(string) + ",\n"
 	bibtex += "}"
+	log.Println(bibtex)
 	// generate caj_cd cite string
 	var cajCdCite string
 	cajCdCite += "[1]"
@@ -107,8 +112,9 @@ func (l *PaperCiteLogic) PaperCite(req *types.PaperCiteRequest) (resp *types.Pap
 	cajCdCite += source["title"].(string)
 	cajCdCite += "[" + ParseGBDocType(NilHandler(source["doc_type"], "string").(string)) + "]."
 	cajCdCite += source["venue"].(map[string]interface{})["raw"].(string) + ","
-	cajCdCite += source["year"].(string) + "."
+	cajCdCite += strconv.Itoa(NilHandler(source["year"], "int").(int)) + "."
 	cajCdCite += source["page_start"].(string) + "-" + source["page_end"].(string) + "."
+	log.Println(cajCdCite)
 
 	resp = &types.PaperCiteResponse{
 		Gb:     gbCite,
