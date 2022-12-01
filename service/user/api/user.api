@@ -1,4 +1,11 @@
 type (
+	//是否登录
+	IsLoginRequest {
+	}
+	IsLoginResponse {
+		Code int64 `json:"code"` //0登录 1 未登录
+	}
+	//是否登录
 	// 用户登录
 	LoginRequest {
 		LoginId  string `json:"login_id"`
@@ -163,6 +170,8 @@ type CommentLikedReply {
 	IsLiked int64 `json:"is_liked"`
 }
 service User {
+	@handler IsLogin
+	post /api/user/is-login (IsLoginRequest) returns (IsLoginResponse)
 	@handler Login
 	post /api/user/login(LoginRequest) returns (LoginResponse)
 	@handler Register

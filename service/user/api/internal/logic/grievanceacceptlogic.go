@@ -4,6 +4,7 @@ import (
 	"context"
 	message2 "soft2_backend/service/message/rpc/types/message"
 	"soft2_backend/service/paper/rpc/streamgreeter"
+	"strconv"
 
 	"soft2_backend/service/user/api/internal/svc"
 	"soft2_backend/service/user/api/internal/types"
@@ -32,9 +33,9 @@ func (l *GrievanceAcceptLogic) GrievanceAccept(req *types.GrievanceAcceptRequest
 	defendantId := grievance.DefendantId
 	paperId := grievance.PaperId
 	_, _ = l.svcCtx.PaperRpc.MovePaper(l.ctx, &streamgreeter.MovePaperReq{
-		PaperId:  string(paperId),
-		OwnerId:  string(defendantId),
-		TargetId: string(plaintiffId),
+		PaperId:  strconv.FormatInt(paperId, 10),
+		OwnerId:  strconv.FormatInt(defendantId, 10),
+		TargetId: strconv.FormatInt(plaintiffId, 10),
 	})
 	//告知申诉结果
 	_, _ = l.svcCtx.MessageRpc.CreateMessage(l.ctx, &message2.CreateMessageReq{
@@ -43,7 +44,7 @@ func (l *GrievanceAcceptLogic) GrievanceAccept(req *types.GrievanceAcceptRequest
 		MessageType: 6,
 		Result:      0,
 		GId:         req.GrievanceId,
-		PId:         paperId,
+		PId:         strconv.FormatInt(paperId, 10),
 	})
 	return &types.GrievanceAcceptResponse{}, nil
 }

@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	message2 "soft2_backend/service/message/rpc/types/message"
+	"strconv"
 
 	"soft2_backend/service/user/api/internal/svc"
 	"soft2_backend/service/user/api/internal/types"
@@ -36,7 +37,7 @@ func (l *GrievanceRefuseLogic) GrievanceRefuse(req *types.GrievanceRefuseRequest
 		MessageType: 6,
 		Result:      1,
 		GId:         req.GrievanceId,
-		PId:         paperId,
+		PId:         strconv.FormatInt(paperId, 10),
 	})
 	return &types.GrievanceRefuseResponse{}, nil
 }

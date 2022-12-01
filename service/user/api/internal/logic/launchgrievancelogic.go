@@ -8,6 +8,7 @@ import (
 	"soft2_backend/service/user/api/internal/svc"
 	"soft2_backend/service/user/api/internal/types"
 	"soft2_backend/service/user/model"
+	"strconv"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -34,7 +35,7 @@ func (l *LaunchGrievanceLogic) LaunchGrievance(req *types.LaunchGrievanceRequest
 	plaintiff, _ := l.svcCtx.ApplyRpc.CheckIdentify(l.ctx, &apply.CheckIdentifyReq{
 		UserId: tempId,
 	})
-	plaintiffId := plaintiff.ScholarId //申诉学者id
+	plaintiffId, err := strconv.ParseInt(plaintiff.ScholarId, 10, 64)
 	newGrievance := model.Grievance{
 		PlaintiffId: plaintiffId,
 		DefendantId: defendantId,
@@ -49,7 +50,7 @@ func (l *LaunchGrievanceLogic) LaunchGrievance(req *types.LaunchGrievanceRequest
 		MessageType: 4,
 		UId:         plaintiffId,
 		GId:         gId,
-		PId:         paperId,
+		PId:         strconv.FormatInt(paperId, 10),
 	})
 	return &types.LaunchGrievanceResponse{}, nil
 }
