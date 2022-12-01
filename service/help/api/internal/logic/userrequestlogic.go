@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"encoding/json"
+	"soft2_backend/service/user/model"
 
 	"soft2_backend/service/help/api/internal/svc"
 	"soft2_backend/service/help/api/internal/types"
@@ -41,8 +42,12 @@ func (l *UserRequestLogic) UserRequest(req *types.UserReqReq) (resp *types.UserR
 			request.RequestContent = oneReq.RequestContent
 			request.Wealth = oneReq.Wealth
 			request.Type = oneReq.RequestStatus
-			help, _ := l.svcCtx.LiteratureHelpModel.FindOneByReqId(l.ctx, oneReq.Id)
-			request.HelpId = help.Id
+			help, err := l.svcCtx.LiteratureHelpModel.FindOneByReqId(l.ctx, oneReq.Id)
+			if err == model.ErrNotFound {
+				request.HelpId = 0
+			} else {
+				request.HelpId = help.Id
+			}
 			reql = append(reql, request)
 		}
 	}
