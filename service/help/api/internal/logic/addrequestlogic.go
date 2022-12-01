@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"soft2_backend/service/help/model"
+	"time"
 
 	"soft2_backend/service/help/api/internal/svc"
 	"soft2_backend/service/help/api/internal/types"
@@ -46,6 +47,7 @@ func (l *AddRequestLogic) AddRequest(req *types.AddRequestsReq) (resp *types.Add
 	newRequest.Link = req.Link
 	newRequest.RequestContent = req.Content
 	newRequest.Wealth = req.Wealth
+	newRequest.RequestTime = time.Now()
 	_, err = l.svcCtx.LiteratureRequestModel.Insert(l.ctx, newRequest)
 	if err != nil {
 		return nil, err
