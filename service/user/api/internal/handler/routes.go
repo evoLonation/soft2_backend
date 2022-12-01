@@ -92,6 +92,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/api/grievance/refuse",
 				Handler: GrievanceRefuseHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/api/paper/comment-liked",
+				Handler: IfLikedHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/api/paper/is-star",
+				Handler: IfCollectHandler(serverCtx),
+			},
 		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 	)

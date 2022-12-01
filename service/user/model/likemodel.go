@@ -1,8 +1,6 @@
 package model
 
 import (
-	_ "github.com/lib/pq"
-	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
 
@@ -21,8 +19,8 @@ type (
 )
 
 // NewLikeModel returns a model for the database table.
-func NewLikeModel(conn sqlx.SqlConn, c cache.CacheConf) LikeModel {
+func NewLikeModel(conn sqlx.SqlConn) LikeModel {
 	return &customLikeModel{
-		defaultLikeModel: newLikeModel(conn, c),
+		defaultLikeModel: newLikeModel(conn),
 	}
 }

@@ -129,13 +129,27 @@ type GrievanceRefuseResponse struct {
 }
 
 type GetCommentRequest struct {
-	Start   int64 `json:"start"`
-	End     int64 `json:"end"`
 	PaperId int64 `json:"paper_id"`
 }
 
 type GetCommentReply struct {
 	Comments []CommentReply `json:"requests"`
+}
+
+type IfCollectPaperRequest struct {
+	PaperId int64 `json:"paper_id"`
+}
+
+type IfCollectPaperResponse struct {
+	IsStar int64 `json:"is_star"` //0收藏过 1没有收藏过
+}
+
+type IsLikeCommentRequest struct {
+	PaperId int64 `json:"paper_id"`
+}
+
+type IsLikeCommentResponse struct {
+	CommentLiked []CommentLikedReply `json:"comments_liked"`
 }
 
 type CommentReply struct {
@@ -145,5 +159,8 @@ type CommentReply struct {
 	Content   string `json:"content"`
 	Date      string `json:"date"`
 	Likes     int64  `json:"likes"`
-	Liked     int64  `json:"liked"`
+}
+
+type CommentLikedReply struct {
+	IsLiked int64 `json:"is_liked"`
 }

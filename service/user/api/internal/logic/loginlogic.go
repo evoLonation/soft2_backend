@@ -3,7 +3,6 @@ package logic
 import (
 	"context"
 	"errors"
-	"fmt"
 	"github.com/golang-jwt/jwt/v4"
 	"soft2_backend/service/user/api/internal/svc"
 	"soft2_backend/service/user/api/internal/types"
@@ -53,7 +52,6 @@ func (l *LoginLogic) Login(req *types.LoginRequest) (resp *types.LoginResponse, 
 	if err != nil {
 		return nil, err
 	}
-	fmt.Printf("~~~~~~\n%s\n~~~~~~~~~", l.ctx.Value("exp"))
 	return &types.LoginResponse{
 		Code:     0,
 		Token:    jwtToken,

@@ -28,8 +28,8 @@ func (l *SubscribeLogic) Subscribe(req *types.SubscribeRequest) (resp *types.Sub
 	// todo: add your logic here and delete this line
 	userId := req.UserId
 	scholarId := req.ScholarId
-	temp, _ := l.svcCtx.SubscribeModel.FindSubscribeId(l.ctx, userId, scholarId)
-	if temp != nil {
+	_, err = l.svcCtx.SubscribeModel.FindSubscribeId(l.ctx, userId, scholarId)
+	if err != model.ErrNotFound {
 		return &types.SubscribeResponse{Code: 1}, nil
 	}
 	newSubscribe := model.Subscribe{

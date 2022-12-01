@@ -27,12 +27,11 @@ func NewCollectPaperLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Coll
 
 func (l *CollectPaperLogic) CollectPaper(req *types.CollectPaperRequest) (resp *types.CollectPaperResponse, err error) {
 	// todo: add your logic here and delete this line
-
-	temp, err := l.svcCtx.CollectModel.FindOneByTwo(l.ctx, 3, req.PaperId)
-	if temp != nil {
+	userId, _ := l.ctx.Value("UserId").(json.Number).Int64()
+	_, err = l.svcCtx.CollectModel.FindOneByTwo(l.ctx, userId, req.PaperId)
+	if err != model.ErrNotFound {
 		return &types.CollectPaperResponse{Code: 1}, nil
 	}
-	userId, _ := l.ctx.Value("UserId").(json.Number).Int64()
 	newCollect := model.Collect{
 		UserId:     userId,
 		PaperId:    req.PaperId,

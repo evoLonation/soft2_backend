@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"soft2_backend/service/user/model"
 
 	"soft2_backend/service/user/api/internal/svc"
@@ -28,7 +29,9 @@ func NewUserInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserInfo
 
 func (l *UserInfoLogic) UserInfo() (resp *types.UserInfoResponse, err error) {
 	// todo: add your logic here and delete this line
+	fmt.Printf("herehere\n")
 	userId, _ := l.ctx.Value("UserId").(json.Number).Int64()
+	fmt.Printf("\n~~~~~~~~~%d~~~~~~~~~~\n", userId)
 	res, err := l.svcCtx.UserModel.FindOne(l.ctx, userId)
 	if err != nil {
 		if err == model.ErrNotFound {
@@ -43,6 +46,5 @@ func (l *UserInfoLogic) UserInfo() (resp *types.UserInfoResponse, err error) {
 		Helps:      res.Help,
 		Follows:    res.Follows,
 		Complaints: res.Complaints,
-		Wealth:     res.Money,
 	}, nil
 }

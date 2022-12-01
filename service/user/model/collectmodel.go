@@ -1,8 +1,6 @@
 package model
 
 import (
-	_ "github.com/lib/pq"
-	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
 
@@ -21,8 +19,8 @@ type (
 )
 
 // NewCollectModel returns a model for the database table.
-func NewCollectModel(conn sqlx.SqlConn, c cache.CacheConf) CollectModel {
+func NewCollectModel(conn sqlx.SqlConn) CollectModel {
 	return &customCollectModel{
-		defaultCollectModel: newCollectModel(conn, c),
+		defaultCollectModel: newCollectModel(conn),
 	}
 }

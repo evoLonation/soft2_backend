@@ -71,6 +71,7 @@ type (
 		Code int64 `json:"code"` //0成功 1尚未登录
 	}
 	//删除评论
+
 	//点赞评论
 	LikeCommentRequest {
 		CommentId int64 `json:"comment_id"`
@@ -128,13 +129,27 @@ type (
 	}
 	//拒绝误认领申诉
 	GetCommentRequest {
-		Start   int64 `json:"start"`
-		End     int64 `json:"end"`
 		PaperId int64 `json:"paper_id"`
 	}
 	GetCommentReply {
 		Comments []CommentReply `json:"requests"`
 	}
+	//是否收藏过文献
+	IfCollectPaperRequest {
+		PaperId int64 `json:"paper_id"`
+	}
+	IfCollectPaperResponse {
+		IsStar int64 `json:"is_star"` //0收藏过 1没有收藏过
+	}
+	//是否收藏过文献
+	//是否点赞过评论
+	IsLikeCommentRequest {
+		PaperId int64 `json:"paper_id"`
+	}
+	IsLikeCommentResponse {
+		CommentLiked []CommentLikedReply `json:"comments_liked"`
+	}
+	//是否点赞过评论
 )
 type CommentReply {
 	CommentId int64  `json:"comment_id"`
@@ -143,7 +158,9 @@ type CommentReply {
 	Content   string `json:"content"`
 	Date      string `json:"date"`
 	Likes     int64  `json:"likes"`
-	Liked     int64  `json:"liked"`
+}
+type CommentLikedReply {
+	IsLiked int64 `json:"is_liked"`
 }
 service User {
 	@handler Login
@@ -182,4 +199,8 @@ service User {
 	post /api/grievance/accept(GrievanceAcceptRequest) returns(GrievanceAcceptResponse)
 	@handler GrievanceRefuse
 	post /api/grievance/refuse(GrievanceRefuseRequest) returns(GrievanceRefuseResponse)
+	@handler IfLiked
+	post /api/paper/comment-liked (IsLikeCommentRequest) returns (IsLikeCommentResponse)
+	@handler IfCollect
+	post /api/paper/is-star (IfCollectPaperRequest) returns (IfCollectPaperResponse)
 }

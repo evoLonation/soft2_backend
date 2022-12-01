@@ -1,7 +1,7 @@
 package model
 
 import (
-	"github.com/zeromicro/go-zero/core/stores/cache"
+	_ "github.com/lib/pq"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
 
@@ -20,8 +20,8 @@ type (
 )
 
 // NewSubscribeModel returns a model for the database table.
-func NewSubscribeModel(conn sqlx.SqlConn, c cache.CacheConf) SubscribeModel {
+func NewSubscribeModel(conn sqlx.SqlConn) SubscribeModel {
 	return &customSubscribeModel{
-		defaultSubscribeModel: newSubscribeModel(conn, c),
+		defaultSubscribeModel: newSubscribeModel(conn),
 	}
 }

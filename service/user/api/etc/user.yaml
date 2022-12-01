@@ -25,3 +25,8 @@ PaperRpc:
     Hosts:
       - 120.46.220.182:2379
     Key: paper.rpc
+HelpRpc:
+  Etcd:
+    Hosts:
+      - 120.46.220.182:2379
+    Key: help.rpc
