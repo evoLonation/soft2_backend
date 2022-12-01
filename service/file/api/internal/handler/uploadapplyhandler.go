@@ -27,7 +27,7 @@ func UploadApplyHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			logx.Alert(err.Error())
 			return
 		}
-		l.ScholarId, err = strconv.ParseInt(r.FormValue("scholar_id"), 10, 64)
+		l.ScholarId = r.FormValue("scholar_id")
 		if err != nil {
 			httpx.Error(w, errors.New("无法得到request_id"))
 			logx.Alert(err.Error())
