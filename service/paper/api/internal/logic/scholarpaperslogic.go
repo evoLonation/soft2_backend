@@ -48,6 +48,8 @@ func (l *ScholarPapersLogic) ScholarPapers(req *types.ScholarPapersRequest) (res
 	res := database.SearchAuthor(authorBuf)
 
 	var papers Papers
+	var maxYear = 0
+	var minYear = 3000
 	pubs := res["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})["pubs"].([]interface{})
 	for _, pub := range pubs {
 		if req.IsFirst && int(pub.(map[string]interface{})["r"].(float64)) != 0 {
@@ -85,6 +87,11 @@ func (l *ScholarPapersLogic) ScholarPapers(req *types.ScholarPapersRequest) (res
 				HasId: hasId,
 			})
 		}
+		if NilHandler(paper["year"], "int").(int) > maxYear {
+			maxYear = NilHandler(paper["year"], "int").(int)
+		} else if NilHandler(paper["year"], "int").(int) < minYear {
+			minYear = NilHandler(paper["year"], "int").(int)
+		}
 		papers = append(papers, &types.PaperResponseJSON{
 			Title:     paper["title"].(string),
 			Abstract:  NilHandler(paper["abstract"], "string").(string),
@@ -103,8 +110,10 @@ func (l *ScholarPapersLogic) ScholarPapers(req *types.ScholarPapersRequest) (res
 	}
 
 	resp = &types.ScholarPapersResponse{
-		PaperNum: len(sortedPapers),
-		Papers:   sortedPapers[int(math.Min(float64(req.Start), float64(len(sortedPapers)))):int(math.Min(float64(req.End), float64(len(sortedPapers))))],
+		PaperNum:  len(sortedPapers),
+		StartYear: minYear,
+		EndYear:   maxYear,
+		Papers:    sortedPapers[int(math.Min(float64(req.Start), float64(len(sortedPapers)))):int(math.Min(float64(req.End), float64(len(sortedPapers))))],
 	}
 	return
 }

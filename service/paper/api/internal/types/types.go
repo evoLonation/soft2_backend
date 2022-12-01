@@ -186,8 +186,10 @@ type ScholarPapersRequest struct {
 }
 
 type ScholarPapersResponse struct {
-	PaperNum int                 `json:"paper_num"`
-	Papers   []PaperResponseJSON `json:"papers"`
+	PaperNum  int                 `json:"paper_num"`
+	StartYear int                 `json:"start_year"`
+	EndYear   int                 `json:"end_year"`
+	Papers    []PaperResponseJSON `json:"papers"`
 }
 
 type ScholarBarchartRequest struct {
