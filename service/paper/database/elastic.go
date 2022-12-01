@@ -74,6 +74,23 @@ func MgetPaper(query bytes.Buffer) map[string]interface{} {
 	return res
 }
 
+func MgetScholer(query bytes.Buffer) map[string]interface{} {
+	var res map[string]interface{}
+	resp, err := es.Mget(
+		io.Reader(&query),
+		es.Mget.WithContext(context.Background()),
+		es.Mget.WithIndex("authors"),
+		es.Mget.WithPretty(),
+	)
+	if err != nil {
+		log.Printf("Error getting response: %s\n", err)
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&res); err != nil {
+		log.Printf("Error parsing the response body: %s\n", err)
+	}
+	return res
+}
+
 func UpdatePaper(query bytes.Buffer, id string) map[string]interface{} {
 	var res map[string]interface{}
 	resp, err := es.Update(

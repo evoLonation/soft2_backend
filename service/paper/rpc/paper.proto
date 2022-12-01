@@ -5,6 +5,7 @@ option go_package = "./paper";
 
 service StreamGreeter {
   rpc CheckScholar(CheckScholarReq) returns (CreateScholarReply);
+  rpc ListCheckScholar(ListCheckScholarReq) returns (ListCreateScholarReply);
   rpc MovePaper(MovePaperReq) returns (MovePaperReply);
   rpc GetPaperName(GetPaperNameReq) returns (GetPaperNameReply);
 }
@@ -15,6 +16,14 @@ message CheckScholarReq {
 message CreateScholarReply {
   string scholarName = 1;
   string institution = 2;
+}
+
+message ListCheckScholarReq {
+  repeated string scholarId = 1;
+}
+
+message ListCreateScholarReply {
+  repeated CreateScholarReply scholars = 1;
 }
 
 message MovePaperReq {

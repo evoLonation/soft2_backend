@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type StreamGreeterClient interface {
 	CheckScholar(ctx context.Context, in *CheckScholarReq, opts ...grpc.CallOption) (*CreateScholarReply, error)
+	ListCheckScholar(ctx context.Context, in *ListCheckScholarReq, opts ...grpc.CallOption) (*ListCreateScholarReply, error)
 	MovePaper(ctx context.Context, in *MovePaperReq, opts ...grpc.CallOption) (*MovePaperReply, error)
 	GetPaperName(ctx context.Context, in *GetPaperNameReq, opts ...grpc.CallOption) (*GetPaperNameReply, error)
 }
@@ -38,6 +39,15 @@ func NewStreamGreeterClient(cc grpc.ClientConnInterface) StreamGreeterClient {
 func (c *streamGreeterClient) CheckScholar(ctx context.Context, in *CheckScholarReq, opts ...grpc.CallOption) (*CreateScholarReply, error) {
 	out := new(CreateScholarReply)
 	err := c.cc.Invoke(ctx, "/paper.StreamGreeter/CheckScholar", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *streamGreeterClient) ListCheckScholar(ctx context.Context, in *ListCheckScholarReq, opts ...grpc.CallOption) (*ListCreateScholarReply, error) {
+	out := new(ListCreateScholarReply)
+	err := c.cc.Invoke(ctx, "/paper.StreamGreeter/ListCheckScholar", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -67,6 +77,7 @@ func (c *streamGreeterClient) GetPaperName(ctx context.Context, in *GetPaperName
 // for forward compatibility
 type StreamGreeterServer interface {
 	CheckScholar(context.Context, *CheckScholarReq) (*CreateScholarReply, error)
+	ListCheckScholar(context.Context, *ListCheckScholarReq) (*ListCreateScholarReply, error)
 	MovePaper(context.Context, *MovePaperReq) (*MovePaperReply, error)
 	GetPaperName(context.Context, *GetPaperNameReq) (*GetPaperNameReply, error)
 	mustEmbedUnimplementedStreamGreeterServer()
@@ -78,6 +89,9 @@ type UnimplementedStreamGreeterServer struct {
 
 func (UnimplementedStreamGreeterServer) CheckScholar(context.Context, *CheckScholarReq) (*CreateScholarReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckScholar not implemented")
+}
+func (UnimplementedStreamGreeterServer) ListCheckScholar(context.Context, *ListCheckScholarReq) (*ListCreateScholarReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListCheckScholar not implemented")
 }
 func (UnimplementedStreamGreeterServer) MovePaper(context.Context, *MovePaperReq) (*MovePaperReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MovePaper not implemented")
@@ -112,6 +126,24 @@ func _StreamGreeter_CheckScholar_Handler(srv interface{}, ctx context.Context, d
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(StreamGreeterServer).CheckScholar(ctx, req.(*CheckScholarReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StreamGreeter_ListCheckScholar_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListCheckScholarReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StreamGreeterServer).ListCheckScholar(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/paper.StreamGreeter/ListCheckScholar",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StreamGreeterServer).ListCheckScholar(ctx, req.(*ListCheckScholarReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -162,6 +194,10 @@ var StreamGreeter_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CheckScholar",
 			Handler:    _StreamGreeter_CheckScholar_Handler,
+		},
+		{
+			MethodName: "ListCheckScholar",
+			Handler:    _StreamGreeter_ListCheckScholar_Handler,
 		},
 		{
 			MethodName: "MovePaper",
