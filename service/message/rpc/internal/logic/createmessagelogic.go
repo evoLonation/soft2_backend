@@ -39,9 +39,9 @@ func (l *CreateMessageLogic) CreateMessage(in *message.CreateMessageReq) (*messa
 	switch in.MessageType {
 	case 1:
 	case 2:
-		newMessage.PId = sql.NullInt64{
-			Int64: in.PId,
-			Valid: true,
+		newMessage.PId = sql.NullString{
+			String: in.PId,
+			Valid:  true,
 		}
 	case 3:
 		newMessage.UId = sql.NullInt64{
@@ -58,9 +58,9 @@ func (l *CreateMessageLogic) CreateMessage(in *message.CreateMessageReq) (*messa
 			Int64: in.GId,
 			Valid: true,
 		}
-		newMessage.PId = sql.NullInt64{
-			Int64: in.PId,
-			Valid: true,
+		newMessage.PId = sql.NullString{
+			String: in.PId,
+			Valid:  true,
 		}
 		break
 	case 6:
@@ -68,9 +68,9 @@ func (l *CreateMessageLogic) CreateMessage(in *message.CreateMessageReq) (*messa
 			Int64: in.GId,
 			Valid: true,
 		}
-		newMessage.PId = sql.NullInt64{
-			Int64: in.PId,
-			Valid: true,
+		newMessage.PId = sql.NullString{
+			String: in.PId,
+			Valid:  true,
 		}
 	case 5:
 		newMessage.Result = sql.NullInt64{

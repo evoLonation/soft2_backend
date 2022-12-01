@@ -16,6 +16,6 @@ ADD go.sum .
 RUN go mod download
 COPY . .
 COPY service/help/rpc/etc /app/etc
-RUN go build -ldflags="-s -w" -o /app/main service/help/rpc/help.go
+RUN go build -ldflags="-s -w" -o /app/main service/help/rpc/main.go
 WORKDIR /app
 CMD ["./main", "-f", "etc/help.yaml"]

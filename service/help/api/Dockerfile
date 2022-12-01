@@ -16,6 +16,6 @@ ADD go.sum .
 RUN go mod download
 COPY . .
 COPY service/help/api/etc /app/etc
-RUN go build -ldflags="-s -w" -o /app/main service/help/api/help.go
+RUN go build -ldflags="-s -w" -o /app/main service/help/api/main.go
 WORKDIR /app
 CMD ["./main", "-f", "etc/help-api.yaml"]

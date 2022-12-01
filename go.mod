@@ -5,6 +5,7 @@ go 1.18
 require (
 	github.com/elastic/go-elasticsearch/v7 v7.17.7
 	github.com/golang-jwt/jwt/v4 v4.4.2
+	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible
 	github.com/lib/pq v1.10.7
 	github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d
 	github.com/zeromicro/go-zero v1.4.2
