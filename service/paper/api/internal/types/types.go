@@ -170,10 +170,10 @@ type ScholarCooperationResponse struct {
 }
 
 type CoopJSON struct {
-	ScholarId   string `json:"id"`
-	Name        string `json:"name"`
-	Institution string `json:"institution"`
-	Time        int    `json:"time"`
+	ScholarId   string   `json:"id"`
+	Name        string   `json:"name"`
+	Institution []string `json:"institution"`
+	Time        int      `json:"time"`
 }
 
 type ScholarPapersRequest struct {

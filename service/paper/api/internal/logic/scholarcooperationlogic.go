@@ -88,7 +88,11 @@ func (l *ScholarCooperationLogic) ScholarCooperation(req *types.ScholarCooperati
 				log.Println(coopBuf.String())
 				res = database.SearchAuthor(coopBuf)
 				source := res["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})
-				coopJSON.Institution = source["orgs"].([]interface{})[0].(string)
+				var institutions []string
+				for _, institution := range source["orgs"].([]interface{}) {
+					institutions = append(institutions, institution.(string))
+				}
+				coopJSON.Institution = institutions
 				coopList[author.(map[string]interface{})["id"].(string)] = coopJSON
 			}
 		}
