@@ -10,7 +10,7 @@ service StreamGreeter {
 }
 
 message CheckScholarReq {
-  int64 scholarId = 1;
+  string scholarId = 1;
 }
 message CreateScholarReply {
   string scholarName = 1;

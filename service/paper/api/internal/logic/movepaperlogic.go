@@ -99,7 +99,8 @@ func (l *MovePaperLogic) MovePaper(req *types.MovePaperRequest) (resp *types.Mov
 	}
 	log.Println(updateBuf.String())
 	updatePaperRes := database.UpdatePaper(updateBuf, req.PaperId)
-	if updatePaperRes["_shards"].(map[string]interface{})["successful"] != 1 {
+	log.Println(updatePaperRes)
+	if int(updatePaperRes["_shards"].(map[string]interface{})["successful"].(float64)) != 1 {
 		return nil, errors.New("update paper error")
 	}
 
@@ -108,7 +109,7 @@ func (l *MovePaperLogic) MovePaper(req *types.MovePaperRequest) (resp *types.Mov
 	for i, ownerPaper := range ownerPapers {
 		p := ownerPaper.(map[string]interface{})
 		if p["i"] == req.PaperId {
-			rank = p["r"].(int)
+			rank = int(p["r"].(float64))
 			ownerPapers = append(ownerPapers[:i], ownerPapers[i+1:]...)
 			break
 		}
@@ -124,7 +125,7 @@ func (l *MovePaperLogic) MovePaper(req *types.MovePaperRequest) (resp *types.Mov
 	}
 	log.Println(updateOwnerBuf.String())
 	updateOwnerRes := database.UpdateAuthor(updateOwnerBuf, req.OwnerId)
-	if updateOwnerRes["_shards"].(map[string]interface{})["successful"] != 1 {
+	if int(updateOwnerRes["_shards"].(map[string]interface{})["successful"].(float64)) != 1 {
 		return nil, errors.New("update owner error")
 	}
 
@@ -144,7 +145,7 @@ func (l *MovePaperLogic) MovePaper(req *types.MovePaperRequest) (resp *types.Mov
 	}
 	log.Println(updateTargetBuf.String())
 	updateTargetRes := database.UpdateAuthor(updateTargetBuf, req.TargetId)
-	if updateTargetRes["_shards"].(map[string]interface{})["successful"] != 1 {
+	if int(updateTargetRes["_shards"].(map[string]interface{})["successful"].(float64)) != 1 {
 		return nil, errors.New("update target error")
 	}
 
