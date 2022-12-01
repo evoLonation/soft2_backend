@@ -2,8 +2,6 @@ package logic
 
 import (
 	"context"
-	"github.com/zeromicro/go-zero/core/stores/sqlc"
-
 	"soft2_backend/service/apply/rpc/internal/svc"
 	"soft2_backend/service/apply/rpc/types/apply"
 
@@ -31,11 +29,9 @@ func (l *CheckUserLogic) CheckUser(in *apply.CheckUserReq) (*apply.CheckUserRepl
 			IsVerified: true,
 			UserId:     identify.UserId,
 		}, nil
-	} else if err == sqlc.ErrNotFound {
+	} else {
 		return &apply.CheckUserReply{
 			IsVerified: false,
 		}, nil
-	} else {
-		return nil, err
 	}
 }
