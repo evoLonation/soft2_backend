@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"log"
 	"soft2_backend/service/paper/database"
+	"strconv"
 
 	"soft2_backend/service/paper/api/internal/svc"
 	"soft2_backend/service/paper/api/internal/types"
@@ -53,11 +54,11 @@ func (l *PaperRelationNetLogic) PaperRelationNet(req *types.PaperRelationNetRequ
 
 	majorNode := types.PaperNodeJSON{
 		Id:    req.Id,
-		Label: thisPaperSource["authors"].([]interface{})[0].(map[string]interface{})["name"].(string) + NilHandler(thisPaperSource["year"], "int").(string),
+		Label: thisPaperSource["authors"].([]interface{})[0].(map[string]interface{})["name"].(string) + strconv.Itoa(NilHandler(thisPaperSource["year"], "int").(int)),
 		Size:  NilHandler(thisPaperSource["n_citation"], "int").(int),
 		Type:  "major",
 		Style: types.StyleJSON{
-			Fill: NilHandler(thisPaperSource["year"], "int").(string),
+			Fill: strconv.Itoa(NilHandler(thisPaperSource["year"], "int").(int)),
 		},
 		Info: types.InfoJSON{
 			Id:       req.Id,
@@ -71,7 +72,7 @@ func (l *PaperRelationNetLogic) PaperRelationNet(req *types.PaperRelationNetRequ
 	UpdateMaxMin(&maxYear, &minYear, majorNode.Info.Year)
 	UpdateMaxMin(&maxCitation, &minCitation, majorNode.Size)
 
-	references := thisPaperSource["references"].([]interface{})
+	references := NilHandler(thisPaperSource["references"], "list").([]interface{})
 	referenceIds := make([]string, 0)
 	for _, reference := range references {
 		referenceIds = append(referenceIds, reference.(string))
@@ -105,15 +106,15 @@ func DFS(referenceIds []string, fatherNode types.PaperNodeJSON, level int) {
 	}
 	referenceRes := database.MgetPaper(referenceBuf)
 
-	papers := referenceRes["docs"].([]interface{})
+	papers := NilHandler(referenceRes["docs"], "list").([]interface{})
 	for _, paper := range papers {
 		source := paper.(map[string]interface{})["_source"].(map[string]interface{})
 		node := types.PaperNodeJSON{
 			Id:    source["id"].(string),
-			Label: source["authors"].([]interface{})[0].(map[string]interface{})["name"].(string) + NilHandler(source["year"], "int").(string),
+			Label: source["authors"].([]interface{})[0].(map[string]interface{})["name"].(string) + strconv.Itoa(NilHandler(source["year"], "int").(int)),
 			Size:  NilHandler(source["n_citation"], "int").(int),
 			Style: types.StyleJSON{
-				Fill: NilHandler(source["year"], "int").(string),
+				Fill: strconv.Itoa(NilHandler(source["year"], "int").(int)),
 			},
 			Info: types.InfoJSON{
 				Id:       source["id"].(string),
@@ -132,7 +133,7 @@ func DFS(referenceIds []string, fatherNode types.PaperNodeJSON, level int) {
 			Target: node.Id,
 		})
 
-		references := source["references"].([]interface{})
+		references := NilHandler(source["references"], "list").([]interface{})
 		referenceIds = make([]string, 0)
 		for _, reference := range references {
 			referenceIds = append(referenceIds, reference.(string))
