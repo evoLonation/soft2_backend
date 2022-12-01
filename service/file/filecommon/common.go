@@ -1,6 +1,8 @@
 package filecommon
 
 import (
+	"context"
+	"encoding/json"
 	"errors"
 	uuid "github.com/nu7hatch/gouuid"
 	"io"
@@ -113,6 +115,8 @@ func InitFile() {
 	if err != nil {
 		panic(err)
 	}
+	os.MkdirAll(FilePath, 0x777)
+	//os.MkdirAll(FilePath + "temp/", 0x777)
 	dst, err := os.Create(FilePath + DefaultAvatarName)
 	if err != nil {
 		panic(err)
@@ -121,4 +125,12 @@ func InitFile() {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func GetUserId(ctx context.Context) int64 {
+	userId, err := ctx.Value("UserId").(json.Number).Int64()
+	if err != nil {
+		panic(err)
+	}
+	return userId
 }

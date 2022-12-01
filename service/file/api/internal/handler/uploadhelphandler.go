@@ -1,7 +1,8 @@
 package handler
 
 import (
-	"mime/multipart"
+	"errors"
+	"github.com/zeromicro/go-zero/core/logx"
 	"net/http"
 	"soft2_backend/service/file/api/internal/logic"
 	"soft2_backend/service/file/filecommon"
@@ -19,26 +20,17 @@ func UploadHelpHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		}
 
 		l := logic.NewUploadHelpLogic(r.Context(), svcCtx)
-		fileNum, err := strconv.ParseInt(r.FormValue("file_num"), 10, 64)
+		var err error
+		l.File.File, l.File.FileHeader, err = r.FormFile("file")
 		if err != nil {
 			httpx.Error(w, err)
+			return
 		}
-		var index = 1
-		for index <= int(fileNum) {
-			file, header, err := r.FormFile("file" + strconv.Itoa(index))
-			if err != nil {
-				httpx.Error(w, err)
-			}
-			l.Files = append(l.Files, struct {
-				*multipart.FileHeader
-				multipart.File
-			}{FileHeader: header, File: file})
-		}
-
-		id := r.FormValue("request_id")
-		l.RequestId, err = strconv.ParseInt(id, 10, 64)
+		l.RequestId, err = strconv.ParseInt(r.FormValue("request_id"), 10, 64)
 		if err != nil {
-			httpx.Error(w, err)
+			httpx.Error(w, errors.New("无法得到request_id"))
+			logx.Alert(err.Error())
+			return
 		}
 
 		err = l.UploadHelp()
