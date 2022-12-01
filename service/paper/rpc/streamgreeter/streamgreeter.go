@@ -13,15 +13,18 @@ import (
 )
 
 type (
-	CheckScholarReq    = paper.CheckScholarReq
-	CreateScholarReply = paper.CreateScholarReply
-	GetPaperNameReply  = paper.GetPaperNameReply
-	GetPaperNameReq    = paper.GetPaperNameReq
-	MovePaperReply     = paper.MovePaperReply
-	MovePaperReq       = paper.MovePaperReq
+	CheckScholarReq        = paper.CheckScholarReq
+	CreateScholarReply     = paper.CreateScholarReply
+	GetPaperNameReply      = paper.GetPaperNameReply
+	GetPaperNameReq        = paper.GetPaperNameReq
+	ListCheckScholarReq    = paper.ListCheckScholarReq
+	ListCreateScholarReply = paper.ListCreateScholarReply
+	MovePaperReply         = paper.MovePaperReply
+	MovePaperReq           = paper.MovePaperReq
 
 	StreamGreeter interface {
 		CheckScholar(ctx context.Context, in *CheckScholarReq, opts ...grpc.CallOption) (*CreateScholarReply, error)
+		ListCheckScholar(ctx context.Context, in *ListCheckScholarReq, opts ...grpc.CallOption) (*ListCreateScholarReply, error)
 		MovePaper(ctx context.Context, in *MovePaperReq, opts ...grpc.CallOption) (*MovePaperReply, error)
 		GetPaperName(ctx context.Context, in *GetPaperNameReq, opts ...grpc.CallOption) (*GetPaperNameReply, error)
 	}
@@ -40,6 +43,11 @@ func NewStreamGreeter(cli zrpc.Client) StreamGreeter {
 func (m *defaultStreamGreeter) CheckScholar(ctx context.Context, in *CheckScholarReq, opts ...grpc.CallOption) (*CreateScholarReply, error) {
 	client := paper.NewStreamGreeterClient(m.cli.Conn())
 	return client.CheckScholar(ctx, in, opts...)
+}
+
+func (m *defaultStreamGreeter) ListCheckScholar(ctx context.Context, in *ListCheckScholarReq, opts ...grpc.CallOption) (*ListCreateScholarReply, error) {
+	client := paper.NewStreamGreeterClient(m.cli.Conn())
+	return client.ListCheckScholar(ctx, in, opts...)
 }
 
 func (m *defaultStreamGreeter) MovePaper(ctx context.Context, in *MovePaperReq, opts ...grpc.CallOption) (*MovePaperReply, error) {

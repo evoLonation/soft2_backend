@@ -79,5 +79,10 @@ func (l *CreateMessageLogic) CreateMessage(in *message.CreateMessageReq) (*messa
 		}
 	}
 
+	_, err := l.svcCtx.MessageModel.Insert(l.ctx, &newMessage)
+	if err != nil {
+		return nil, err
+	}
+
 	return &message.CreateMessageReply{}, nil
 }

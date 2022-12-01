@@ -27,6 +27,11 @@ func (s *StreamGreeterServer) CheckScholar(ctx context.Context, in *paper.CheckS
 	return l.CheckScholar(in)
 }
 
+func (s *StreamGreeterServer) ListCheckScholar(ctx context.Context, in *paper.ListCheckScholarReq) (*paper.ListCreateScholarReply, error) {
+	l := logic.NewListCheckScholarLogic(ctx, s.svcCtx)
+	return l.ListCheckScholar(in)
+}
+
 func (s *StreamGreeterServer) MovePaper(ctx context.Context, in *paper.MovePaperReq) (*paper.MovePaperReply, error) {
 	l := logic.NewMovePaperLogic(ctx, s.svcCtx)
 	return l.MovePaper(in)
