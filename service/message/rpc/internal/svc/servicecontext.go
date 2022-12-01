@@ -1,13 +1,20 @@
 package svc
 
-import "soft2_backend/service/message/rpc/internal/config"
+import (
+	"github.com/zeromicro/go-zero/core/stores/sqlx"
+	"soft2_backend/service/message/model"
+	"soft2_backend/service/message/rpc/internal/config"
+)
 
 type ServiceContext struct {
-	Config config.Config
+	Config       config.Config
+	MessageModel model.MessageModel
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
+	conn := sqlx.NewMysql(c.Mysql.DataSource)
 	return &ServiceContext{
-		Config: c,
+		Config:       c,
+		MessageModel: model.NewMessageModel(conn),
 	}
 }
