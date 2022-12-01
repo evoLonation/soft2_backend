@@ -62,6 +62,11 @@ func (l *PaperDetailLogic) PaperDetail(req *types.PaperDetailRequest) (resp *typ
 	for _, url := range source["url"].([]interface{}) {
 		urls = append(urls, NilHandler(url, "string").(string))
 	}
+	var keywordStrings []string
+	keywords := NilHandler(source["keywords"], "list").([]interface{})
+	for _, keyword := range keywords {
+		keywordStrings = append(keywordStrings, keyword.(string))
+	}
 	resp = &types.PaperDetailResponse{
 		Title:     source["title"].(string),
 		Abstract:  NilHandler(source["abstract"], "string").(string),
@@ -69,7 +74,7 @@ func (l *PaperDetailLogic) PaperDetail(req *types.PaperDetailRequest) (resp *typ
 		Doi:       NilHandler(source["doi"], "string").(string),
 		ISBN:      NilHandler(source["isbn"], "string").(string),
 		Org:       NilHandler(source["org"], "string").(string),
-		Keywords:  NilHandler(source["keywords"], "list").([]string),
+		Keywords:  keywordStrings,
 		Year:      NilHandler(source["year"], "int").(int),
 		NCitation: NilHandler(source["n_citation"], "int").(int),
 		Publisher: NilHandler(source["publisher"], "string").(string),
