@@ -1,6 +1,7 @@
 Name: user-api
 Host: 0.0.0.0
 Port: 8894
+MaxBytes: 33554432
 Mysql:
   DataSource: root:DiamondPick@tcp(120.46.220.182:3306)/zzy?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
 Auth:

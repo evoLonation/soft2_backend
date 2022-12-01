@@ -32,7 +32,7 @@ func (l *UploadAvatarLogic) UploadAvatar() error {
 	if err != nil {
 		return err
 	}
-	userId := l.ctx.Value("userId").(int64)
+	userId := filecommon.GetUserId(l.ctx)
 	err = l.svcCtx.UserAvatarModel.Delete(l.ctx, userId)
 	err = filecommon.SqlErrorCheck(err)
 	if err != nil && err != filecommon.NoRowError {
