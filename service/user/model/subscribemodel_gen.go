@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	"github.com/zeromicro/go-zero/core/stores/builder"
-	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"github.com/zeromicro/go-zero/core/stringx"
@@ -18,10 +17,8 @@ import (
 var (
 	subscribeFieldNames          = builder.RawFieldNames(&Subscribe{})
 	subscribeRows                = strings.Join(subscribeFieldNames, ",")
-	subscribeRowsExpectAutoSet   = strings.Join(stringx.Remove(subscribeFieldNames, "`subscribe_id`", "`updated_at`", "`update_time`", "`create_at`", "`created_at`", "`create_time`", "`update_at`"), ",")
-	subscribeRowsWithPlaceHolder = strings.Join(stringx.Remove(subscribeFieldNames, "`subscribe_id`", "`updated_at`", "`update_time`", "`create_at`", "`created_at`", "`create_time`", "`update_at`"), "=?,") + "=?"
-
-	cacheSubscribeSubscribeIdPrefix = "cache:subscribe:subscribeId:"
+	subscribeRowsExpectAutoSet   = strings.Join(stringx.Remove(subscribeFieldNames, "`subscribe_id`", "`update_at`", "`updated_at`", "`update_time`", "`create_at`", "`created_at`", "`create_time`"), ",")
+	subscribeRowsWithPlaceHolder = strings.Join(stringx.Remove(subscribeFieldNames, "`subscribe_id`", "`update_at`", "`updated_at`", "`update_time`", "`create_at`", "`created_at`", "`create_time`"), "=?,") + "=?"
 )
 
 type (
@@ -34,7 +31,7 @@ type (
 	}
 
 	defaultSubscribeModel struct {
-		sqlc.CachedConn
+		conn  sqlx.SqlConn
 		table string
 	}
 
@@ -45,29 +42,23 @@ type (
 	}
 )
 
-func newSubscribeModel(conn sqlx.SqlConn, c cache.CacheConf) *defaultSubscribeModel {
+func newSubscribeModel(conn sqlx.SqlConn) *defaultSubscribeModel {
 	return &defaultSubscribeModel{
-		CachedConn: sqlc.NewConn(conn, c),
-		table:      "`subscribe`",
+		conn:  conn,
+		table: "`subscribe`",
 	}
 }
 
 func (m *defaultSubscribeModel) Delete(ctx context.Context, subscribeId int64) error {
-	subscribeSubscribeIdKey := fmt.Sprintf("%s%v", cacheSubscribeSubscribeIdPrefix, subscribeId)
-	_, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("delete from %s where `subscribe_id` = ?", m.table)
-		return conn.ExecCtx(ctx, query, subscribeId)
-	}, subscribeSubscribeIdKey)
+	query := fmt.Sprintf("delete from %s where `subscribe_id` = ?", m.table)
+	_, err := m.conn.ExecCtx(ctx, query, subscribeId)
 	return err
 }
 
 func (m *defaultSubscribeModel) FindOne(ctx context.Context, subscribeId int64) (*Subscribe, error) {
-	subscribeSubscribeIdKey := fmt.Sprintf("%s%v", cacheSubscribeSubscribeIdPrefix, subscribeId)
+	query := fmt.Sprintf("select %s from %s where `subscribe_id` = ? limit 1", subscribeRows, m.table)
 	var resp Subscribe
-	err := m.QueryRowCtx(ctx, &resp, subscribeSubscribeIdKey, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
-		query := fmt.Sprintf("select %s from %s where `subscribe_id` = ? limit 1", subscribeRows, m.table)
-		return conn.QueryRowCtx(ctx, v, query, subscribeId)
-	})
+	err := m.conn.QueryRowCtx(ctx, &resp, query, subscribeId)
 	switch err {
 	case nil:
 		return &resp, nil
@@ -77,13 +68,11 @@ func (m *defaultSubscribeModel) FindOne(ctx context.Context, subscribeId int64) 
 		return nil, err
 	}
 }
+
 func (m *defaultSubscribeModel) FindSubscribeId(ctx context.Context, userId int64, scholarId int64) (*Subscribe, error) {
-	subscribeSubscribeIdKey := fmt.Sprintf("%s%v%v", cacheSubscribeSubscribeIdPrefix, userId, scholarId)
+	query := fmt.Sprintf("select %s from %s where user_id = %d and scholar_id=%d", subscribeRows, m.table, userId, scholarId)
 	var resp Subscribe
-	err := m.QueryRowCtx(ctx, &resp, subscribeSubscribeIdKey, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
-		query := fmt.Sprintf("select %s from %s where `user_id` = ? and `scholar_id`=? limit 2", subscribeRows, m.table)
-		return conn.QueryRowCtx(ctx, v, query, userId, scholarId)
-	})
+	err := m.conn.QueryRowCtx(ctx, &resp, query)
 	switch err {
 	case nil:
 		return &resp, nil
@@ -93,31 +82,17 @@ func (m *defaultSubscribeModel) FindSubscribeId(ctx context.Context, userId int6
 		return nil, err
 	}
 }
+
 func (m *defaultSubscribeModel) Insert(ctx context.Context, data *Subscribe) (sql.Result, error) {
-	subscribeSubscribeIdKey := fmt.Sprintf("%s%v", cacheSubscribeSubscribeIdPrefix, data.SubscribeId)
-	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("insert into %s (%s) values (?, ?)", m.table, subscribeRowsExpectAutoSet)
-		return conn.ExecCtx(ctx, query, data.UserId, data.ScholarId)
-	}, subscribeSubscribeIdKey)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?)", m.table, subscribeRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.UserId, data.ScholarId)
 	return ret, err
 }
 
 func (m *defaultSubscribeModel) Update(ctx context.Context, data *Subscribe) error {
-	subscribeSubscribeIdKey := fmt.Sprintf("%s%v", cacheSubscribeSubscribeIdPrefix, data.SubscribeId)
-	_, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("update %s set %s where `subscribe_id` = ?", m.table, subscribeRowsWithPlaceHolder)
-		return conn.ExecCtx(ctx, query, data.UserId, data.ScholarId, data.SubscribeId)
-	}, subscribeSubscribeIdKey)
+	query := fmt.Sprintf("update %s set %s where `subscribe_id` = ?", m.table, subscribeRowsWithPlaceHolder)
+	_, err := m.conn.ExecCtx(ctx, query, data.UserId, data.ScholarId, data.SubscribeId)
 	return err
-}
-
-func (m *defaultSubscribeModel) formatPrimary(primary interface{}) string {
-	return fmt.Sprintf("%s%v", cacheSubscribeSubscribeIdPrefix, primary)
-}
-
-func (m *defaultSubscribeModel) queryPrimary(ctx context.Context, conn sqlx.SqlConn, v, primary interface{}) error {
-	query := fmt.Sprintf("select %s from %s where `subscribe_id` = ? limit 1", subscribeRows, m.table)
-	return conn.QueryRowCtx(ctx, v, query, primary)
 }
 
 func (m *defaultSubscribeModel) tableName() string {

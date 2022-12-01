@@ -6,7 +6,7 @@ type MessageInfo struct {
 	MessageType int64  `json:"type"`
 	UId         int64  `json:"uid,optional"`
 	GId         int64  `json:"gid,optional"`
-	PId         int64  `json:"pid,optional"`
+	PId         string `json:"pid,optional"`
 	RId         int64  `json:"rid,optional"`
 	Result      int64  `json:"result,optional"`
 	Content     string `json:"content"`

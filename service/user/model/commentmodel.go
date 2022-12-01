@@ -2,7 +2,6 @@ package model
 
 import (
 	_ "github.com/lib/pq"
-	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
 
@@ -21,8 +20,8 @@ type (
 )
 
 // NewCommentModel returns a model for the database table.
-func NewCommentModel(conn sqlx.SqlConn, c cache.CacheConf) CommentModel {
+func NewCommentModel(conn sqlx.SqlConn) CommentModel {
 	return &customCommentModel{
-		defaultCommentModel: newCommentModel(conn, c),
+		defaultCommentModel: newCommentModel(conn),
 	}
 }

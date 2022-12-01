@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	"github.com/zeromicro/go-zero/core/stores/builder"
-	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"github.com/zeromicro/go-zero/core/stringx"
@@ -18,10 +17,8 @@ import (
 var (
 	grievanceFieldNames          = builder.RawFieldNames(&Grievance{})
 	grievanceRows                = strings.Join(grievanceFieldNames, ",")
-	grievanceRowsExpectAutoSet   = strings.Join(stringx.Remove(grievanceFieldNames, "`grievance_id`", "`create_time`", "`update_at`", "`updated_at`", "`update_time`", "`create_at`", "`created_at`"), ",")
-	grievanceRowsWithPlaceHolder = strings.Join(stringx.Remove(grievanceFieldNames, "`grievance_id`", "`create_time`", "`update_at`", "`updated_at`", "`update_time`", "`create_at`", "`created_at`"), "=?,") + "=?"
-
-	cacheGrievanceGrievanceIdPrefix = "cache:grievance:grievanceId:"
+	grievanceRowsExpectAutoSet   = strings.Join(stringx.Remove(grievanceFieldNames, "`grievance_id`", "`updated_at`", "`update_time`", "`create_at`", "`created_at`", "`create_time`", "`update_at`"), ",")
+	grievanceRowsWithPlaceHolder = strings.Join(stringx.Remove(grievanceFieldNames, "`grievance_id`", "`updated_at`", "`update_time`", "`create_at`", "`created_at`", "`create_time`", "`update_at`"), "=?,") + "=?"
 )
 
 type (
@@ -33,7 +30,7 @@ type (
 	}
 
 	defaultGrievanceModel struct {
-		sqlc.CachedConn
+		conn  sqlx.SqlConn
 		table string
 	}
 
@@ -45,29 +42,23 @@ type (
 	}
 )
 
-func newGrievanceModel(conn sqlx.SqlConn, c cache.CacheConf) *defaultGrievanceModel {
+func newGrievanceModel(conn sqlx.SqlConn) *defaultGrievanceModel {
 	return &defaultGrievanceModel{
-		CachedConn: sqlc.NewConn(conn, c),
-		table:      "`grievance`",
+		conn:  conn,
+		table: "`grievance`",
 	}
 }
 
 func (m *defaultGrievanceModel) Delete(ctx context.Context, grievanceId int64) error {
-	grievanceGrievanceIdKey := fmt.Sprintf("%s%v", cacheGrievanceGrievanceIdPrefix, grievanceId)
-	_, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("delete from %s where `grievance_id` = ?", m.table)
-		return conn.ExecCtx(ctx, query, grievanceId)
-	}, grievanceGrievanceIdKey)
+	query := fmt.Sprintf("delete from %s where `grievance_id` = ?", m.table)
+	_, err := m.conn.ExecCtx(ctx, query, grievanceId)
 	return err
 }
 
 func (m *defaultGrievanceModel) FindOne(ctx context.Context, grievanceId int64) (*Grievance, error) {
-	grievanceGrievanceIdKey := fmt.Sprintf("%s%v", cacheGrievanceGrievanceIdPrefix, grievanceId)
+	query := fmt.Sprintf("select %s from %s where `grievance_id` = ? limit 1", grievanceRows, m.table)
 	var resp Grievance
-	err := m.QueryRowCtx(ctx, &resp, grievanceGrievanceIdKey, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
-		query := fmt.Sprintf("select %s from %s where `grievance_id` = ? limit 1", grievanceRows, m.table)
-		return conn.QueryRowCtx(ctx, v, query, grievanceId)
-	})
+	err := m.conn.QueryRowCtx(ctx, &resp, query, grievanceId)
 	switch err {
 	case nil:
 		return &resp, nil
@@ -79,30 +70,15 @@ func (m *defaultGrievanceModel) FindOne(ctx context.Context, grievanceId int64) 
 }
 
 func (m *defaultGrievanceModel) Insert(ctx context.Context, data *Grievance) (sql.Result, error) {
-	grievanceGrievanceIdKey := fmt.Sprintf("%s%v", cacheGrievanceGrievanceIdPrefix, data.GrievanceId)
-	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?)", m.table, grievanceRowsExpectAutoSet)
-		return conn.ExecCtx(ctx, query, data.PlaintiffId, data.DefendantId, data.PaperId)
-	}, grievanceGrievanceIdKey)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?)", m.table, grievanceRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.PlaintiffId, data.DefendantId, data.PaperId)
 	return ret, err
 }
 
 func (m *defaultGrievanceModel) Update(ctx context.Context, data *Grievance) error {
-	grievanceGrievanceIdKey := fmt.Sprintf("%s%v", cacheGrievanceGrievanceIdPrefix, data.GrievanceId)
-	_, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("update %s set %s where `grievance_id` = ?", m.table, grievanceRowsWithPlaceHolder)
-		return conn.ExecCtx(ctx, query, data.PlaintiffId, data.DefendantId, data.PaperId, data.GrievanceId)
-	}, grievanceGrievanceIdKey)
+	query := fmt.Sprintf("update %s set %s where `grievance_id` = ?", m.table, grievanceRowsWithPlaceHolder)
+	_, err := m.conn.ExecCtx(ctx, query, data.PlaintiffId, data.DefendantId, data.PaperId, data.GrievanceId)
 	return err
-}
-
-func (m *defaultGrievanceModel) formatPrimary(primary interface{}) string {
-	return fmt.Sprintf("%s%v", cacheGrievanceGrievanceIdPrefix, primary)
-}
-
-func (m *defaultGrievanceModel) queryPrimary(ctx context.Context, conn sqlx.SqlConn, v, primary interface{}) error {
-	query := fmt.Sprintf("select %s from %s where `grievance_id` = ? limit 1", grievanceRows, m.table)
-	return conn.QueryRowCtx(ctx, v, query, primary)
 }
 
 func (m *defaultGrievanceModel) tableName() string {

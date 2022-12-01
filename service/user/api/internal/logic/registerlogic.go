@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/golang-jwt/jwt/v4"
+	"soft2_backend/service/help/rpc/helpclient"
 	"soft2_backend/service/user/model"
 	"time"
 
@@ -37,7 +38,6 @@ func (l *RegisterLogic) getJwtToken(secretKey string, iat, seconds, UserId int64
 }
 func (l *RegisterLogic) Register(req *types.RegisterRequest) (resp *types.RegisterResponse, err error) {
 	// todo: add your logic here and delete this line
-	// todo: add your logic here and delete this line
 	_, err = l.svcCtx.UserModel.FindOneByLoginId(l.ctx, req.LoginId)
 	if err == nil {
 		return nil, errors.New("用户名已注册")
@@ -51,6 +51,10 @@ func (l *RegisterLogic) Register(req *types.RegisterRequest) (resp *types.Regist
 	newUser.UserId, err = res.LastInsertId()
 	now := time.Now().Unix()
 	jwtToken, err := l.getJwtToken(l.svcCtx.Config.Auth.AccessSecret, now, l.svcCtx.Config.Auth.AccessExpire, newUser.UserId)
+	//调用文献互助rpc
+	_, _ = l.svcCtx.HelpRpc.RegisterUser(l.ctx, &helpclient.IdReq{
+		Id: newUser.UserId,
+	})
 	return &types.RegisterResponse{
 		Code:     0,
 		UserId:   newUser.UserId,

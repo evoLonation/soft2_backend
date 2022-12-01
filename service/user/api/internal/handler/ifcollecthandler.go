@@ -9,16 +9,16 @@ import (
 	"soft2_backend/service/user/api/internal/types"
 )
 
-func GetCommentHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func IfCollectHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.GetCommentRequest
+		var req types.IfCollectPaperRequest
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.Error(w, err)
 			return
 		}
 
-		l := logic.NewGetCommentLogic(r.Context(), svcCtx)
-		resp, err := l.GetComment(&req)
+		l := logic.NewIfCollectLogic(r.Context(), svcCtx)
+		resp, err := l.IfCollect(&req)
 		if err != nil {
 			httpx.Error(w, err)
 		} else {

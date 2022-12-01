@@ -32,18 +32,18 @@ type EmailVerifyCodeRequest struct {
 
 type EmailIdentifyRequest struct {
 	Email      string `json:"email"`
-	ScholarId  int64  `json:"scholar_id"`
+	ScholarId  string `json:"scholar_id"`
 	VerifyCode string `json:"verify_code"`
 }
 
 type CheckScholarResponse struct {
 	Code      int64  `json:"code"`
-	ScholarId int64  `json:"scholar_id,optional"`
+	ScholarId string `json:"scholar_id,optional"`
 	Msg       string `json:"msg,optional"`
 }
 
 type CheckUserRequest struct {
-	ScholarId int64 `json:"scholar_id"`
+	ScholarId string `json:"scholar_id"`
 }
 
 type CheckUserResponse struct {

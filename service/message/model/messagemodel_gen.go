@@ -18,8 +18,8 @@ import (
 var (
 	messageFieldNames          = builder.RawFieldNames(&Message{})
 	messageRows                = strings.Join(messageFieldNames, ",")
-	messageRowsExpectAutoSet   = strings.Join(stringx.Remove(messageFieldNames, "`msgId`", "`create_at`", "`created_at`", "`create_time`", "`update_at`", "`updated_at`", "`update_time`"), ",")
-	messageRowsWithPlaceHolder = strings.Join(stringx.Remove(messageFieldNames, "`msgId`", "`create_at`", "`created_at`", "`create_time`", "`update_at`", "`updated_at`", "`update_time`"), "=?,") + "=?"
+	messageRowsExpectAutoSet   = strings.Join(stringx.Remove(messageFieldNames, "`msgId`", "`msgTime`"), ",")
+	messageRowsWithPlaceHolder = strings.Join(stringx.Remove(messageFieldNames, "`msgId`", "`msgTime`"), "=?,") + "=?"
 )
 
 type (
@@ -36,17 +36,17 @@ type (
 	}
 
 	Message struct {
-		MsgId       int64         `db:"msgId"`
-		ReceiverId  int64         `db:"receiverId"`  // 接收者Id
-		Content     string        `db:"content"`     // 消息内容
-		MessageType int64         `db:"messageType"` // 消息类型
-		Read        bool          `db:"read"`        // 消息状态
-		MsgTime     time.Time     `db:"msgTime"`
-		Result      sql.NullInt64 `db:"result"` // 处理结果
-		UId         sql.NullInt64 `db:"uId"`    // 用户id
-		GId         sql.NullInt64 `db:"gId"`    // 误认领申诉Id
-		PId         sql.NullInt64 `db:"pId"`    // 文献id
-		RId         sql.NullInt64 `db:"rId"`    // 文献互助Id
+		MsgId       int64          `db:"msgId"`
+		ReceiverId  int64          `db:"receiverId"`  // 接收者Id
+		Content     string         `db:"content"`     // 消息内容
+		MessageType int64          `db:"messageType"` // 消息类型
+		Read        bool           `db:"read"`        // 消息状态
+		MsgTime     time.Time      `db:"msgTime"`
+		Result      sql.NullInt64  `db:"result"` // 处理结果
+		UId         sql.NullInt64  `db:"uId"`    // 用户id
+		GId         sql.NullInt64  `db:"gId"`    // 误认领申诉Id
+		PId         sql.NullString `db:"pId"`    // 文献id
+		RId         sql.NullInt64  `db:"rId"`    // 文献互助Id
 	}
 )
 
@@ -78,14 +78,14 @@ func (m *defaultMessageModel) FindOne(ctx context.Context, msgId int64) (*Messag
 }
 
 func (m *defaultMessageModel) Insert(ctx context.Context, data *Message) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, messageRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.ReceiverId, data.Content, data.MessageType, data.Read, data.MsgTime, data.Result, data.UId, data.GId, data.PId, data.RId)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, messageRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.ReceiverId, data.Content, data.MessageType, data.Read, data.Result, data.UId, data.GId, data.PId, data.RId)
 	return ret, err
 }
 
 func (m *defaultMessageModel) Update(ctx context.Context, data *Message) error {
 	query := fmt.Sprintf("update %s set %s where `msgId` = ?", m.table, messageRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.ReceiverId, data.Content, data.MessageType, data.Read, data.MsgTime, data.Result, data.UId, data.GId, data.PId, data.RId, data.MsgId)
+	_, err := m.conn.ExecCtx(ctx, query, data.ReceiverId, data.Content, data.MessageType, data.Read, data.Result, data.UId, data.GId, data.PId, data.RId, data.MsgId)
 	return err
 }
 

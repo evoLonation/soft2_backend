@@ -5,7 +5,6 @@ create table user(
                      nickname varchar(20) default 'DEFAULT',
                      email varchar(20) not null ,
                      introduction varchar(255),
-                     money int default 10,
                      complaints int default 0,
                      requests int default 0 comment '求助次数',
                      help int default 0 comment '应助次数',

@@ -28,13 +28,17 @@ func NewLikeCommentLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LikeC
 func (l *LikeCommentLogic) LikeComment(req *types.LikeCommentRequest) (resp *types.LikeCommentResponse, err error) {
 	// todo: add your logic here and delete this line
 	userId, _ := l.ctx.Value("UserId").(json.Number).Int64()
-	newLikeComment := model.Like{
-		UserId:    userId,
-		CommentId: req.CommentId,
+	_, err = l.svcCtx.LikeModel.FindLikeId(l.ctx, userId, req.CommentId)
+	if err != model.ErrNotFound { //已经点过赞了
+		return &types.LikeCommentResponse{Code: 1}, nil
 	}
 	comment, _ := l.svcCtx.CommentModel.FindOne(l.ctx, req.CommentId)
 	comment.Likes = comment.Likes + 1
 	_ = l.svcCtx.CommentModel.Update(l.ctx, comment)
-	_, err = l.svcCtx.LikeModel.Insert(l.ctx, &newLikeComment)
+	newLikeComment := model.Like{
+		UserId:    userId,
+		CommentId: req.CommentId,
+	}
+	_, _ = l.svcCtx.LikeModel.Insert(l.ctx, &newLikeComment)
 	return &types.LikeCommentResponse{Code: 0}, nil
 }

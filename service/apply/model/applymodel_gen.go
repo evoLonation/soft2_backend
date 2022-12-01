@@ -38,7 +38,7 @@ type (
 	Apply struct {
 		ApplyId   int64          `db:"applyId"`
 		UserId    int64          `db:"userId"`    // 用户id
-		ScholarId int64          `db:"scholarId"` // 学者id
+		ScholarId string         `db:"scholarId"` // 学者id
 		Status    int64          `db:"status"`    // 处理状态
 		ApplyType int64          `db:"applyType"` // 认证类型
 		Email     sql.NullString `db:"email"`     // 认证邮箱

@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	"github.com/zeromicro/go-zero/core/stores/builder"
-	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"github.com/zeromicro/go-zero/core/stringx"
@@ -18,10 +17,8 @@ import (
 var (
 	likeFieldNames          = builder.RawFieldNames(&Like{})
 	likeRows                = strings.Join(likeFieldNames, ",")
-	likeRowsExpectAutoSet   = strings.Join(stringx.Remove(likeFieldNames, "`like_id`", "`update_time`", "`create_at`", "`created_at`", "`create_time`", "`update_at`", "`updated_at`"), ",")
-	likeRowsWithPlaceHolder = strings.Join(stringx.Remove(likeFieldNames, "`like_id`", "`update_time`", "`create_at`", "`created_at`", "`create_time`", "`update_at`", "`updated_at`"), "=?,") + "=?"
-
-	cacheLikeLikeIdPrefix = "cache:like:likeId:"
+	likeRowsExpectAutoSet   = strings.Join(stringx.Remove(likeFieldNames, "`like_id`", "`create_at`", "`created_at`", "`create_time`", "`update_at`", "`updated_at`", "`update_time`"), ",")
+	likeRowsWithPlaceHolder = strings.Join(stringx.Remove(likeFieldNames, "`like_id`", "`create_at`", "`created_at`", "`create_time`", "`update_at`", "`updated_at`", "`update_time`"), "=?,") + "=?"
 )
 
 type (
@@ -34,7 +31,7 @@ type (
 	}
 
 	defaultLikeModel struct {
-		sqlc.CachedConn
+		conn  sqlx.SqlConn
 		table string
 	}
 
@@ -45,29 +42,23 @@ type (
 	}
 )
 
-func newLikeModel(conn sqlx.SqlConn, c cache.CacheConf) *defaultLikeModel {
+func newLikeModel(conn sqlx.SqlConn) *defaultLikeModel {
 	return &defaultLikeModel{
-		CachedConn: sqlc.NewConn(conn, c),
-		table:      "`like`",
+		conn:  conn,
+		table: "`like`",
 	}
 }
 
 func (m *defaultLikeModel) Delete(ctx context.Context, likeId int64) error {
-	likeLikeIdKey := fmt.Sprintf("%s%v", cacheLikeLikeIdPrefix, likeId)
-	_, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("delete from %s where `like_id` = ?", m.table)
-		return conn.ExecCtx(ctx, query, likeId)
-	}, likeLikeIdKey)
+	query := fmt.Sprintf("delete from %s where `like_id` = ?", m.table)
+	_, err := m.conn.ExecCtx(ctx, query, likeId)
 	return err
 }
 
 func (m *defaultLikeModel) FindOne(ctx context.Context, likeId int64) (*Like, error) {
-	likeLikeIdKey := fmt.Sprintf("%s%v", cacheLikeLikeIdPrefix, likeId)
+	query := fmt.Sprintf("select %s from %s where `like_id` = ? limit 1", likeRows, m.table)
 	var resp Like
-	err := m.QueryRowCtx(ctx, &resp, likeLikeIdKey, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
-		query := fmt.Sprintf("select %s from %s where `like_id` = ? limit 1", likeRows, m.table)
-		return conn.QueryRowCtx(ctx, v, query, likeId)
-	})
+	err := m.conn.QueryRowCtx(ctx, &resp, query, likeId)
 	switch err {
 	case nil:
 		return &resp, nil
@@ -77,13 +68,12 @@ func (m *defaultLikeModel) FindOne(ctx context.Context, likeId int64) (*Like, er
 		return nil, err
 	}
 }
+
 func (m *defaultLikeModel) FindLikeId(ctx context.Context, userId int64, commentId int64) (*Like, error) {
-	likeLikeIdKey := fmt.Sprintf("%s%v%v", cacheLikeLikeIdPrefix, userId, commentId)
 	var resp Like
-	err := m.QueryRowCtx(ctx, &resp, likeLikeIdKey, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
-		query := fmt.Sprintf("select %s from %s where `user_id` = ? and `comment_id`=? limit 2", likeRows, m.table)
-		return conn.QueryRowCtx(ctx, v, query, userId, commentId)
-	})
+	var query string
+	query = fmt.Sprintf("select %s from %s where user_id = %d and comment_id=%d", likeRows, m.table, userId, commentId)
+	err := m.conn.QueryRowCtx(ctx, &resp, query)
 	switch err {
 	case nil:
 		return &resp, nil
@@ -93,31 +83,17 @@ func (m *defaultLikeModel) FindLikeId(ctx context.Context, userId int64, comment
 		return nil, err
 	}
 }
+
 func (m *defaultLikeModel) Insert(ctx context.Context, data *Like) (sql.Result, error) {
-	likeLikeIdKey := fmt.Sprintf("%s%v", cacheLikeLikeIdPrefix, data.LikeId)
-	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("insert into %s (%s) values (?, ?)", m.table, likeRowsExpectAutoSet)
-		return conn.ExecCtx(ctx, query, data.UserId, data.CommentId)
-	}, likeLikeIdKey)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?)", m.table, likeRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.UserId, data.CommentId)
 	return ret, err
 }
 
 func (m *defaultLikeModel) Update(ctx context.Context, data *Like) error {
-	likeLikeIdKey := fmt.Sprintf("%s%v", cacheLikeLikeIdPrefix, data.LikeId)
-	_, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("update %s set %s where `like_id` = ?", m.table, likeRowsWithPlaceHolder)
-		return conn.ExecCtx(ctx, query, data.UserId, data.CommentId, data.LikeId)
-	}, likeLikeIdKey)
+	query := fmt.Sprintf("update %s set %s where `like_id` = ?", m.table, likeRowsWithPlaceHolder)
+	_, err := m.conn.ExecCtx(ctx, query, data.UserId, data.CommentId, data.LikeId)
 	return err
-}
-
-func (m *defaultLikeModel) formatPrimary(primary interface{}) string {
-	return fmt.Sprintf("%s%v", cacheLikeLikeIdPrefix, primary)
-}
-
-func (m *defaultLikeModel) queryPrimary(ctx context.Context, conn sqlx.SqlConn, v, primary interface{}) error {
-	query := fmt.Sprintf("select %s from %s where `like_id` = ? limit 1", likeRows, m.table)
-	return conn.QueryRowCtx(ctx, v, query, primary)
 }
 
 func (m *defaultLikeModel) tableName() string {

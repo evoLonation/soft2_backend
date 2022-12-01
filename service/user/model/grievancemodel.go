@@ -2,7 +2,6 @@ package model
 
 import (
 	_ "github.com/lib/pq"
-	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
 
@@ -21,8 +20,8 @@ type (
 )
 
 // NewGrievanceModel returns a model for the database table.
-func NewGrievanceModel(conn sqlx.SqlConn, c cache.CacheConf) GrievanceModel {
+func NewGrievanceModel(conn sqlx.SqlConn) GrievanceModel {
 	return &customGrievanceModel{
-		defaultGrievanceModel: newGrievanceModel(conn, c),
+		defaultGrievanceModel: newGrievanceModel(conn),
 	}
 }
