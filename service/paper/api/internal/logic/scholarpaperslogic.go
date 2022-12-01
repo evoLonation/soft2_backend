@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"log"
+	"math"
 	"soft2_backend/service/paper/database"
 	"sort"
 
@@ -34,8 +35,6 @@ func (l *ScholarPapersLogic) ScholarPapers(req *types.ScholarPapersRequest) (res
 	// todo: add your logic here and delete this line
 	var authorBuf bytes.Buffer
 	query := map[string]interface{}{
-		"from": req.Start,
-		"size": req.End - req.Start,
 		"query": map[string]interface{}{
 			"match": map[string]interface{}{
 				"id": req.ScholarId,
@@ -51,7 +50,9 @@ func (l *ScholarPapersLogic) ScholarPapers(req *types.ScholarPapersRequest) (res
 	var papers Papers
 	pubs := res["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})["pubs"].([]interface{})
 	for _, pub := range pubs {
-		if req.IsFirst && pub.(map[string]interface{})["r"] != 0 {
+		if req.IsFirst && int(pub.(map[string]interface{})["r"].(float64)) != 0 {
+			continue
+		} else if !req.IsFirst && int(pub.(map[string]interface{})["r"].(float64)) == 0 {
 			continue
 		}
 		var paperBuf bytes.Buffer
@@ -67,6 +68,7 @@ func (l *ScholarPapersLogic) ScholarPapers(req *types.ScholarPapersRequest) (res
 		}
 		log.Println(paperBuf.String())
 		paperRes := database.SearchPaper(paperBuf)
+		log.Println(paperRes)
 		paper := paperRes["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})
 		if req.Year != 0 && NilHandler(paper["year"], "int").(int) != req.Year {
 			continue
@@ -101,8 +103,8 @@ func (l *ScholarPapersLogic) ScholarPapers(req *types.ScholarPapersRequest) (res
 	}
 
 	resp = &types.ScholarPapersResponse{
-		PaperNum: int(res["hits"].(map[string]interface{})["total"].(map[string]interface{})["value"].(float64)),
-		Papers:   sortedPapers,
+		PaperNum: len(sortedPapers),
+		Papers:   sortedPapers[int(math.Min(float64(req.Start), float64(len(sortedPapers)))):int(math.Min(float64(req.End), float64(len(sortedPapers))))],
 	}
 	return
 }
