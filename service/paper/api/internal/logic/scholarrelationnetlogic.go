@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"log"
 	"soft2_backend/service/paper/database"
+	"strconv"
 
 	"soft2_backend/service/paper/api/internal/svc"
 	"soft2_backend/service/paper/api/internal/types"
@@ -46,6 +47,7 @@ var minCiCitation = 1000000
 func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationNetRequest) (resp *types.ScholarRelationNetResponse, err error) {
 	// todo: add your logic here and delete this line
 	coNodes = make(map[string]types.CoNetNodeJSON)
+	ciNodes = make(map[string]types.CiNetNodeJSON)
 	var scholarBuf bytes.Buffer
 	scholarQuery := map[string]interface{}{
 		"query": map[string]interface{}{
@@ -69,7 +71,7 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 		CoNum: 0,
 		Type:  "major",
 		Style: types.StyleJSON{
-			Fill: NilHandler(scholarSource["n_citation"], "int").(string),
+			Fill: strconv.Itoa(NilHandler(scholarSource["n_citation"], "int").(int)),
 		},
 	}
 	majorCiNode := types.CiNetNodeJSON{
@@ -79,7 +81,7 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 		CiNum: 0,
 		Type:  "major",
 		Style: types.StyleJSON{
-			Fill: NilHandler(scholarSource["n_citation"], "int").(string),
+			Fill: strconv.Itoa(NilHandler(scholarSource["n_citation"], "int").(int)),
 		},
 	}
 	coNodes[scholarSource["id"].(string)] = majorCoNode
@@ -118,16 +120,18 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 						Size:  0,
 						CoNum: 1,
 						Style: types.StyleJSON{
-							Fill: NilHandler(author.(map[string]interface{})["n_citation"], "int").(string),
+							Fill: strconv.Itoa(NilHandler(author.(map[string]interface{})["n_citation"], "int").(int)),
 						},
 					}
 					coNodes[authorId] = coNode
+					if req.ScholarId != authorId {
+						coEdges = append(coEdges, types.EdgeJSON{
+							Source: req.ScholarId,
+							Target: authorId,
+						})
+					}
 				}
 			}
-			coEdges = append(coEdges, types.EdgeJSON{
-				Source: req.ScholarId,
-				Target: authorId,
-			})
 		}
 	}
 
@@ -138,7 +142,7 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 		if coNode.CoNum < minCoNum {
 			minCoNum = coNode.CoNum
 		}
-		nCitation := NilHandler(coNode.Style.Fill, "int").(int)
+		nCitation, _ := strconv.Atoi(NilHandler(coNode.Style.Fill, "string").(string))
 		if nCitation > maxCoCitation {
 			maxCoCitation = nCitation
 		}
@@ -148,8 +152,9 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 	}
 
 	for _, coNode := range coNodes {
+		nCitation, _ := strconv.Atoi(NilHandler(coNode.Style.Fill, "string").(string))
 		coNode.Size = GetSize(coNode.CoNum, maxCoNum, minCoNum)
-		coNode.Style.Fill = GetColor(GetD(NilHandler(coNode.Style.Fill, "int").(int), maxCoCitation, minCoCitation))
+		coNode.Style.Fill = GetColor(GetD(nCitation, maxCoCitation, minCoCitation))
 		coNodeList = append(coNodeList, coNode)
 	}
 
@@ -188,11 +193,13 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 					},
 				}
 				ciNodes[authorId] = ciNode
+				if req.ScholarId != authorId {
+					ciEdges = append(ciEdges, types.EdgeJSON{
+						Source: req.ScholarId,
+						Target: authorId,
+					})
+				}
 			}
-			ciEdges = append(ciEdges, types.EdgeJSON{
-				Source: req.ScholarId,
-				Target: authorId,
-			})
 		}
 	}
 
@@ -203,7 +210,7 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 		if ciNode.CiNum < minCiNum {
 			minCiNum = ciNode.CiNum
 		}
-		nCitation := NilHandler(ciNode.Style.Fill, "int").(int)
+		nCitation, _ := strconv.Atoi(NilHandler(ciNode.Style.Fill, "string").(string))
 		if nCitation > maxCiCitation {
 			maxCiCitation = nCitation
 		}
@@ -213,8 +220,10 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 	}
 
 	for _, ciNode := range ciNodes {
+		nCitation, _ := strconv.Atoi(NilHandler(ciNode.Style.Fill, "string").(string))
+		log.Println(ciNode.CiNum, maxCiNum, minCiNum)
 		ciNode.Size = GetSize(ciNode.CiNum, maxCiNum, minCiNum)
-		ciNode.Style.Fill = GetColor(GetD(NilHandler(ciNode.Style.Fill, "int").(int), maxCiCitation, minCiCitation))
+		ciNode.Style.Fill = GetColor(GetD(nCitation, maxCiCitation, minCiCitation))
 		ciNodeList = append(ciNodeList, ciNode)
 	}
 

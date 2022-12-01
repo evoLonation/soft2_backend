@@ -24,10 +24,16 @@ func NilHandler(value interface{}, expectedType string) interface{} {
 }
 
 func GetSize(s, max, min int) int {
+	if max == min {
+		return 20
+	}
 	return int((float64(s-min)/float64(max-min) + 1) * 20)
 }
 
 func GetD(d, max, min int) int {
+	if max == min {
+		return 0
+	}
 	return int((float64(d-min) / float64(max-min)) * 10)
 }
 
