@@ -3,10 +3,6 @@ Host: 0.0.0.0
 Port: 8889
 Mysql:
   DataSource: root:DiamondPick@tcp(120.46.220.182:3306)/lh?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
-CacheRedis:
-  - Host: 127.0.0.1:6379
-    Pass:
-    Type: node
 Auth:
   AccessSecret: BUAADIAMONDPICK
   AccessExpire: 3600
