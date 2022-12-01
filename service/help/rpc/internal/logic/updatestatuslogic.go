@@ -40,6 +40,7 @@ func (l *UpDateStatusLogic) UpDateStatus(in *help.UpdateReq) (*help.Reply, error
 		newHelp.HelpStatus = in.Status
 		newHelp.RequestId = in.RequestId
 		newHelp.UserId = in.UserId
+		newHelp.Wealth = theRequest.Wealth
 		_, err2 := l.svcCtx.LiteratureHelpModel.Insert(l.ctx, &newHelp)
 		if err2 != nil {
 			return nil, err2
