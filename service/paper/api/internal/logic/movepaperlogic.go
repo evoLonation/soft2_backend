@@ -99,7 +99,6 @@ func (l *MovePaperLogic) MovePaper(req *types.MovePaperRequest) (resp *types.Mov
 	}
 	log.Println(updateBuf.String())
 	updatePaperRes := database.UpdatePaper(updateBuf, req.PaperId)
-	log.Println(updatePaperRes)
 	if int(updatePaperRes["_shards"].(map[string]interface{})["successful"].(float64)) != 1 {
 		return nil, errors.New("update paper error")
 	}
