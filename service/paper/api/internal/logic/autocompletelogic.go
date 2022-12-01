@@ -69,7 +69,7 @@ func TranslateSearchType(searchType int) string {
 	case 0:
 		return "title"
 	case 1:
-		return "authors"
+		return "authors.name"
 	case 2:
 		return "keywords"
 	case 3:
