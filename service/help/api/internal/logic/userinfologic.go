@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"encoding/json"
 
 	"soft2_backend/service/help/api/internal/svc"
 	"soft2_backend/service/help/api/internal/types"
@@ -25,7 +26,8 @@ func NewUserInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserInfo
 
 func (l *UserInfoLogic) UserInfo(req *types.UserInfoReq) (resp *types.UserInfoReply, err error) {
 	// todo: add your logic here and delete this line
-	user, err := l.svcCtx.UserHelpModel.FindOne(l.ctx, req.UserId)
+	UserId, _ := l.ctx.Value("UserId").(json.Number).Int64()
+	user, err := l.svcCtx.UserHelpModel.FindOne(l.ctx, UserId)
 	return &types.UserInfoReply{
 		Request: user.Request,
 		Help:    user.Help,

@@ -69,7 +69,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
-				Path:    "/api/help/newRequests",
+				Path:    "/api/help/new-requests",
 				Handler: addRequestHandler(serverCtx),
 			},
 		},
