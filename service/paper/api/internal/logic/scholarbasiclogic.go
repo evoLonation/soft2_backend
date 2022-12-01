@@ -44,7 +44,7 @@ func (l *ScholarBasicLogic) ScholarBasic(req *types.ScholarBasicRequest) (resp *
 	res := database.SearchAuthor(authorBuf)
 
 	source := res["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})
-	var tags []types.TagJSON
+	var tags = make([]types.TagJSON, 0)
 	for _, tag := range source["tags"].([]interface{}) {
 		tags = append(tags, types.TagJSON{
 			T: tag.(map[string]interface{})["t"].(string),
