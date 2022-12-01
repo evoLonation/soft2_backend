@@ -19,7 +19,7 @@ type UploadApplyLogic struct {
 		*multipart.FileHeader
 		multipart.File
 	}
-	ScholarId int64
+	ScholarId string
 }
 
 func NewUploadApplyLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UploadApplyLogic {
