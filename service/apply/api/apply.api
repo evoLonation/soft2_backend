@@ -7,6 +7,7 @@ type (
 		ApplyType   int64  `json:"apply_type"`
 		Email       string `json:"email,optional"`
 		URL         string `json:"url,optional"`
+		ApplyTime   string `json:"time"`
 	}
 
 	// 获得所有学者认证
@@ -26,10 +27,16 @@ type (
 		IsAgree bool  `json:"is_agree"`
 	}
 
+	// 获取邮箱验证码
+	EmailVerifyCodeRequest {
+		Email string `json:"email"`
+	}
+
 	// 通过邮箱认领学者主页
 	EmailIdentifyRequest {
-		Email     string `json:"email"`
-		ScholarId int64  `json:"scholar_id"`
+		Email      string `json:"email"`
+		ScholarId  int64  `json:"scholar_id"`
+		VerifyCode string `json:"verify_code"`
 	}
 
 	// 查看用户认证的学者
@@ -66,6 +73,9 @@ service Apply {
 	jwt: Auth
 )
 service Apply {
+	@handler EmailVerifyCode
+	post /api/scholar/email-verify-code (EmailVerifyCodeRequest)
+	
 	@handler EmailIdentify
 	post /api/scholar/email-identify (EmailIdentifyRequest)
 	

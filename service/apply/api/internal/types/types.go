@@ -8,6 +8,7 @@ type ApplyInfo struct {
 	ApplyType   int64  `json:"apply_type"`
 	Email       string `json:"email,optional"`
 	URL         string `json:"url,optional"`
+	ApplyTime   string `json:"time"`
 }
 
 type GetApplyRequest struct {
@@ -25,9 +26,14 @@ type DealApplyRequest struct {
 	IsAgree bool  `json:"is_agree"`
 }
 
+type EmailVerifyCodeRequest struct {
+	Email string `json:"email"`
+}
+
 type EmailIdentifyRequest struct {
-	Email     string `json:"email"`
-	ScholarId int64  `json:"scholar_id"`
+	Email      string `json:"email"`
+	ScholarId  int64  `json:"scholar_id"`
+	VerifyCode string `json:"verify_code"`
 }
 
 type CheckScholarResponse struct {

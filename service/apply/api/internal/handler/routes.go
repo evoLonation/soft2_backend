@@ -34,6 +34,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
+				Path:    "/api/scholar/email-verify-code",
+				Handler: EmailVerifyCodeHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
 				Path:    "/api/scholar/email-identify",
 				Handler: EmailIdentifyHandler(serverCtx),
 			},
