@@ -35,20 +35,20 @@ type (
 	// 通过邮箱认领学者主页
 	EmailIdentifyRequest {
 		Email      string `json:"email"`
-		ScholarId  int64  `json:"scholar_id"`
+		ScholarId  string `json:"scholar_id"`
 		VerifyCode string `json:"verify_code"`
 	}
 
 	// 查看用户认证的学者
 	CheckScholarResponse {
 		Code      int64  `json:"code"`
-		ScholarId int64  `json:"scholar_id,optional"`
+		ScholarId string `json:"scholar_id,optional"`
 		Msg       string `json:"msg,optional"`
 	}
 
 	// 查看学者是否被认证
 	CheckUserRequest {
-		ScholarId int64 `json:"scholar_id"`
+		ScholarId string `json:"scholar_id"`
 	}
 
 	CheckUserResponse {

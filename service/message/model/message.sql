@@ -10,7 +10,7 @@ CREATE TABLE `message`
     `result`		tinyint(3) unsigned NULL COMMENT '处理结果',
     `uId`		    bigint unsigned		NULL COMMENT '用户id',
     `gId`		    bigint unsigned		NULL COMMENT '误认领申诉Id',
-    `pId`		    bigint unsigned		NULL COMMENT '文献id',
+    `pId`		    varchar(255)		NULL COMMENT '文献id',
     `rId`		    bigint unsigned		NULL COMMENT '文献互助Id',
     PRIMARY KEY (`msgId`),
     KEY `idx_receiverId` (`receiverId`),

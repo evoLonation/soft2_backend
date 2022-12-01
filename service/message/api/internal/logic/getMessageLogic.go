@@ -52,7 +52,7 @@ func (l *GetMessageLogic) GetMessage(req *types.GetMessageRequest) (resp *types.
 			info.GId = list[i].GId.Int64
 		}
 		if list[i].PId.Valid {
-			info.PId = list[i].PId.Int64
+			info.PId = list[i].PId.String
 		}
 		if list[i].RId.Valid {
 			info.RId = list[i].RId.Int64

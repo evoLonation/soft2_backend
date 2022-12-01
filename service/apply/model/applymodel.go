@@ -17,7 +17,7 @@ type (
 
 		FindAll(ctx context.Context) ([]*Apply, error)
 		FindByUserId(ctx context.Context, userId int64) (*Apply, error)
-		FindByScholarId(ctx context.Context, scholarId int64) (*Apply, error)
+		FindByScholarId(ctx context.Context, scholarId string) (*Apply, error)
 	}
 
 	customApplyModel struct {
@@ -54,7 +54,7 @@ func (m *customApplyModel) FindByUserId(ctx context.Context, userId int64) (*App
 	}
 }
 
-func (m *customApplyModel) FindByScholarId(ctx context.Context, scholarId int64) (*Apply, error) {
+func (m *customApplyModel) FindByScholarId(ctx context.Context, scholarId string) (*Apply, error) {
 	query := fmt.Sprintf("select %s from %s where `scholarId` = ? and `status` = 1", applyRows, m.table)
 	var resp Apply
 	err := m.conn.QueryRowCtx(ctx, &resp, query, scholarId)
