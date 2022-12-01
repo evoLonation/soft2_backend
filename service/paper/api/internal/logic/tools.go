@@ -8,7 +8,7 @@ func NilHandler(value interface{}, expectedType string) interface{} {
 		case "int":
 			return 0
 		case "list":
-			return []string{}
+			return []interface{}{}
 		}
 	} else {
 		switch expectedType {

@@ -6,6 +6,7 @@ import (
 	"soft2_backend/service/paper/api/internal/config"
 	"soft2_backend/service/paper/api/internal/handler"
 	"soft2_backend/service/paper/api/internal/svc"
+	"soft2_backend/service/paper/database"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/rest"
@@ -24,6 +25,8 @@ func main() {
 
 	ctx := svc.NewServiceContext(c)
 	handler.RegisterHandlers(server, ctx)
+
+	database.Init()
 
 	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
 	server.Start()

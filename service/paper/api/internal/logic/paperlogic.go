@@ -48,15 +48,6 @@ func (l *PaperLogic) Paper(req *types.PaperRequest) (resp *types.PaperResponse, 
 				},
 			},
 		},
-		"_source": []string{
-			"title",
-			"abstract",
-			"authors",
-			"year",
-			"n_citation",
-			"venue",
-			"keywords",
-		},
 	}
 	for _, content := range searchContent {
 		if content.Type == 0 { // 0 -> and -> must
@@ -156,7 +147,7 @@ func (l *PaperLogic) Paper(req *types.PaperRequest) (resp *types.PaperResponse, 
 			NCitation: NilHandler(source["n_citation"], "int").(int),
 			Publisher: NilHandler(source["venue"].(map[string]interface{})["raw"], "string").(string),
 		})
-
+		log.Println(source["keywords"])
 		keywords := NilHandler(source["keywords"], "list").([]interface{})
 		cnt := 0
 		for _, theme := range keywords {
