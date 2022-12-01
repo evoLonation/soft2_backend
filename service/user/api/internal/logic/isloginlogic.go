@@ -2,10 +2,9 @@ package logic
 
 import (
 	"context"
-	"soft2_backend/service/user/api/internal/svc"
-	"soft2_backend/service/user/api/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
+	"soft2_backend/service/user/api/internal/svc"
 )
 
 type IsLoginLogic struct {
@@ -22,8 +21,8 @@ func NewIsLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IsLoginLo
 	}
 }
 
-func (l *IsLoginLogic) IsLogin(req *types.IsLoginRequest) (resp *types.IsLoginResponse, err error) {
+func (l *IsLoginLogic) IsLogin() error {
 	// todo: add your logic here and delete this line
 
-	return &types.IsLoginResponse{Code: 0}, nil
+	return nil
 }
