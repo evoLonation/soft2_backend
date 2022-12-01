@@ -24,7 +24,8 @@ func NewSearchLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SearchLogi
 
 func (l *SearchLogic) Search(req *types.ReqSearchReq) (resp *types.ReqSearchReply, err error) {
 	// todo: add your logic here and delete this line
-	reqList, err := l.svcCtx.LiteratureRequestModel.FindByContent(l.ctx, req.SearchContent)
+	search := "'" + req.SearchContent + "'"
+	reqList, err := l.svcCtx.LiteratureRequestModel.FindByContent(l.ctx, search)
 	sum := len(reqList)
 	var reql []types.Search
 	for i, oneReq := range reqList {
