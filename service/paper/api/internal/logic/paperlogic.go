@@ -150,6 +150,7 @@ func (l *PaperLogic) Paper(req *types.PaperRequest) (resp *types.PaperResponse, 
 		log.Println(source["keywords"])
 		keywords := NilHandler(source["keywords"], "list").([]interface{})
 		cnt := 0
+		themes = make(map[string]int)
 		for _, theme := range keywords {
 			themes[theme.(string)] = cnt
 			cnt++
@@ -182,6 +183,8 @@ func TranslateSearchKey(searchKey int) string {
 		return "venue.raw"
 	case 6:
 		return "author.org"
+	case 7:
+		return "year"
 	default:
 		return ""
 	}
