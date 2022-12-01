@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"encoding/json"
 
 	"soft2_backend/service/help/api/internal/svc"
 	"soft2_backend/service/help/api/internal/types"
@@ -25,7 +26,8 @@ func NewUserHelpLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserHelp
 
 func (l *UserHelpLogic) UserHelp(req *types.UserHelpReq) (resp *types.UserHelpReply, err error) {
 	// todo: add your logic here and delete this line
-	reqList, err := l.svcCtx.LiteratureHelpModel.FindByUserId(l.ctx, req.UserId, req.Type)
+	UserId, _ := l.ctx.Value("UserId").(json.Number).Int64()
+	reqList, err := l.svcCtx.LiteratureHelpModel.FindByUserId(l.ctx, UserId, req.Type)
 	sum := len(reqList)
 	var reql []types.UserReq
 	for i, oneReq := range reqList {

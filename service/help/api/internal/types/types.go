@@ -32,7 +32,6 @@ type BeforeHelpReply struct {
 }
 
 type UserInfoReq struct {
-	UserId int64 `json:"user_id"`
 }
 
 type UserInfoReply struct {
@@ -42,10 +41,9 @@ type UserInfoReply struct {
 }
 
 type UserReqReq struct {
-	UserId int64 `json:"user_id"`
-	Start  int64 `json:"start"`
-	End    int64 `json:"end"`
-	Type   int64 `json:"type"`
+	Start int64 `json:"start"`
+	End   int64 `json:"end"`
+	Type  int64 `json:"type"`
 }
 
 type UserReqReply struct {
@@ -54,7 +52,6 @@ type UserReqReply struct {
 }
 
 type AddRequestsReq struct {
-	UserId   int64    `json:"user_id"`
 	Title    string   `json:"title"`
 	Author   []string `json:"author"`
 	Magazine string   `json:"magazine"`
@@ -67,10 +64,9 @@ type AddRequestsReply struct {
 }
 
 type UserHelpReq struct {
-	UserId int64 `json:"user_id"`
-	Start  int64 `json:"start"`
-	End    int64 `json:"end"`
-	Type   int64 `json:"type"`
+	Start int64 `json:"start"`
+	End   int64 `json:"end"`
+	Type  int64 `json:"type"`
 }
 
 type UserHelpReply struct {

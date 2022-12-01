@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"soft2_backend/service/help/model"
 
@@ -27,6 +28,7 @@ func NewAddRequestLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AddReq
 
 func (l *AddRequestLogic) AddRequest(req *types.AddRequestsReq) (resp *types.AddRequestsReply, err error) {
 	// todo: add your logic here and delete this line
+	UserId, _ := l.ctx.Value("UserId").(json.Number).Int64()
 	var authors string
 	var n = len(req.Author)
 	for i, author := range req.Author {
@@ -37,7 +39,7 @@ func (l *AddRequestLogic) AddRequest(req *types.AddRequestsReq) (resp *types.Add
 	}
 
 	var newRequest = new(model.LiteratureRequest)
-	newRequest.UserId = req.UserId
+	newRequest.UserId = UserId
 	newRequest.Title = req.Title
 	newRequest.Author = authors
 	newRequest.Magazine = req.Magazine
@@ -48,7 +50,7 @@ func (l *AddRequestLogic) AddRequest(req *types.AddRequestsReq) (resp *types.Add
 	if err != nil {
 		return nil, err
 	}
-	user, err := l.svcCtx.UserHelpModel.FindOne(l.ctx, req.UserId)
+	user, err := l.svcCtx.UserHelpModel.FindOne(l.ctx, UserId)
 	if err != nil {
 		return nil, err
 	}
