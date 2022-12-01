@@ -30,7 +30,7 @@ func (l *UserRequestLogic) UserRequest(req *types.UserReqReq) (resp *types.UserR
 	reqList, err := l.svcCtx.LiteratureRequestModel.FindByUser(l.ctx, UserId, req.Type)
 	sum := len(reqList)
 	var reql []types.UserReq
-	for i, oneReq := range reqList {
+	/*for i, oneReq := range reqList {
 		if i >= int(req.End) {
 			break
 		}
@@ -45,7 +45,7 @@ func (l *UserRequestLogic) UserRequest(req *types.UserReqReq) (resp *types.UserR
 			request.HelpId = help.Id
 			reql = append(reql, request)
 		}
-	}
+	}*/
 	return &types.UserReqReply{
 		Requests:   reql,
 		RequestNum: int64(sum),
