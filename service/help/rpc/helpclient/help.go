@@ -13,13 +13,16 @@ import (
 )
 
 type (
-	IdReq     = help.IdReq
-	Reply     = help.Reply
-	UpdateReq = help.UpdateReq
+	IdReq       = help.IdReq
+	Reply       = help.Reply
+	UpdateReq   = help.UpdateReq
+	WealthReply = help.WealthReply
+	WealthReq   = help.WealthReq
 
 	Help interface {
 		RegisterUser(ctx context.Context, in *IdReq, opts ...grpc.CallOption) (*Reply, error)
 		UpDateStatus(ctx context.Context, in *UpdateReq, opts ...grpc.CallOption) (*Reply, error)
+		GetUserWealth(ctx context.Context, in *WealthReq, opts ...grpc.CallOption) (*WealthReply, error)
 	}
 
 	defaultHelp struct {
@@ -41,4 +44,9 @@ func (m *defaultHelp) RegisterUser(ctx context.Context, in *IdReq, opts ...grpc.
 func (m *defaultHelp) UpDateStatus(ctx context.Context, in *UpdateReq, opts ...grpc.CallOption) (*Reply, error) {
 	client := help.NewHelpClient(m.cli.Conn())
 	return client.UpDateStatus(ctx, in, opts...)
+}
+
+func (m *defaultHelp) GetUserWealth(ctx context.Context, in *WealthReq, opts ...grpc.CallOption) (*WealthReply, error) {
+	client := help.NewHelpClient(m.cli.Conn())
+	return client.GetUserWealth(ctx, in, opts...)
 }

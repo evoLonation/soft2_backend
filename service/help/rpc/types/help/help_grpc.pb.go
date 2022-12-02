@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type HelpClient interface {
 	RegisterUser(ctx context.Context, in *IdReq, opts ...grpc.CallOption) (*Reply, error)
 	UpDateStatus(ctx context.Context, in *UpdateReq, opts ...grpc.CallOption) (*Reply, error)
+	GetUserWealth(ctx context.Context, in *WealthReq, opts ...grpc.CallOption) (*WealthReply, error)
 }
 
 type helpClient struct {
@@ -52,12 +53,22 @@ func (c *helpClient) UpDateStatus(ctx context.Context, in *UpdateReq, opts ...gr
 	return out, nil
 }
 
+func (c *helpClient) GetUserWealth(ctx context.Context, in *WealthReq, opts ...grpc.CallOption) (*WealthReply, error) {
+	out := new(WealthReply)
+	err := c.cc.Invoke(ctx, "/help.help/getUserWealth", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // HelpServer is the server API for Help service.
 // All implementations must embed UnimplementedHelpServer
 // for forward compatibility
 type HelpServer interface {
 	RegisterUser(context.Context, *IdReq) (*Reply, error)
 	UpDateStatus(context.Context, *UpdateReq) (*Reply, error)
+	GetUserWealth(context.Context, *WealthReq) (*WealthReply, error)
 	mustEmbedUnimplementedHelpServer()
 }
 
@@ -70,6 +81,9 @@ func (UnimplementedHelpServer) RegisterUser(context.Context, *IdReq) (*Reply, er
 }
 func (UnimplementedHelpServer) UpDateStatus(context.Context, *UpdateReq) (*Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpDateStatus not implemented")
+}
+func (UnimplementedHelpServer) GetUserWealth(context.Context, *WealthReq) (*WealthReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserWealth not implemented")
 }
 func (UnimplementedHelpServer) mustEmbedUnimplementedHelpServer() {}
 
@@ -120,6 +134,24 @@ func _Help_UpDateStatus_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Help_GetUserWealth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WealthReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HelpServer).GetUserWealth(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/help.help/getUserWealth",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HelpServer).GetUserWealth(ctx, req.(*WealthReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Help_ServiceDesc is the grpc.ServiceDesc for Help service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -134,6 +166,10 @@ var Help_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "upDateStatus",
 			Handler:    _Help_UpDateStatus_Handler,
+		},
+		{
+			MethodName: "getUserWealth",
+			Handler:    _Help_GetUserWealth_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

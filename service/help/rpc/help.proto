@@ -15,7 +15,15 @@ message UpdateReq{
   int64 userId = 2;//发布应助者id
   int64 status = 3; //更新后状态 上传文件后状态变为1
 }
+message WealthReq{
+  int64  id = 1;
+}
+message WealthReply{
+  int64 wealth = 1;
+}
+
 service help {
   rpc registerUser(IdReq) returns(Reply);
   rpc upDateStatus(UpdateReq) returns(Reply);
+  rpc getUserWealth(WealthReq) returns(WealthReply);
 }

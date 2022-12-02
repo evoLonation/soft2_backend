@@ -31,3 +31,8 @@ func (s *HelpServer) UpDateStatus(ctx context.Context, in *help.UpdateReq) (*hel
 	l := logic.NewUpDateStatusLogic(ctx, s.svcCtx)
 	return l.UpDateStatus(in)
 }
+
+func (s *HelpServer) GetUserWealth(ctx context.Context, in *help.WealthReq) (*help.WealthReply, error) {
+	l := logic.NewGetUserWealthLogic(ctx, s.svcCtx)
+	return l.GetUserWealth(in)
+}
