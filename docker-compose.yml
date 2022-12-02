@@ -243,8 +243,7 @@ services:
     container_name: elasticsearch
     image: elasticsearch:7.17.6
     ports:
-      - "9200:9200"
-      - "9300:9300"
+      - 9200:9200
     volumes:
       - /data/docker/es/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
       - /data/docker/es/data:/usr/share/elasticsearch/data
@@ -253,4 +252,5 @@ services:
         - TZ=Asia/Shanghai
         - discovery.type=single-node
         - ES_JAVA_OPTS=-Xms512m -Xmx512m
+        - node.name=elasticsearch
     restart: always
