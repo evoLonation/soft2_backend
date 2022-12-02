@@ -48,7 +48,21 @@ services:
 #    networks:
 #      - backend
 #    restart: always                      # 指定容器退出后的重启策略为始终重启
-
+  elasticsearch:
+    container_name: elasticsearch
+    image: elasticsearch:7.17.6
+    ports:
+      - 9200:9200
+    volumes:
+      - /data/docker/es/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - /data/docker/es/data:/usr/share/elasticsearch/data
+      - /data/docker/es/plugins:/usr/share/elasticsearch/plugins
+    environment:
+      - TZ=Asia/Shanghai
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - node.name=elasticsearch
+    restart: always
   file-api: # 自定义容器名称
     build:
       dockerfile: service/file/api/Dockerfile
@@ -238,19 +252,4 @@ services:
       - go-cache:/build/cache
     networks:
       - backend
-    restart: always
-  elasticsearch:
-    container_name: elasticsearch
-    image: elasticsearch:7.17.6
-    ports:
-      - 9200:9200
-    volumes:
-      - /data/docker/es/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-      - /data/docker/es/data:/usr/share/elasticsearch/data
-      - /data/docker/es/plugins:/usr/share/elasticsearch/plugins
-    environment:
-        - TZ=Asia/Shanghai
-        - discovery.type=single-node
-        - ES_JAVA_OPTS=-Xms512m -Xmx512m
-        - node.name=elasticsearch
     restart: always
