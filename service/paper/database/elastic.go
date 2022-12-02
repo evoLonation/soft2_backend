@@ -14,7 +14,7 @@ var es *elasticsearch.Client
 func Init() {
 	cfg := elasticsearch.Config{
 		Addresses: []string{
-			"http://localhost:9200",
+			"http://elasticsearch:9200",
 		},
 	}
 	es, _ = elasticsearch.NewClient(cfg)
@@ -126,5 +126,3 @@ func UpdateAuthor(query bytes.Buffer, id string) map[string]interface{} {
 	}
 	return res
 }
-
-// change something
