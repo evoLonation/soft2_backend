@@ -4,6 +4,7 @@ import (
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"github.com/zeromicro/go-zero/zrpc"
 	"soft2_backend/service/apply/rpc/applyclient"
+	"soft2_backend/service/file/rpc/fileclient"
 	"soft2_backend/service/help/rpc/helpclient"
 	"soft2_backend/service/message/rpc/messageclient"
 	"soft2_backend/service/paper/rpc/streamgreeter"
@@ -23,6 +24,7 @@ type ServiceContext struct {
 	MessageRpc     messageclient.Message
 	PaperRpc       streamgreeter.StreamGreeter
 	HelpRpc        helpclient.Help
+	FileRpc        fileclient.File
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -39,5 +41,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		MessageRpc:     messageclient.NewMessage(zrpc.MustNewClient(c.MessageRpc)),
 		PaperRpc:       streamgreeter.NewStreamGreeter(zrpc.MustNewClient(c.PaperRpc)),
 		HelpRpc:        helpclient.NewHelp(zrpc.MustNewClient(c.HelpRpc)),
+		FileRpc:        fileclient.NewFile(zrpc.MustNewClient(c.FileRpc)),
 	}
 }

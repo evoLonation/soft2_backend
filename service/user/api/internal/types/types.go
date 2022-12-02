@@ -7,10 +7,11 @@ type LoginRequest struct {
 }
 
 type LoginResponse struct {
-	Code     int64  `json:"code"` //0登录成功 1用户名不存在 2 密码错误
-	UserId   int64  `json:"user_id"`
-	Token    string `json:"token"`
-	NickName string `json:"nick_name"`
+	Code      int64  `json:"code"` //0登录成功 1用户名不存在 2 密码错误
+	UserId    int64  `json:"user_id"`
+	Token     string `json:"token"`
+	NickName  string `json:"nick_name"`
+	AvatarUrl string `json:"avatar_url"`
 }
 
 type RegisterRequest struct {
@@ -20,10 +21,11 @@ type RegisterRequest struct {
 }
 
 type RegisterResponse struct {
-	Code     int64  `json:"code"`
-	UserId   int64  `json:"user_id"`
-	Token    string `json:"token"`
-	NickName string `json:"nick_name"`
+	Code      int64  `json:"code"`
+	UserId    int64  `json:"user_id"`
+	Token     string `json:"token"`
+	NickName  string `json:"nick_name"`
+	AvatarUrl string `json:"avatar_url"`
 }
 
 type UserInfoRequest struct {
@@ -37,6 +39,7 @@ type UserInfoResponse struct {
 	Follows    int64  `json:"follows"`    //关注学者量
 	Complaints int64  `json:"complaints"` //投诉次数
 	Wealth     int64  `json:"wealth"`     //财富值
+	AvatarUrl  string `json:"avatar_url"`
 }
 
 type CollectPaperRequest struct {
