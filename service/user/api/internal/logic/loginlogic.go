@@ -4,10 +4,12 @@ import (
 	"context"
 	"errors"
 	"github.com/golang-jwt/jwt/v4"
-	"soft2_backend/service/user/api/internal/svc"
-	"soft2_backend/service/user/api/internal/types"
+	"soft2_backend/service/file/rpc/types/file"
 	"soft2_backend/service/user/model"
 	"time"
+
+	"soft2_backend/service/user/api/internal/svc"
+	"soft2_backend/service/user/api/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -52,10 +54,12 @@ func (l *LoginLogic) Login(req *types.LoginRequest) (resp *types.LoginResponse, 
 	if err != nil {
 		return nil, err
 	}
+	avatarUrl, _ := l.svcCtx.FileRpc.GetUserAvatar(l.ctx, &file.UserIdReq{Id: userInfo.UserId})
 	return &types.LoginResponse{
-		Code:     0,
-		Token:    jwtToken,
-		UserId:   userInfo.UserId,
-		NickName: userInfo.Nickname,
+		Code:      0,
+		UserId:    userInfo.UserId,
+		Token:     jwtToken,
+		NickName:  userInfo.Nickname,
+		AvatarUrl: avatarUrl.Url,
 	}, nil
 }

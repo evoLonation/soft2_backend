@@ -4,7 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
+	"soft2_backend/service/file/rpc/types/file"
+	"soft2_backend/service/help/rpc/types/help"
 	"soft2_backend/service/user/model"
 
 	"soft2_backend/service/user/api/internal/svc"
@@ -29,9 +30,7 @@ func NewUserInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserInfo
 
 func (l *UserInfoLogic) UserInfo() (resp *types.UserInfoResponse, err error) {
 	// todo: add your logic here and delete this line
-	fmt.Printf("herehere\n")
 	userId, _ := l.ctx.Value("UserId").(json.Number).Int64()
-	fmt.Printf("\n~~~~~~~~~%d~~~~~~~~~~\n", userId)
 	res, err := l.svcCtx.UserModel.FindOne(l.ctx, userId)
 	if err != nil {
 		if err == model.ErrNotFound {
@@ -39,12 +38,16 @@ func (l *UserInfoLogic) UserInfo() (resp *types.UserInfoResponse, err error) {
 		}
 		return nil, err
 	} //不过应该不会存在上述情况
+	avatarUrl, _ := l.svcCtx.FileRpc.GetUserAvatar(l.ctx, &file.UserIdReq{Id: userId})
+	userWealth, _ := l.svcCtx.HelpRpc.GetUserWealth(l.ctx, &help.WealthReq{Id: userId})
 	return &types.UserInfoResponse{
 		Nickname:   res.Nickname,
 		Email:      res.Email,
 		Requests:   res.Requests,
 		Helps:      res.Help,
-		Follows:    res.Follows,
+		Follows:    res.Help,
 		Complaints: res.Complaints,
+		Wealth:     userWealth.Wealth,
+		AvatarUrl:  avatarUrl.Url,
 	}, nil
 }

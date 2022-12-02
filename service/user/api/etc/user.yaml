@@ -26,3 +26,8 @@ HelpRpc:
     Hosts:
       - 120.46.220.182:2379
     Key: help.rpc
+FileRpc:
+  Etcd:
+    Hosts:
+      - 120.46.220.182:2379
+    Key: file.rpc

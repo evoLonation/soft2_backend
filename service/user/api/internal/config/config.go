@@ -18,4 +18,5 @@ type Config struct {
 	MessageRpc zrpc.RpcClientConf
 	PaperRpc   zrpc.RpcClientConf
 	HelpRpc    zrpc.RpcClientConf
+	FileRpc    zrpc.RpcClientConf
 }

@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/golang-jwt/jwt/v4"
+	"soft2_backend/service/file/rpc/types/file"
 	"soft2_backend/service/help/rpc/helpclient"
 	"soft2_backend/service/user/model"
 	"time"
@@ -55,10 +56,12 @@ func (l *RegisterLogic) Register(req *types.RegisterRequest) (resp *types.Regist
 	_, _ = l.svcCtx.HelpRpc.RegisterUser(l.ctx, &helpclient.IdReq{
 		Id: newUser.UserId,
 	})
+	avatarUrl, _ := l.svcCtx.FileRpc.GetUserAvatar(l.ctx, &file.UserIdReq{Id: newUser.UserId})
 	return &types.RegisterResponse{
-		Code:     0,
-		UserId:   newUser.UserId,
-		Token:    jwtToken,
-		NickName: req.Nickname,
+		Code:      0,
+		UserId:    newUser.UserId,
+		Token:     jwtToken,
+		NickName:  req.Nickname,
+		AvatarUrl: avatarUrl.Url,
 	}, nil
 }
