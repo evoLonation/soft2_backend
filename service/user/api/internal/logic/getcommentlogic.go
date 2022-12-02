@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"fmt"
+	"soft2_backend/service/user/model"
 
 	"soft2_backend/service/user/api/internal/svc"
 	"soft2_backend/service/user/api/internal/types"
@@ -27,6 +28,9 @@ func NewGetCommentLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetCom
 func (l *GetCommentLogic) GetComment(req *types.GetCommentRequest) (resp *types.GetCommentReply, err error) {
 	// todo: add your logic here and delete this line
 	reqList, err := l.svcCtx.CommentModel.FindByPaperId(l.ctx, req.PaperId)
+	if err == model.ErrNotFound {
+		return &types.GetCommentReply{Comments: nil}, nil
+	}
 	var reql []types.CommentReply
 	sum := len(reqList)
 	biggest := 0

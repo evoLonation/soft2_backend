@@ -150,6 +150,16 @@ type (
 		CommentLiked []CommentLikedReply `json:"comments_liked"`
 	}
 	//是否点赞过评论
+	GetStarPaperRequest {
+	}
+	GetStarPaperResponse {
+		PaperStar []PaperStarReply `json:"all_star"`
+	}
+	GetSubscribeScholarRequest {
+	}
+	GetSubscribeScholarResponse {
+		ScholarSubscribe []ScholarSubscribeReply `json:"all_subscribe"`
+	}
 )
 type CommentReply {
 	CommentId int64  `json:"comment_id"`
@@ -161,6 +171,13 @@ type CommentReply {
 }
 type CommentLikedReply {
 	IsLiked int64 `json:"is_liked"`
+}
+type PaperStarReply {
+	PaperId int64  `json:"paper_id"`
+	Date    string `json:"date"`
+}
+type ScholarSubscribeReply {
+	ScholarId int64 `json:"scholar_id"`
 }
 service User {
 	@handler Login
@@ -205,4 +222,8 @@ service User {
 	post /api/paper/comment-liked (IsLikeCommentRequest) returns (IsLikeCommentResponse)
 	@handler IfCollect
 	post /api/paper/is-star (IfCollectPaperRequest) returns (IfCollectPaperResponse)
+	@handler GetStarPaper
+	post /api/paper/all-star (GetStarPaperRequest) returns (GetStarPaperResponse)
+	@handler GetSubscribeScholar
+	post /api/scholar/all-subscribe (GetSubscribeScholarRequest) returns (GetSubscribeScholarResponse)
 }

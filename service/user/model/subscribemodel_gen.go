@@ -26,6 +26,7 @@ type (
 		Insert(ctx context.Context, data *Subscribe) (sql.Result, error)
 		FindOne(ctx context.Context, subscribeId int64) (*Subscribe, error)
 		FindSubscribeId(ctx context.Context, userId int64, scholarId int64) (*Subscribe, error)
+		FindByUserId(ctx context.Context, userId int64) ([]Subscribe, error)
 		Update(ctx context.Context, data *Subscribe) error
 		Delete(ctx context.Context, subscribeId int64) error
 	}
@@ -76,6 +77,20 @@ func (m *defaultSubscribeModel) FindSubscribeId(ctx context.Context, userId int6
 	switch err {
 	case nil:
 		return &resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
+
+func (m *defaultSubscribeModel) FindByUserId(ctx context.Context, userId int64) ([]Subscribe, error) {
+	var resp []Subscribe
+	query := fmt.Sprintf("select %s from %s where user_id = %d", subscribeRows, m.table, userId)
+	err := m.conn.QueryRowsCtx(ctx, &resp, query)
+	switch err {
+	case nil:
+		return resp, nil
 	case sqlc.ErrNotFound:
 		return nil, ErrNotFound
 	default:
