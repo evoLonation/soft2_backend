@@ -25,6 +25,7 @@ type PaperResponse struct {
 }
 
 type PaperResponseJSON struct {
+	Id        string       `json:"id"`
 	Title     string       `json:"title"`
 	Abstract  string       `json:"abstract"`
 	Authors   []AuthorJSON `json:"authors"`
@@ -72,6 +73,7 @@ type PaperDetailRequest struct {
 }
 
 type PaperDetailResponse struct {
+	Id         string          `json:"id"`
 	Title      string          `json:"title"`
 	Abstract   string          `json:"abstract"`
 	Authors    []AuthorJSON    `json:"authors"`

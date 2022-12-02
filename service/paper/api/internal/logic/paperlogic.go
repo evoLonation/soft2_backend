@@ -140,6 +140,7 @@ func (l *PaperLogic) Paper(req *types.PaperRequest) (resp *types.PaperResponse, 
 			})
 		}
 		papers = append(papers, types.PaperResponseJSON{
+			Id:        source["id"].(string),
 			Title:     source["title"].(string),
 			Abstract:  NilHandler(source["abstract"], "string").(string),
 			Authors:   authors,

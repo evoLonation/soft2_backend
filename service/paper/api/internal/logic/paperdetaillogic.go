@@ -68,6 +68,7 @@ func (l *PaperDetailLogic) PaperDetail(req *types.PaperDetailRequest) (resp *typ
 		keywordStrings = append(keywordStrings, keyword.(string))
 	}
 	resp = &types.PaperDetailResponse{
+		Id:        source["id"].(string),
 		Title:     source["title"].(string),
 		Abstract:  NilHandler(source["abstract"], "string").(string),
 		Authors:   authors,

@@ -69,6 +69,7 @@ type PaperResponse {
 }
 
 type PaperResponseJSON {
+	Id        string       `json:"id"`
 	Title     string       `json:"title"`
 	Abstract  string       `json:"abstract"`
 	Authors   []AuthorJSON `json:"authors"`
@@ -116,6 +117,7 @@ type PaperDetailRequest {
 }
 
 type PaperDetailResponse {
+	Id         string          `json:"id"`
 	Title      string          `json:"title"`
 	Abstract   string          `json:"abstract"`
 	Authors    []AuthorJSON    `json:"authors"`
