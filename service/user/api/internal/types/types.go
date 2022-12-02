@@ -152,6 +152,20 @@ type IsLikeCommentResponse struct {
 	CommentLiked []CommentLikedReply `json:"comments_liked"`
 }
 
+type GetStarPaperRequest struct {
+}
+
+type GetStarPaperResponse struct {
+	PaperStar []PaperStarReply `json:"all_star"`
+}
+
+type GetSubscribeScholarRequest struct {
+}
+
+type GetSubscribeScholarResponse struct {
+	ScholarSubscribe []ScholarSubscribeReply `json:"all_subscribe"`
+}
+
 type CommentReply struct {
 	CommentId int64  `json:"comment_id"`
 	UserName  string `json:"username"`
@@ -163,4 +177,13 @@ type CommentReply struct {
 
 type CommentLikedReply struct {
 	IsLiked int64 `json:"is_liked"`
+}
+
+type PaperStarReply struct {
+	PaperId int64  `json:"paper_id"`
+	Date    string `json:"date"`
+}
+
+type ScholarSubscribeReply struct {
+	ScholarId int64 `json:"scholar_id"`
 }

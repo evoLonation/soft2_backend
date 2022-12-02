@@ -27,6 +27,7 @@ type (
 		Insert(ctx context.Context, data *Collect) (sql.Result, error)
 		FindOne(ctx context.Context, collectId int64) (*Collect, error)
 		FindOneByTwo(ctx context.Context, userId int64, paperId int64) (*Collect, error)
+		FindByUserId(ctx context.Context, userId int64) ([]Collect, error)
 		Update(ctx context.Context, data *Collect) error
 		Delete(ctx context.Context, collectId int64) error
 	}
@@ -79,6 +80,21 @@ func (m *defaultCollectModel) FindOneByTwo(ctx context.Context, userId int64, pa
 	switch err {
 	case nil:
 		return &resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
+
+func (m *defaultCollectModel) FindByUserId(ctx context.Context, userId int64) ([]Collect, error) {
+	var resp []Collect
+	var query string
+	query = fmt.Sprintf("select %s from %s where user_id = %d", collectRows, m.table, userId)
+	err := m.conn.QueryRowsCtx(ctx, &resp, query)
+	switch err {
+	case nil:
+		return resp, nil
 	case sqlc.ErrNotFound:
 		return nil, ErrNotFound
 	default:
