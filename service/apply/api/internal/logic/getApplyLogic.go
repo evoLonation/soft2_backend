@@ -5,7 +5,7 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"soft2_backend/service/apply/api/internal/svc"
 	"soft2_backend/service/apply/api/internal/types"
-	"soft2_backend/service/paper/rpc/types/paper"
+	"soft2_backend/service/paper/rpc/streamgreeter"
 )
 
 type GetApplyLogic struct {
@@ -38,7 +38,7 @@ func (l *GetApplyLogic) GetApply(req *types.GetApplyRequest) (resp *types.GetApp
 	for ; i < end; i++ {
 		checkScholars = append(checkScholars, list[i].ScholarId)
 	}
-	scholars, err := l.svcCtx.PaperRpc.ListCheckScholar(l.ctx, &paper.ListCheckScholarReq{ScholarId: checkScholars})
+	scholars, err := l.svcCtx.PaperRpc.ListCheckScholar(l.ctx, &streamgreeter.ListCheckScholarReq{ScholarId: checkScholars})
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +48,7 @@ func (l *GetApplyLogic) GetApply(req *types.GetApplyRequest) (resp *types.GetApp
 		info := types.ApplyInfo{
 			ApplyId:     list[i].ApplyId,
 			ScholarName: scholars.Scholars[i-req.Start].ScholarName,
-			Institution: scholars.Scholars[i-req.Start].Institution,
+			Institution: scholars.Scholars[i-req.Start].Org,
 			ApplyType:   list[i].ApplyType,
 			ApplyTime:   list[i].ApplyTime.Format("2006-01-02 15:04:05"),
 		}
