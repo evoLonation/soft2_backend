@@ -3,10 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
+
 	"soft2_backend/service/paper/rpc/internal/config"
 	"soft2_backend/service/paper/rpc/internal/server"
 	"soft2_backend/service/paper/rpc/internal/svc"
-	"soft2_backend/service/paper/rpc/types/paper"
+	"soft2_backend/service/paper/rpc/paper"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"

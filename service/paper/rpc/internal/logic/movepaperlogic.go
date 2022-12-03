@@ -9,7 +9,7 @@ import (
 	"soft2_backend/service/paper/database"
 
 	"soft2_backend/service/paper/rpc/internal/svc"
-	"soft2_backend/service/paper/rpc/types/paper"
+	"soft2_backend/service/paper/rpc/paper"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -100,7 +100,9 @@ func (l *MovePaperLogic) MovePaper(in *paper.MovePaperReq) (*paper.MovePaperRepl
 	log.Println(updateBuf.String())
 	updatePaperRes := database.UpdatePaper(updateBuf, in.PaperId)
 	if int(updatePaperRes["_shards"].(map[string]interface{})["successful"].(float64)) != 1 {
-		return nil, errors.New("update paper failed")
+		return &paper.MovePaperReply{
+			Code: -1,
+		}, errors.New("update paper failed")
 	}
 
 	var rank int
@@ -125,7 +127,9 @@ func (l *MovePaperLogic) MovePaper(in *paper.MovePaperReq) (*paper.MovePaperRepl
 	log.Println(updateOwnerBuf.String())
 	updateOwnerRes := database.UpdateAuthor(updateOwnerBuf, in.OwnerId)
 	if int(updateOwnerRes["_shards"].(map[string]interface{})["successful"].(float64)) != 1 {
-		return nil, errors.New("update owner failed")
+		return &paper.MovePaperReply{
+			Code: -1,
+		}, errors.New("update owner failed")
 	}
 
 	targetPapers := targetSource["pubs"].([]interface{})
@@ -145,8 +149,12 @@ func (l *MovePaperLogic) MovePaper(in *paper.MovePaperReq) (*paper.MovePaperRepl
 	log.Println(updateTargetBuf.String())
 	updateTargetRes := database.UpdateAuthor(updateTargetBuf, in.TargetId)
 	if int(updateTargetRes["_shards"].(map[string]interface{})["successful"].(float64)) != 1 {
-		return nil, errors.New("update target failed")
+		return &paper.MovePaperReply{
+			Code: -1,
+		}, errors.New("update target failed")
 	}
 
-	return &paper.MovePaperReply{}, nil
+	return &paper.MovePaperReply{
+		Code: 0,
+	}, nil
 }
