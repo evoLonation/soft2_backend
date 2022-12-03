@@ -8,7 +8,7 @@ import (
 
 	"soft2_backend/service/paper/rpc/internal/logic"
 	"soft2_backend/service/paper/rpc/internal/svc"
-	"soft2_backend/service/paper/rpc/types/paper"
+	"soft2_backend/service/paper/rpc/paper"
 )
 
 type StreamGreeterServer struct {
@@ -37,7 +37,12 @@ func (s *StreamGreeterServer) MovePaper(ctx context.Context, in *paper.MovePaper
 	return l.MovePaper(in)
 }
 
-func (s *StreamGreeterServer) GetPaperName(ctx context.Context, in *paper.GetPaperNameReq) (*paper.GetPaperNameReply, error) {
-	l := logic.NewGetPaperNameLogic(ctx, s.svcCtx)
-	return l.GetPaperName(in)
+func (s *StreamGreeterServer) GetPaper(ctx context.Context, in *paper.GetPaperReq) (*paper.GetPaperReply, error) {
+	l := logic.NewGetPaperLogic(ctx, s.svcCtx)
+	return l.GetPaper(in)
+}
+
+func (s *StreamGreeterServer) ListGetPaper(ctx context.Context, in *paper.ListGetPaperReq) (*paper.ListGetPaperReply, error) {
+	l := logic.NewListGetPaperLogic(ctx, s.svcCtx)
+	return l.ListGetPaper(in)
 }
