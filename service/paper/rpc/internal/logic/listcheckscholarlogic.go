@@ -3,6 +3,7 @@ package logic
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"log"
 	"soft2_backend/service/file/rpc/types/file"
 	"soft2_backend/service/paper/database"
