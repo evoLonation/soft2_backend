@@ -16,7 +16,9 @@ message CheckScholarReq {
 }
 message CreateScholarReply {
   string scholarName = 1;
-  string institution = 2;
+  string org = 2;
+  int64 paperNum = 3;
+  string url = 4;
 }
 
 message ListCheckScholarReq {

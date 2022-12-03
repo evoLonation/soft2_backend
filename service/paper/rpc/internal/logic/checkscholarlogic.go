@@ -5,9 +5,11 @@ import (
 	"context"
 	"encoding/json"
 	"log"
+	"soft2_backend/service/file/rpc/fileclient"
 	"soft2_backend/service/paper/database"
+
 	"soft2_backend/service/paper/rpc/internal/svc"
-	"soft2_backend/service/paper/rpc/types/paper"
+	"soft2_backend/service/paper/rpc/paper"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -46,9 +48,15 @@ func (l *CheckScholarLogic) CheckScholar(in *paper.CheckScholarReq) (*paper.Crea
 	if len(hits) == 0 {
 		return nil, nil
 	}
+	source := hits[0].(map[string]interface{})["_source"].(map[string]interface{})
+	avatarUrl, _ := l.svcCtx.FileRpc.GetScholarAvatar(l.ctx, &fileclient.ScholarIdReq{
+		Id: in.ScholarId,
+	})
 	resp := &paper.CreateScholarReply{
-		ScholarName: hits[0].(map[string]interface{})["_source"].(map[string]interface{})["name"].(string),
-		Institution: hits[0].(map[string]interface{})["_source"].(map[string]interface{})["orgs"].([]interface{})[0].(string),
+		ScholarName: source["name"].(string),
+		Org:         source["orgs"].([]interface{})[0].(string),
+		PaperNum:    NilHandler(source["n_pubs"], "int").(int64),
+		Url:         avatarUrl.Url,
 	}
 	return resp, nil
 }

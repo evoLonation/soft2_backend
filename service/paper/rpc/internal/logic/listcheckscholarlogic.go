@@ -3,12 +3,12 @@ package logic
 import (
 	"bytes"
 	"context"
-	"encoding/json"
 	"log"
+	"soft2_backend/service/file/rpc/types/file"
 	"soft2_backend/service/paper/database"
 
 	"soft2_backend/service/paper/rpc/internal/svc"
-	"soft2_backend/service/paper/rpc/types/paper"
+	"soft2_backend/service/paper/rpc/paper"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -47,9 +47,14 @@ func (l *ListCheckScholarLogic) ListCheckScholar(in *paper.ListCheckScholarReq) 
 	scholarList := make([]*paper.CreateScholarReply, 0)
 	for _, scholar := range scholars {
 		source := scholar.(map[string]interface{})["_source"].(map[string]interface{})
+		avatarUrl, _ := l.svcCtx.FileRpc.GetScholarAvatar(l.ctx, &file.ScholarIdReq{
+			Id: source["id"].(string),
+		})
 		scholarList = append(scholarList, &paper.CreateScholarReply{
 			ScholarName: source["name"].(string),
-			Institution: source["orgs"].([]interface{})[0].(string),
+			Org:         source["orgs"].([]interface{})[0].(string),
+			PaperNum:    NilHandler(source["n_pubs"], "int").(int64),
+			Url:         avatarUrl.Url,
 		})
 	}
 	resp := &paper.ListCreateScholarReply{
