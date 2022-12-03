@@ -13,7 +13,7 @@ import (
 
 const (
 	FilePath          = "./localfile/"
-	GetFileBaseUrl    = "120.46.220.182:8894/api/get-file/"
+	GetFileBaseUrl    = "http://120.46.220.182:8894/api/get-file/"
 	DefaultAvatarName = "_defaultavatar.webp"
 )
 const (
