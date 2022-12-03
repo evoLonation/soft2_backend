@@ -7,7 +7,8 @@ service StreamGreeter {
   rpc CheckScholar(CheckScholarReq) returns (CreateScholarReply);
   rpc ListCheckScholar(ListCheckScholarReq) returns (ListCreateScholarReply);
   rpc MovePaper(MovePaperReq) returns (MovePaperReply);
-  rpc GetPaperName(GetPaperNameReq) returns (GetPaperNameReply);
+  rpc GetPaper(GetPaperReq) returns (GetPaperReply);
+  rpc ListGetPaper(ListGetPaperReq) returns (ListGetPaperReply);
 }
 
 message CheckScholarReq {
@@ -15,7 +16,9 @@ message CheckScholarReq {
 }
 message CreateScholarReply {
   string scholarName = 1;
-  string institution = 2;
+  string org = 2;
+  int64 paperNum = 3;
+  string url = 4;
 }
 
 message ListCheckScholarReq {
@@ -35,10 +38,27 @@ message MovePaperReq {
 message MovePaperReply {
 }
 
-message GetPaperNameReq {
+message GetPaperReq {
   string paperId = 1;
 }
 
-message GetPaperNameReply {
+message GetPaperReply {
   string paperName = 1;
+  repeated AuthorJSON authors = 2;
+  string org = 3;
+  int64 year = 4;
+}
+
+message ListGetPaperReq {
+  repeated string paperId = 1;
+}
+
+message ListGetPaperReply {
+  repeated GetPaperReply papers = 1;
+}
+
+message AuthorJSON {
+  string name = 1;
+  string id = 2;
+  bool hasId = 3;
 }

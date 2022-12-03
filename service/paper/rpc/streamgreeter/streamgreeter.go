@@ -6,19 +6,22 @@ package streamgreeter
 import (
 	"context"
 
-	"soft2_backend/service/paper/rpc/types/paper"
+	"soft2_backend/service/paper/rpc/paper"
 
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"
 )
 
 type (
+	AuthorJSON             = paper.AuthorJSON
 	CheckScholarReq        = paper.CheckScholarReq
 	CreateScholarReply     = paper.CreateScholarReply
-	GetPaperNameReply      = paper.GetPaperNameReply
-	GetPaperNameReq        = paper.GetPaperNameReq
+	GetPaperReply          = paper.GetPaperReply
+	GetPaperReq            = paper.GetPaperReq
 	ListCheckScholarReq    = paper.ListCheckScholarReq
 	ListCreateScholarReply = paper.ListCreateScholarReply
+	ListGetPaperReply      = paper.ListGetPaperReply
+	ListGetPaperReq        = paper.ListGetPaperReq
 	MovePaperReply         = paper.MovePaperReply
 	MovePaperReq           = paper.MovePaperReq
 
@@ -26,7 +29,8 @@ type (
 		CheckScholar(ctx context.Context, in *CheckScholarReq, opts ...grpc.CallOption) (*CreateScholarReply, error)
 		ListCheckScholar(ctx context.Context, in *ListCheckScholarReq, opts ...grpc.CallOption) (*ListCreateScholarReply, error)
 		MovePaper(ctx context.Context, in *MovePaperReq, opts ...grpc.CallOption) (*MovePaperReply, error)
-		GetPaperName(ctx context.Context, in *GetPaperNameReq, opts ...grpc.CallOption) (*GetPaperNameReply, error)
+		GetPaper(ctx context.Context, in *GetPaperReq, opts ...grpc.CallOption) (*GetPaperReply, error)
+		ListGetPaper(ctx context.Context, in *ListGetPaperReq, opts ...grpc.CallOption) (*ListGetPaperReply, error)
 	}
 
 	defaultStreamGreeter struct {
@@ -55,7 +59,12 @@ func (m *defaultStreamGreeter) MovePaper(ctx context.Context, in *MovePaperReq, 
 	return client.MovePaper(ctx, in, opts...)
 }
 
-func (m *defaultStreamGreeter) GetPaperName(ctx context.Context, in *GetPaperNameReq, opts ...grpc.CallOption) (*GetPaperNameReply, error) {
+func (m *defaultStreamGreeter) GetPaper(ctx context.Context, in *GetPaperReq, opts ...grpc.CallOption) (*GetPaperReply, error) {
 	client := paper.NewStreamGreeterClient(m.cli.Conn())
-	return client.GetPaperName(ctx, in, opts...)
+	return client.GetPaper(ctx, in, opts...)
+}
+
+func (m *defaultStreamGreeter) ListGetPaper(ctx context.Context, in *ListGetPaperReq, opts ...grpc.CallOption) (*ListGetPaperReply, error) {
+	client := paper.NewStreamGreeterClient(m.cli.Conn())
+	return client.ListGetPaper(ctx, in, opts...)
 }

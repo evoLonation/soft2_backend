@@ -1,15 +1,19 @@
 package svc
 
 import (
+	"github.com/zeromicro/go-zero/zrpc"
+	"soft2_backend/service/file/rpc/fileclient"
 	"soft2_backend/service/paper/rpc/internal/config"
 )
 
 type ServiceContext struct {
-	Config config.Config
+	Config  config.Config
+	FileRpc fileclient.File
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
-		Config: c,
+		Config:  c,
+		FileRpc: fileclient.NewFile(zrpc.MustNewClient(c.FileRpc)),
 	}
 }
