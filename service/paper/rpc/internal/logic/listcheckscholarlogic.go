@@ -46,16 +46,16 @@ func (l *ListCheckScholarLogic) ListCheckScholar(in *paper.ListCheckScholarReq) 
 
 	scholars := NilHandler(res["docs"], "list").([]interface{})
 	scholarList := make([]*paper.CreateScholarReply, 0)
-	for _, scholar := range scholars {
+	avatarUrls, _ := l.svcCtx.FileRpc.GetScholarAvatarList(l.ctx, &file.ListScholarIdReq{
+		Ids: in.ScholarId,
+	})
+	for i, scholar := range scholars {
 		source := scholar.(map[string]interface{})["_source"].(map[string]interface{})
-		avatarUrl, _ := l.svcCtx.FileRpc.GetScholarAvatar(l.ctx, &file.ScholarIdReq{
-			Id: source["id"].(string),
-		})
 		scholarList = append(scholarList, &paper.CreateScholarReply{
 			ScholarName: source["name"].(string),
 			Org:         source["orgs"].([]interface{})[0].(string),
 			PaperNum:    NilHandler(source["n_pubs"], "int").(int64),
-			Url:         avatarUrl.Url,
+			Url:         avatarUrls.Urls[i].Url,
 		})
 	}
 	resp := &paper.ListCreateScholarReply{
