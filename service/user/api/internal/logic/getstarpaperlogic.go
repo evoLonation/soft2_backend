@@ -3,11 +3,11 @@ package logic
 import (
 	"context"
 	"encoding/json"
-	"fmt"
-	"soft2_backend/service/user/model"
-
+	"soft2_backend/service/paper/rpc/paper"
 	"soft2_backend/service/user/api/internal/svc"
 	"soft2_backend/service/user/api/internal/types"
+	"soft2_backend/service/user/model"
+	"strconv"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -29,20 +29,35 @@ func NewGetStarPaperLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetS
 func (l *GetStarPaperLogic) GetStarPaper(req *types.GetStarPaperRequest) (resp *types.GetStarPaperResponse, err error) {
 	// todo: add your logic here and delete this line
 	userId, _ := l.ctx.Value("UserId").(json.Number).Int64()
-	reqList, err := l.svcCtx.CollectModel.FindByUserId(l.ctx, userId)
+	reqList, err := l.svcCtx.CollectModel.FindByUserId(l.ctx, userId) //获取收藏的文献
 	if err == model.ErrNotFound {
 		return &types.GetStarPaperResponse{PaperStar: nil}, nil
 	}
-	var reql []types.PaperStarReply
 	sum := len(reqList)
-	for i, onReq := range reqList {
-		if i > sum {
-			break
+	var paperIds []string
+	for i := 0; i < sum; i++ {
+		paperIds = append(paperIds, strconv.FormatInt(reqList[i].PaperId, 10))
+	} //获取收藏的文献id
+	ListPaperReply, err := l.svcCtx.PaperRpc.ListGetPaper(l.ctx, &paper.ListGetPaperReq{PaperId: paperIds}) //获取收藏的文献详情
+	var reql []types.PaperStarReply
+	for i := 0; i < sum; i++ {
+		reql[i].PaperId = reqList[i].PaperId
+		reql[i].PaperName = ListPaperReply.Papers[i].PaperName
+		reql[i].Org = ListPaperReply.Papers[i].Org
+		reql[i].Date = ListPaperReply.Papers[i].Year
+		Authors := ListPaperReply.Papers[i].Authors
+		var authorReply []types.AuthorReply
+		authsum := len(Authors)
+		for i2, author := range Authors {
+			if i2 > authsum {
+				break
+			}
+			var temp types.AuthorReply
+			temp.Id = author.Id
+			temp.Name = author.Name
+			authorReply = append(authorReply, temp)
 		}
-		var request types.PaperStarReply
-		request.PaperId = onReq.PaperId
-		request.Date = fmt.Sprintf("%d年%d月%d日", onReq.CreateTime.Year(), onReq.CreateTime.Month(), onReq.CreateTime.Day())
-		reql = append(reql, request)
+		reql[i].Author = authorReply
 	}
 	return &types.GetStarPaperResponse{PaperStar: reql}, nil
 }

@@ -93,7 +93,6 @@ type (
 	//取消点赞
 	//订阅
 	SubscribeRequest {
-		UserId    int64 `json:"user_id"`
 		ScholarId int64 `json:"scholar_id"`
 	}
 	SubscribeResponse {
@@ -176,11 +175,22 @@ type CommentLikedReply {
 	IsLiked int64 `json:"is_liked"`
 }
 type PaperStarReply {
-	PaperId int64  `json:"paper_id"`
-	Date    string `json:"date"`
+	PaperId   int64         `json:"paper_id"`
+	PaperName string        `json:"paper_name"`
+	Author    []AuthorReply `json:"author"`
+	Org       string        `json:"org"`
+	Date      int64         `json:"date"`
+}
+type AuthorReply {
+	Id   string `json:"id"`
+	Name string `json:"name"`
 }
 type ScholarSubscribeReply {
-	ScholarId int64 `json:"scholar_id"`
+	ScholarId   int64  `json:"scholar_id"`
+	ScholarName string `json:"scholar_name"`
+	Org         string `json:"org"`
+	PaperNum    int64  `json:"paper_num"`
+	Url         string `json:"url"`
 }
 service User {
 	@handler Login

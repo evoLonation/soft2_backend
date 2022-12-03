@@ -92,7 +92,6 @@ type CancelLikeResponse struct {
 }
 
 type SubscribeRequest struct {
-	UserId    int64 `json:"user_id"`
 	ScholarId int64 `json:"scholar_id"`
 }
 
@@ -183,10 +182,22 @@ type CommentLikedReply struct {
 }
 
 type PaperStarReply struct {
-	PaperId int64  `json:"paper_id"`
-	Date    string `json:"date"`
+	PaperId   int64         `json:"paper_id"`
+	PaperName string        `json:"paper_name"`
+	Author    []AuthorReply `json:"author"`
+	Org       string        `json:"org"`
+	Date      int64         `json:"date"`
+}
+
+type AuthorReply struct {
+	Id   string `json:"id"`
+	Name string `json:"name"`
 }
 
 type ScholarSubscribeReply struct {
-	ScholarId int64 `json:"scholar_id"`
+	ScholarId   int64  `json:"scholar_id"`
+	ScholarName string `json:"scholar_name"`
+	Org         string `json:"org"`
+	PaperNum    int64  `json:"paper_num"`
+	Url         string `json:"url"`
 }

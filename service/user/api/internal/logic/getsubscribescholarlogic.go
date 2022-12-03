@@ -3,7 +3,9 @@ package logic
 import (
 	"context"
 	"encoding/json"
+	"soft2_backend/service/paper/rpc/paper"
 	"soft2_backend/service/user/model"
+	"strconv"
 
 	"soft2_backend/service/user/api/internal/svc"
 	"soft2_backend/service/user/api/internal/types"
@@ -32,15 +34,19 @@ func (l *GetSubscribeScholarLogic) GetSubscribeScholar(req *types.GetSubscribeSc
 	if err == model.ErrNotFound {
 		return &types.GetSubscribeScholarResponse{ScholarSubscribe: nil}, nil
 	}
-	var reql []types.ScholarSubscribeReply
 	sum := len(reqList)
-	for i, oneReq := range reqList {
-		if i > sum {
-			break
-		}
-		var request types.ScholarSubscribeReply
-		request.ScholarId = oneReq.ScholarId
-		reql = append(reql, request)
+	var scholarIds []string
+	for i := 0; i < sum; i++ {
+		scholarIds = append(scholarIds, strconv.FormatInt(reqList[i].ScholarId, 10))
+	}
+	ListScholarReply, err := l.svcCtx.PaperRpc.ListCheckScholar(l.ctx, &paper.ListCheckScholarReq{ScholarId: scholarIds})
+	var reql []types.ScholarSubscribeReply
+	for i := 0; i < sum; i++ {
+		reql[i].ScholarId = reqList[i].ScholarId
+		reql[i].ScholarName = ListScholarReply.Scholars[i].ScholarName
+		reql[i].Org = ListScholarReply.Scholars[i].Org
+		reql[i].PaperNum = ListScholarReply.Scholars[i].PaperNum
+		reql[i].Url = ListScholarReply.Scholars[i].Url
 	}
 	return &types.GetSubscribeScholarResponse{ScholarSubscribe: reql}, nil
 }
