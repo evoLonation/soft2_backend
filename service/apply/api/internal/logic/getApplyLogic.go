@@ -34,16 +34,21 @@ func (l *GetApplyLogic) GetApply(req *types.GetApplyRequest) (resp *types.GetApp
 	}
 	count := end - i
 
+	checkScholars := make([]string, 0)
 	for ; i < end; i++ {
-		scholar, err := l.svcCtx.PaperRpc.CheckScholar(l.ctx, &paper.CheckScholarReq{ScholarId: list[i].ScholarId})
-		if err != nil {
-			return nil, err
-		}
+		checkScholars = append(checkScholars, list[i].ScholarId)
+	}
+	scholars, err := l.svcCtx.PaperRpc.ListCheckScholar(l.ctx, &paper.ListCheckScholarReq{ScholarId: checkScholars})
+	if err != nil {
+		return nil, err
+	}
+
+	for i := req.Start; i < end; i++ {
 
 		info := types.ApplyInfo{
 			ApplyId:     list[i].ApplyId,
-			ScholarName: scholar.ScholarName,
-			Institution: scholar.Institution,
+			ScholarName: scholars.Scholars[i-req.Start].ScholarName,
+			Institution: scholars.Scholars[i-req.Start].Institution,
 			ApplyType:   list[i].ApplyType,
 			ApplyTime:   list[i].ApplyTime.Format("2006-01-02 15:04:05"),
 		}
