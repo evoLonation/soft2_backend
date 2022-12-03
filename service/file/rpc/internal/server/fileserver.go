@@ -32,6 +32,11 @@ func (s *FileServer) GetScholarAvatar(ctx context.Context, in *file.ScholarIdReq
 	return l.GetScholarAvatar(in)
 }
 
+func (s *FileServer) GetScholarAvatarList(ctx context.Context, in *file.ListScholarIdReq) (*file.ListUrlReply, error) {
+	l := logic.NewGetScholarAvatarListLogic(ctx, s.svcCtx)
+	return l.GetScholarAvatarList(in)
+}
+
 func (s *FileServer) GetHelpFile(ctx context.Context, in *file.ApplyIdReq) (*file.UrlReply, error) {
 	l := logic.NewGetHelpFileLogic(ctx, s.svcCtx)
 	return l.GetHelpFile(in)

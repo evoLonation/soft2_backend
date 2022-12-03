@@ -13,15 +13,18 @@ import (
 )
 
 type (
-	ApplyIdReq   = file.ApplyIdReq
-	HelpIdReq    = file.HelpIdReq
-	ScholarIdReq = file.ScholarIdReq
-	UrlReply     = file.UrlReply
-	UserIdReq    = file.UserIdReq
+	ApplyIdReq       = file.ApplyIdReq
+	HelpIdReq        = file.HelpIdReq
+	ListScholarIdReq = file.ListScholarIdReq
+	ListUrlReply     = file.ListUrlReply
+	ScholarIdReq     = file.ScholarIdReq
+	UrlReply         = file.UrlReply
+	UserIdReq        = file.UserIdReq
 
 	File interface {
 		GetUserAvatar(ctx context.Context, in *UserIdReq, opts ...grpc.CallOption) (*UrlReply, error)
 		GetScholarAvatar(ctx context.Context, in *ScholarIdReq, opts ...grpc.CallOption) (*UrlReply, error)
+		GetScholarAvatarList(ctx context.Context, in *ListScholarIdReq, opts ...grpc.CallOption) (*ListUrlReply, error)
 		GetHelpFile(ctx context.Context, in *ApplyIdReq, opts ...grpc.CallOption) (*UrlReply, error)
 		GetApplyFile(ctx context.Context, in *HelpIdReq, opts ...grpc.CallOption) (*UrlReply, error)
 	}
@@ -45,6 +48,11 @@ func (m *defaultFile) GetUserAvatar(ctx context.Context, in *UserIdReq, opts ...
 func (m *defaultFile) GetScholarAvatar(ctx context.Context, in *ScholarIdReq, opts ...grpc.CallOption) (*UrlReply, error) {
 	client := file.NewFileClient(m.cli.Conn())
 	return client.GetScholarAvatar(ctx, in, opts...)
+}
+
+func (m *defaultFile) GetScholarAvatarList(ctx context.Context, in *ListScholarIdReq, opts ...grpc.CallOption) (*ListUrlReply, error) {
+	client := file.NewFileClient(m.cli.Conn())
+	return client.GetScholarAvatarList(ctx, in, opts...)
 }
 
 func (m *defaultFile) GetHelpFile(ctx context.Context, in *ApplyIdReq, opts ...grpc.CallOption) (*UrlReply, error) {

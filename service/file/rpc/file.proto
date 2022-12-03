@@ -23,11 +23,18 @@ message ApplyIdReq{
 message UrlReply{
   string url = 1;
 }
+message ListScholarIdReq {
+  repeated string ids=1;
+}
+message ListUrlReply {
+  repeated UrlReply urls=1;
+}
 
 
 service file {
   rpc getUserAvatar(UserIdReq) returns(UrlReply);
   rpc getScholarAvatar(ScholarIdReq) returns(UrlReply);
+  rpc getScholarAvatarList(ListScholarIdReq) returns(ListUrlReply);
   rpc getHelpFile(ApplyIdReq) returns(UrlReply);
   rpc getApplyFile(HelpIdReq) returns(UrlReply);
 }

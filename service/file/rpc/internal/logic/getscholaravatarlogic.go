@@ -32,16 +32,21 @@ func (l *GetScholarAvatarLogic) GetScholarAvatar(in *file.ScholarIdReq) (*file.U
 	if err != nil {
 		return nil, err
 	}
-	userId = res.UserId
-	//userId = res.UserId
-	userAvatar, err := l.svcCtx.UserAvatarModel.FindOne(l.ctx, userId)
-	err = filecommon.SqlErrorCheck(err)
-	if err != nil && err != filecommon.NoRowError {
-		return nil, err
-	}
-	if err == filecommon.NoRowError {
-		return &file.UrlReply{Url: filecommon.GetDefaultAvatarUrl()}, nil
+	if res.IsVerified {
+		userId = res.UserId
+		//userId = res.UserId
+		userAvatar, err := l.svcCtx.UserAvatarModel.FindOne(l.ctx, userId)
+		err = filecommon.SqlErrorCheck(err)
+		if err != nil && err != filecommon.NoRowError {
+			return nil, err
+		}
+		if err == filecommon.NoRowError {
+			return &file.UrlReply{Url: filecommon.GetDefaultAvatarUrl()}, nil
+		} else {
+			return &file.UrlReply{Url: filecommon.GetUrl(userAvatar.FileName)}, nil
+		}
 	} else {
-		return &file.UrlReply{Url: filecommon.GetUrl(userAvatar.FileName)}, nil
+		return &file.UrlReply{Url: filecommon.GetDefaultAvatarUrl()}, nil
 	}
+
 }
