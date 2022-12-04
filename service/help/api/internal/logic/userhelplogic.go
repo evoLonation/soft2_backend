@@ -38,7 +38,7 @@ func (l *UserHelpLogic) UserHelp(req *types.UserHelpReq) (resp *types.UserHelpRe
 			var request types.UserReq
 			request.RequestId = oneReq.RequestId
 			theReq, _ := l.svcCtx.LiteratureRequestModel.FindOne(l.ctx, oneReq.RequestId)
-			request.RequestTime = theReq.RequestTime.GoString()
+			request.RequestTime = theReq.RequestTime.Format("yyyy-mm-dd hh:mm")
 			request.RequestContent = theReq.RequestContent
 			request.Wealth = oneReq.Wealth
 			request.Type = oneReq.HelpStatus

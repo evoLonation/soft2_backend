@@ -35,7 +35,7 @@ func (l *SearchLogic) Search(req *types.ReqSearchReq) (resp *types.ReqSearchRepl
 		if i >= int(req.Start) {
 			var request types.Search
 			request.RequestId = oneReq.Id
-			request.RequestTime = oneReq.RequestTime.GoString()
+			request.RequestTime = oneReq.RequestTime.Format("yyyy-mm-dd hh:mm")
 			request.RequestContent = oneReq.RequestContent
 			request.Wealth = oneReq.Wealth
 			request.RequestStatus = oneReq.RequestStatus
