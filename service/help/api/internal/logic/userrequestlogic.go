@@ -43,6 +43,9 @@ func (l *UserRequestLogic) UserRequest(req *types.UserReqReq) (resp *types.UserR
 			request.RequestContent = oneReq.RequestContent
 			request.Wealth = oneReq.Wealth
 			request.Type = oneReq.RequestStatus
+			request.Author = oneReq.Author
+			request.Magazine = oneReq.Magazine
+			request.Link = oneReq.Link
 			help, err := l.svcCtx.LiteratureHelpModel.FindOneByReqId(l.ctx, oneReq.Id)
 			if err == model.ErrNotFound {
 				request.HelpId = 0

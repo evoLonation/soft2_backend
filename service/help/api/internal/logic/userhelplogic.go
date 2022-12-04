@@ -44,6 +44,9 @@ func (l *UserHelpLogic) UserHelp(req *types.UserHelpReq) (resp *types.UserHelpRe
 			request.Wealth = oneReq.Wealth
 			request.Type = oneReq.HelpStatus
 			request.HelpId = oneReq.Id
+			request.Magazine = theReq.Magazine
+			request.Link = theReq.Link
+			request.Author = theReq.Author
 			reql = append(reql, request)
 		}
 	}

@@ -40,6 +40,9 @@ func (l *SearchLogic) Search(req *types.ReqSearchReq) (resp *types.ReqSearchRepl
 			request.RequestContent = oneReq.RequestContent
 			request.Wealth = oneReq.Wealth
 			request.RequestStatus = oneReq.RequestStatus
+			request.Author = oneReq.Author
+			request.Link = oneReq.Link
+			request.Magazine = oneReq.Magazine
 			reql = append(reql, request)
 		}
 	}

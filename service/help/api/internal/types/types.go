@@ -104,10 +104,13 @@ type Request struct {
 
 type Search struct {
 	HelpId         int64  `json:"help_id"`
-	ReqTitle       string `json:"request_title"`
+	ReqTitle       string `json:"title"`
 	RequestId      int64  `json:"request_id"`
 	RequestTime    string `json:"request_time"`
 	RequestContent string `json:"request_content"`
+	Author         string `json:"author"`
+	Magazine       string `json:"magazine"`
+	Link           string `json:"link"`
 	Wealth         int64  `json:"wealth"`
 	RequestStatus  int64  `json:"request_status"`
 }
@@ -115,9 +118,12 @@ type Search struct {
 type UserReq struct {
 	Type           int64  `json:"type"`
 	HelpId         int64  `json:"help_id"`
-	ReqTitle       string `json:"request_title"`
+	ReqTitle       string `json:"title"`
 	RequestId      int64  `json:"request_id"`
 	RequestTime    string `json:"request_time"`
 	RequestContent string `json:"request_content"`
+	Author         string `json:"author"`
+	Magazine       string `json:"magazine"`
+	Link           string `json:"link"`
 	Wealth         int64  `json:"wealth"`
 }
