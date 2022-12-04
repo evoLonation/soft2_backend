@@ -34,6 +34,7 @@ func (l *SearchLogic) Search(req *types.ReqSearchReq) (resp *types.ReqSearchRepl
 		}
 		if i >= int(req.Start) {
 			var request types.Search
+			request.ReqTitle = oneReq.Title
 			request.RequestId = oneReq.Id
 			request.RequestTime = oneReq.RequestTime.Format("2006-1-02 15:04")
 			request.RequestContent = oneReq.RequestContent

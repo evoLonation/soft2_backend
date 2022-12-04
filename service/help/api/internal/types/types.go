@@ -104,6 +104,7 @@ type Request struct {
 
 type Search struct {
 	HelpId         int64  `json:"help_id"`
+	ReqTitle       string `json:"request_title"`
 	RequestId      int64  `json:"request_id"`
 	RequestTime    string `json:"request_time"`
 	RequestContent string `json:"request_content"`
