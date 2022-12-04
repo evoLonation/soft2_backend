@@ -33,7 +33,7 @@ func (l *RequestsLogic) Requests(req *types.ReqsReq) (resp *types.ReqsReply, err
 	sum := len(reqList)
 	var reql []types.Request
 	for i, oneReq := range reqList {
-		if i >= int(req.End) {
+		if req.End != -1 && i >= int(req.End) {
 			break
 		}
 		if i >= int(req.Start) {
@@ -43,7 +43,7 @@ func (l *RequestsLogic) Requests(req *types.ReqsReq) (resp *types.ReqsReply, err
 			request.Author = oneReq.Author
 			request.Magazine = oneReq.Magazine
 			request.Link = oneReq.Link
-			request.RequestTime = oneReq.RequestTime.Format("2006-January-02 03:04")
+			request.RequestTime = oneReq.RequestTime.Format("2006-1-02 03:04")
 			request.RequestContent = oneReq.RequestContent
 			request.Wealth = oneReq.Wealth
 			reql = append(reql, request)

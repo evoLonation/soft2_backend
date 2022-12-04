@@ -29,13 +29,13 @@ func (l *SearchLogic) Search(req *types.ReqSearchReq) (resp *types.ReqSearchRepl
 	sum := len(reqList)
 	var reql []types.Search
 	for i, oneReq := range reqList {
-		if i >= int(req.End) {
+		if req.End != -1 && i >= int(req.End) {
 			break
 		}
 		if i >= int(req.Start) {
 			var request types.Search
 			request.RequestId = oneReq.Id
-			request.RequestTime = oneReq.RequestTime.Format("2006-January-02 03:04")
+			request.RequestTime = oneReq.RequestTime.Format("2006-1-02 03:04")
 			request.RequestContent = oneReq.RequestContent
 			request.Wealth = oneReq.Wealth
 			request.RequestStatus = oneReq.RequestStatus

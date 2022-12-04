@@ -31,14 +31,14 @@ func (l *UserHelpLogic) UserHelp(req *types.UserHelpReq) (resp *types.UserHelpRe
 	sum := len(reqList)
 	var reql []types.UserReq
 	for i, oneReq := range reqList {
-		if i >= int(req.End) {
+		if req.End != -1 && i >= int(req.End) {
 			break
 		}
 		if i >= int(req.Start) {
 			var request types.UserReq
 			request.RequestId = oneReq.RequestId
 			theReq, _ := l.svcCtx.LiteratureRequestModel.FindOne(l.ctx, oneReq.RequestId)
-			request.RequestTime = theReq.RequestTime.Format("2006-January-02 03:04")
+			request.RequestTime = theReq.RequestTime.Format("2006-1-02 03:04")
 			request.RequestContent = theReq.RequestContent
 			request.Wealth = oneReq.Wealth
 			request.Type = oneReq.HelpStatus
