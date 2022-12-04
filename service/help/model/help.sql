@@ -4,7 +4,7 @@ CREATE TABLE `literature_request` (
     `title` varchar(255) NOT NULL DEFAULT '' COMMENT '文献标题',
     `author` varchar(255)  NOT NULL DEFAULT '' COMMENT '作者名称',
     `magazine` varchar(255)  NOT NULL DEFAULT '' COMMENT '期刊名称',
-    `link` char(5)  NOT NULL COMMENT '链接',
+    `link` varchar(255)  NOT NULL COMMENT '链接',
     `request_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '求助时间',
     `request_content` varchar(255)  NOT NULL DEFAULT '' COMMENT '求助描述',
     `wealth` bigint NOT NULL COMMENT '财富值',
