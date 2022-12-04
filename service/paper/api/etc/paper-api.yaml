@@ -4,6 +4,11 @@ Port: 8893
 Auth:
   AccessSecret: BUAADIAMONDPICK
   AccessExpire: 3600
+FileRpc:
+  Etcd:
+    Hosts:
+      - 120.46.220.182:2379
+    Key: file.rpc
 elasticsearch:
   host:
     - 127.0.0.1:9200

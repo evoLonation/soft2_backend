@@ -74,6 +74,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodPost,
+				Path:    "/api/scholar/get-avatar",
+				Handler: ScholarGetAvatarHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
 				Path:    "/api/admin/move-paper",
 				Handler: MovePaperHandler(serverCtx),
 			},

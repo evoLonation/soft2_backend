@@ -35,6 +35,9 @@ service paper-api {
 	@handler ScholarClaim
 	post /api/scholar/claim (ScholarClaimRequest) returns (ScholarClaimResponse);
 	
+	@handler ScholarGetAvatar
+	post /api/scholar/get-avatar (ScholarGetAvatarRequest) returns (ScholarGetAvatarResponse);
+	
 	@handler MovePaper
 	post /api/admin/move-paper (MovePaperRequest) returns (MovePaperResponse);
 	
@@ -292,6 +295,15 @@ type ScholarClaimRequest {
 type ScholarClaimResponse {
 	Code      int    `json:"code"`
 	ScholarId string `json:"scholar_id"`
+}
+
+type ScholarGetAvatarRequest {
+	ScholarId string `json:"scholar_id"`
+}
+
+type ScholarGetAvatarResponse {
+	Code int    `json:"code"`
+	Url  string `json:"url"`
 }
 
 type MovePaperRequest {

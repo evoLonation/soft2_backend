@@ -250,6 +250,15 @@ type ScholarClaimResponse struct {
 	ScholarId string `json:"scholar_id"`
 }
 
+type ScholarGetAvatarRequest struct {
+	ScholarId string `json:"scholar_id"`
+}
+
+type ScholarGetAvatarResponse struct {
+	Code int    `json:"code"`
+	Url  string `json:"url"`
+}
+
 type MovePaperRequest struct {
 	PaperId  string `json:"paper_id"`
 	OwnerId  string `json:"owner_id"`
