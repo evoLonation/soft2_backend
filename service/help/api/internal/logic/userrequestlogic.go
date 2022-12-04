@@ -38,7 +38,8 @@ func (l *UserRequestLogic) UserRequest(req *types.UserReqReq) (resp *types.UserR
 		if i >= int(req.Start) {
 			var request types.UserReq
 			request.RequestId = oneReq.Id
-			request.RequestTime = oneReq.RequestTime.Format("2006-1-02 03:04")
+			request.RequestTime = oneReq.RequestTime.Format("2006-1-02 24:04")
+			request.ReqTitle = oneReq.Title
 			request.RequestContent = oneReq.RequestContent
 			request.Wealth = oneReq.Wealth
 			request.Type = oneReq.RequestStatus

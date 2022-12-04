@@ -43,7 +43,7 @@ func (l *RequestsLogic) Requests(req *types.ReqsReq) (resp *types.ReqsReply, err
 			request.Author = oneReq.Author
 			request.Magazine = oneReq.Magazine
 			request.Link = oneReq.Link
-			request.RequestTime = oneReq.RequestTime.Format("2006-1-02 03:04")
+			request.RequestTime = oneReq.RequestTime.Format("2006-1-02 24:04")
 			request.RequestContent = oneReq.RequestContent
 			request.Wealth = oneReq.Wealth
 			reql = append(reql, request)
