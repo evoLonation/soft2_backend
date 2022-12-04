@@ -297,3 +297,20 @@ type FieldScholarJSON struct {
 	NCitation int     `json:"n_citation"`
 	Weight    float64 `json:"weight"`
 }
+
+type HomeInfoRequest struct {
+	PaperNum   int `json:"paper_num"`
+	ScholarNum int `json:"scholar_num"`
+	JournalNum int `json:"journal_num"`
+}
+
+type HomeInfoResponse struct {
+	Areas    []AreaJSON `json:"areas"`
+	Journals []string   `json:"journals"`
+}
+
+type AreaJSON struct {
+	Type     string                 `json:"type"`
+	Papers   []PaperResponseJSON    `json:"papers"`
+	Scholars []ScholarBasicResponse `json:"scholars"`
+}

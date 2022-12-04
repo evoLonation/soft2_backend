@@ -46,6 +46,9 @@ service paper-api {
 	
 	@handler FieldScholar
 	post /api/field/scholar (FieldScholarRequest) returns (FieldScholarResponse);
+	
+	@handler HomeInfo
+	post /api/home/info (HomeInfoRequest) returns (HomeInfoResponse);
 }
 
 type PaperRequest {
@@ -343,4 +346,21 @@ type FieldScholarJSON {
 	NPaper    int     `json:"n_paper"`
 	NCitation int     `json:"n_citation"`
 	Weight    float64 `json:"weight"`
+}
+
+type HomeInfoRequest {
+	PaperNum   int `json:"paper_num"`
+	ScholarNum int `json:"scholar_num"`
+	JournalNum int `json:"journal_num"`
+}
+
+type HomeInfoResponse {
+	Areas    []AreaJSON `json:"areas"`
+	Journals []string   `json:"journals"`
+}
+
+type AreaJSON {
+	Type     string                 `json:"type"`
+	Papers   []PaperResponseJSON    `json:"papers"`
+	Scholars []ScholarBasicResponse `json:"scholars"`
 }
