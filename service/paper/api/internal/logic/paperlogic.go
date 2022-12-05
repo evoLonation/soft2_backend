@@ -134,19 +134,19 @@ func (l *PaperLogic) Paper(req *types.PaperRequest) (resp *types.PaperResponse, 
 				hasId = true
 			}
 			authors = append(authors, types.AuthorJSON{
-				Name:  author.(map[string]interface{})["name"].(string),
+				Name:  NilHandler(author.(map[string]interface{})["name"], "string").(string),
 				Id:    NilHandler(author.(map[string]interface{})["id"], "string").(string),
 				HasId: hasId,
 			})
 		}
 		papers = append(papers, types.PaperResponseJSON{
-			Id:        source["id"].(string),
-			Title:     source["title"].(string),
+			Id:        NilHandler(source["id"], "string").(string),
+			Title:     NilHandler(source["title"], "string").(string),
 			Abstract:  NilHandler(source["abstract"], "string").(string),
 			Authors:   authors,
 			Year:      NilHandler(source["year"], "int").(int),
 			NCitation: NilHandler(source["n_citation"], "int").(int),
-			Publisher: NilHandler(source["venue"].(map[string]interface{})["raw"], "string").(string),
+			Publisher: NilHandler(source["venue"], "string").(string),
 		})
 		log.Println(source["keywords"])
 		keywords := NilHandler(source["keywords"], "list").([]interface{})
@@ -181,7 +181,7 @@ func TranslateSearchKey(searchKey int) string {
 	case 4:
 		return "doi"
 	case 5:
-		return "venue.raw"
+		return "venue"
 	case 6:
 		return "author.org"
 	case 7:
