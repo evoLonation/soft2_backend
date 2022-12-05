@@ -73,26 +73,27 @@ type PaperDetailRequest struct {
 }
 
 type PaperDetailResponse struct {
-	Id         string          `json:"id"`
-	Title      string          `json:"title"`
-	Abstract   string          `json:"abstract"`
-	Authors    []AuthorJSON    `json:"authors"`
-	Doi        string          `json:"doi"`
-	ISBN       string          `json:"isbn"`
-	Org        string          `json:"org"`
-	Keywords   []string        `json:"keywords"`
-	Year       int             `json:"year"`
-	NCitation  int             `json:"n_citation"`
-	Publisher  string          `json:"publisher"`
-	References []ReferenceJSON `json:"references"`
-	Urls       []string        `json:"urls"`
+	Id         string       `json:"id"`
+	Title      string       `json:"title"`
+	Abstract   string       `json:"abstract"`
+	Authors    []AuthorJSON `json:"authors"`
+	Doi        string       `json:"doi"`
+	ISBN       string       `json:"isbn"`
+	Org        string       `json:"org"`
+	Keywords   []string     `json:"keywords"`
+	Year       int          `json:"year"`
+	NCitation  int          `json:"n_citation"`
+	Publisher  string       `json:"publisher"`
+	References []PaperJSON  `json:"references"`
+	Similars   []PaperJSON  `json:"similars"`
+	Urls       []string     `json:"urls"`
 }
 
-type ReferenceJSON struct {
-	Id     string   `json:"id"`
-	Title  string   `json:"title"`
-	Author []string `json:"author"`
-	Year   int      `json:"year"`
+type PaperJSON struct {
+	Id     string `json:"id"`
+	Title  string `json:"title"`
+	Author string `json:"author"`
+	Year   int    `json:"year"`
 }
 
 type PaperCiteRequest struct {
