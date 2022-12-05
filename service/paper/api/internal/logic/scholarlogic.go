@@ -63,8 +63,8 @@ func (l *ScholarLogic) Scholar(req *types.ScholarRequest) (resp *types.ScholarRe
 			orgs = append(orgs, NilHandler(org, "string").(string))
 		}
 		scholar := types.ScholarResponseJSON{
-			Id:          source["id"].(string),
-			Name:        source["name"].(string),
+			Id:          NilHandler(source["id"], "string").(string),
+			Name:        NilHandler(source["name"], "string").(string),
 			Institution: orgs,
 			PaperNum:    NilHandler(source["n_pubs"], "int").(int),
 		}
