@@ -67,19 +67,19 @@ func (l *AutoCompleteLogic) AutoComplete(req *types.AutoCompleteRequest) (resp *
 func TranslateSearchType(searchType int) string {
 	switch searchType {
 	case 0:
-		return "title"
+		return "title.completion"
 	case 1:
-		return "authors.name"
+		return "authors.name.completion"
 	case 2:
-		return "keywords"
+		return "keywords.completion"
 	case 3:
-		return "abstract"
+		return "abstract.completion"
 	case 4:
-		return "doi"
+		return "doi.completion"
 	case 5:
-		return "venue.raw"
+		return "venue.completion"
 	case 6:
-		return "orgs"
+		return "orgs.completion"
 	default:
 		return ""
 	}
