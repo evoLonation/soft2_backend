@@ -84,9 +84,9 @@ func (m *defaultLiteratureRequestModel) FindAll(ctx context.Context, order int64
 	var resp []LiteratureRequest
 	var query string
 	if order == 0 {
-		query = fmt.Sprintf("select %s from %s order by request_time", literatureRequestRows, m.table)
+		query = fmt.Sprintf("select %s from %s where request_status = 0 order by request_time", literatureRequestRows, m.table)
 	} else {
-		query = fmt.Sprintf("select %s from %s order by wealth", literatureRequestRows, m.table)
+		query = fmt.Sprintf("select %s from %s where request_status = 0 order by wealth", literatureRequestRows, m.table)
 	}
 	err := m.conn.QueryRowsCtx(ctx, &resp, query)
 	switch err {
@@ -102,7 +102,7 @@ func (m *defaultLiteratureRequestModel) FindAll(ctx context.Context, order int64
 func (m *defaultLiteratureRequestModel) FindByContent(ctx context.Context, content string) ([]LiteratureRequest, error) {
 	var resp []LiteratureRequest
 	var query string
-	query = fmt.Sprintf("(select %s from %s where title = %s) union (select %s from %s where request_content = %s)", literatureRequestRows, m.table, content, literatureRequestRows, m.table, content)
+	query = fmt.Sprintf("(select %s from %s where title = %s and request_status = 0) union (select %s from %s where request_content = %s and request_status = 0)", literatureRequestRows, m.table, content, literatureRequestRows, m.table, content)
 	err := m.conn.QueryRowsCtx(ctx, &resp, query)
 	switch err {
 	case nil:
