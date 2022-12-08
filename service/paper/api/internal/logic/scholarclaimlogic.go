@@ -63,7 +63,7 @@ func (l *ScholarClaimLogic) ScholarClaim(req *types.ScholarClaimRequest) (resp *
 
 	minLevenshtein := 100.0
 	minIter := 0
-	authors := paperSource["authors"].([]interface{})
+	authors := NilHandler(paperSource["authors"], "list").([]interface{})
 	for i, author := range authors {
 		if NilHandler(author.(map[string]interface{})["id"], "string").(string) == req.ScholarId {
 			return &types.ScholarClaimResponse{
@@ -72,8 +72,9 @@ func (l *ScholarClaimLogic) ScholarClaim(req *types.ScholarClaimRequest) (resp *
 			}, nil
 		}
 		authorName := NilHandler(author.(map[string]interface{})["name"], "string").(string)
-		if Levenshtein(authorName, scholarSource["name"].(string), 1, 1, 1) < minLevenshtein {
-			minLevenshtein = Levenshtein(authorName, scholarSource["name"].(string), 1, 1, 1)
+		thisLevenshtein := Levenshtein(authorName, scholarSource["name"].(string), 1, 1, 1)
+		if thisLevenshtein < minLevenshtein {
+			minLevenshtein = thisLevenshtein
 			minIter = i
 		}
 	}
