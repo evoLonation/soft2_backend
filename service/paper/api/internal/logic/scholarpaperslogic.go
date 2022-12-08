@@ -82,7 +82,7 @@ func (l *ScholarPapersLogic) ScholarPapers(req *types.ScholarPapersRequest) (res
 				hasId = true
 			}
 			authors = append(authors, types.AuthorJSON{
-				Name:  author.(map[string]interface{})["name"].(string),
+				Name:  NilHandler(author.(map[string]interface{})["name"], "string").(string),
 				Id:    NilHandler(author.(map[string]interface{})["id"], "string").(string),
 				HasId: hasId,
 			})
@@ -93,12 +93,12 @@ func (l *ScholarPapersLogic) ScholarPapers(req *types.ScholarPapersRequest) (res
 			minYear = NilHandler(paper["year"], "int").(int)
 		}
 		papers = append(papers, &types.PaperResponseJSON{
-			Title:     paper["title"].(string),
+			Title:     NilHandler(paper["title"], "string").(string),
 			Abstract:  NilHandler(paper["abstract"], "string").(string),
 			Authors:   authors,
 			Year:      NilHandler(paper["year"], "int").(int),
 			NCitation: NilHandler(paper["n_citation"], "int").(int),
-			Publisher: NilHandler(paper["venue"].(map[string]interface{})["raw"], "string").(string),
+			Publisher: NilHandler(paper["venue"], "string").(string),
 		})
 	}
 	if req.TimeOrder {
