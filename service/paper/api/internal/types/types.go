@@ -209,6 +209,11 @@ type ScholarBarchartRequest struct {
 }
 
 type ScholarBarchartResponse struct {
+	Statistic []StatisticJSON `json:"statistic"`
+}
+
+type StatisticJSON struct {
+	Year         int `json:"year"`
 	Achievements int `json:"achievements"`
 	References   int `json:"references"`
 }

@@ -262,6 +262,11 @@ type ScholarBarchartRequest {
 }
 
 type ScholarBarchartResponse {
+	Statistic []StatisticJSON `json:"statistic"`
+}
+
+type StatisticJSON {
+	Year         int `json:"year"`
 	Achievements int `json:"achievements"`
 	References   int `json:"references"`
 }

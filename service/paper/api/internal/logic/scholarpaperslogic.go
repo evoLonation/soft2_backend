@@ -61,7 +61,7 @@ func (l *ScholarPapersLogic) ScholarPapers(req *types.ScholarPapersRequest) (res
 		paperQuery := map[string]interface{}{
 			"query": map[string]interface{}{
 				"match": map[string]interface{}{
-					"id": pub.(map[string]interface{})["i"],
+					"id": pub.(map[string]interface{})["i"].(string),
 				},
 			},
 		}
