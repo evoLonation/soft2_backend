@@ -1,5 +1,7 @@
 package logic
 
+import "soft2_backend/service/paper/api/internal/types"
+
 func NilHandler(value interface{}, expectedType string) interface{} {
 	if value == nil {
 		switch expectedType {
@@ -40,6 +42,15 @@ func GetD(d, max, min int) int {
 	return int((float64(d-min) / float64(max-min)) * 10)
 }
 
+func UpdateMaxMin(max *int, min *int, d int) {
+	if d > *max {
+		*max = d
+	}
+	if d < *min {
+		*min = d
+	}
+}
+
 func GetColor(d int) string {
 	switch d {
 	case 0:
@@ -63,6 +74,22 @@ func GetColor(d int) string {
 	default:
 		return "#ffffff"
 	}
+}
+
+func GetPaperAuthors(paper map[string]interface{}) []types.AuthorJSON {
+	authors := make([]types.AuthorJSON, 0)
+	for _, author := range paper["authors"].([]interface{}) {
+		hasId := false
+		if author.(map[string]interface{})["id"] != nil {
+			hasId = true
+		}
+		authors = append(authors, types.AuthorJSON{
+			Name:  NilHandler(author.(map[string]interface{})["name"], "string").(string),
+			Id:    NilHandler(author.(map[string]interface{})["id"], "string").(string),
+			HasId: hasId,
+		})
+	}
+	return authors
 }
 
 func Levenshtein(str1, str2 string, costIns, costRep, costDel int) float64 {

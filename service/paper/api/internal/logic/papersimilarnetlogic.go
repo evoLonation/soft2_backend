@@ -14,28 +14,21 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type PaperRelationNetLogic struct {
+type PaperSimilarNetLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewPaperRelationNetLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PaperRelationNetLogic {
-	return &PaperRelationNetLogic{
+func NewPaperSimilarNetLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PaperSimilarNetLogic {
+	return &PaperSimilarNetLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-var nodes []types.PaperNodeJSON
-var edges []types.EdgeJSON
-var maxYear = 0
-var minYear = 3000
-var maxCitation = 0
-var minCitation = 1000000
-
-func (l *PaperRelationNetLogic) PaperRelationNet(req *types.PaperRelationNetRequest) (resp *types.PaperRelationNetResponse, err error) {
+func (l *PaperSimilarNetLogic) PaperSimilarNet(req *types.PaperSimilarNetRequest) (resp *types.PaperSimilarNetResponse, err error) {
 	// todo: add your logic here and delete this line
 	var thisPaperBuf bytes.Buffer
 	thisPaperQuery := map[string]interface{}{
@@ -73,27 +66,27 @@ func (l *PaperRelationNetLogic) PaperRelationNet(req *types.PaperRelationNetRequ
 	UpdateMaxMin(&maxYear, &minYear, majorNode.Info.Year)
 	UpdateMaxMin(&maxCitation, &minCitation, majorNode.Size)
 
-	references := NilHandler(thisPaperSource["references"], "list").([]interface{})
+	references := NilHandler(thisPaperSource["relateds"], "list").([]interface{})
 	referenceIds := make([]string, 0)
 	for _, reference := range references {
 		referenceIds = append(referenceIds, reference.(string))
 	}
 
-	DFSRelation(referenceIds, majorNode, 0)
+	DFSSimilar(referenceIds, majorNode, 0)
 
 	for _, node := range nodes {
 		node.Size = GetSize(node.Size, maxCitation, minCitation)
 		node.Style.Fill = GetColor(GetD(node.Info.Year, maxYear, minYear))
 	}
 
-	resp = &types.PaperRelationNetResponse{
+	resp = &types.PaperSimilarNetResponse{
 		Nodes: nodes,
 		Edges: edges,
 	}
 	return resp, nil
 }
 
-func DFSRelation(referenceIds []string, fatherNode types.PaperNodeJSON, level int) {
+func DFSSimilar(referenceIds []string, fatherNode types.PaperNodeJSON, level int) {
 	if level == 4 {
 		return
 	}
@@ -134,12 +127,12 @@ func DFSRelation(referenceIds []string, fatherNode types.PaperNodeJSON, level in
 			Target: node.Id,
 		})
 
-		references := NilHandler(source["references"], "list").([]interface{})
+		references := NilHandler(source["relateds"], "list").([]interface{})
 		referenceIds = make([]string, 0)
 		for _, reference := range references {
 			referenceIds = append(referenceIds, reference.(string))
 		}
 
-		DFSRelation(referenceIds, node, level+1)
+		DFSSimilar(referenceIds, node, level+1)
 	}
 }

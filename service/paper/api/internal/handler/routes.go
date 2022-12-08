@@ -44,6 +44,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodPost,
+				Path:    "/api/paper/similar-net",
+				Handler: PaperSimilarNetHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
 				Path:    "/api/scholar/basic",
 				Handler: ScholarBasicHandler(serverCtx),
 			},

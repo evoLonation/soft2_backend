@@ -17,6 +17,9 @@ service paper-api {
 	@handler PaperRelationNet
 	post /api/paper/relation-net (PaperRelationNetRequest) returns (PaperRelationNetResponse);
 	
+	@handler PaperSimilarNet
+	post /api/paper/similar-net (PaperSimilarNetRequest) returns (PaperSimilarNetResponse);
+	
 	@handler ScholarBasic
 	post /api/scholar/basic (ScholarBasicRequest) returns (ScholarBasicResponse);
 	
@@ -191,6 +194,15 @@ type InfoJSON {
 type EdgeJSON {
 	Source string `json:"source"`
 	Target string `json:"target"`
+}
+
+type PaperSimilarNetRequest {
+	Id string `json:"id"`
+}
+
+type PaperSimilarNetResponse {
+	Nodes []PaperNodeJSON `json:"nodes"`
+	Edges []EdgeJSON      `json:"edges"`
 }
 
 type ScholarBasicRequest {

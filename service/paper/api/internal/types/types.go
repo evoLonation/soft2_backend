@@ -143,6 +143,15 @@ type EdgeJSON struct {
 	Target string `json:"target"`
 }
 
+type PaperSimilarNetRequest struct {
+	Id string `json:"id"`
+}
+
+type PaperSimilarNetResponse struct {
+	Nodes []PaperNodeJSON `json:"nodes"`
+	Edges []EdgeJSON      `json:"edges"`
+}
+
 type ScholarBasicRequest struct {
 	ScholarId string `json:"scholar_id"`
 }
