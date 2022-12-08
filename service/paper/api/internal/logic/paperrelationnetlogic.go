@@ -53,16 +53,17 @@ func (l *PaperRelationNetLogic) PaperRelationNet(req *types.PaperRelationNetRequ
 	thisPaperSource := thisPaperRes["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})
 
 	majorNode := types.PaperNodeJSON{
-		Id:    req.Id,
-		Label: thisPaperSource["authors"].([]interface{})[0].(map[string]interface{})["name"].(string) + strconv.Itoa(NilHandler(thisPaperSource["year"], "int").(int)),
-		Size:  NilHandler(thisPaperSource["n_citation"], "int").(int),
-		Type:  "major",
+		Id: req.Id,
+		Label: NilHandler(thisPaperSource["authors"].([]interface{})[0].(map[string]interface{})["name"], "string").(string) +
+			strconv.Itoa(NilHandler(thisPaperSource["year"], "int").(int)),
+		Size: NilHandler(thisPaperSource["n_citation"], "int").(int),
+		Type: "major",
 		Style: types.StyleJSON{
 			Fill: strconv.Itoa(NilHandler(thisPaperSource["year"], "int").(int)),
 		},
 		Info: types.InfoJSON{
 			Id:       req.Id,
-			Title:    thisPaperSource["title"].(string),
+			Title:    NilHandler(thisPaperSource["title"], "string").(string),
 			Abstract: NilHandler(thisPaperSource["abstract"], "string").(string),
 			Authors:  GetPaperAuthors(thisPaperSource),
 			Year:     NilHandler(thisPaperSource["year"], "int").(int),
@@ -110,15 +111,15 @@ func DFS(referenceIds []string, fatherNode types.PaperNodeJSON, level int) {
 	for _, paper := range papers {
 		source := paper.(map[string]interface{})["_source"].(map[string]interface{})
 		node := types.PaperNodeJSON{
-			Id:    source["id"].(string),
-			Label: source["authors"].([]interface{})[0].(map[string]interface{})["name"].(string) + strconv.Itoa(NilHandler(source["year"], "int").(int)),
+			Id:    NilHandler(source["id"], "string").(string),
+			Label: NilHandler(source["authors"].([]interface{})[0].(map[string]interface{})["name"], "string").(string) + strconv.Itoa(NilHandler(source["year"], "int").(int)),
 			Size:  NilHandler(source["n_citation"], "int").(int),
 			Style: types.StyleJSON{
 				Fill: strconv.Itoa(NilHandler(source["year"], "int").(int)),
 			},
 			Info: types.InfoJSON{
-				Id:       source["id"].(string),
-				Title:    source["title"].(string),
+				Id:       NilHandler(source["id"], "string").(string),
+				Title:    NilHandler(source["title"], "string").(string),
 				Abstract: NilHandler(source["abstract"], "string").(string),
 				Authors:  GetPaperAuthors(source),
 				Year:     NilHandler(source["year"], "int").(int),
@@ -151,7 +152,7 @@ func GetPaperAuthors(paper map[string]interface{}) []types.AuthorJSON {
 			hasId = true
 		}
 		authors = append(authors, types.AuthorJSON{
-			Name:  author.(map[string]interface{})["name"].(string),
+			Name:  NilHandler(author.(map[string]interface{})["name"], "string").(string),
 			Id:    NilHandler(author.(map[string]interface{})["id"], "string").(string),
 			HasId: hasId,
 		})

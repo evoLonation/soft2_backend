@@ -40,25 +40,25 @@ func GetD(d, max, min int) int {
 func GetColor(d int) string {
 	switch d {
 	case 0:
-		return "#1C1C1C"
+		return "#ccffff"
 	case 1:
-		return "#363636"
+		return "#b8f5fa"
 	case 2:
-		return "#4F4F4F"
+		return "#7ad1db"
 	case 3:
-		return "#696969"
+		return "#a3ebf5"
 	case 4:
-		return "#828282"
+		return "#8fe0f0"
 	case 5:
-		return "#9C9C9C"
+		return "#7ad6eb"
 	case 6:
-		return "#B5B5B5"
+		return "#5cc7e3"
 	case 7:
-		return "#CFCFCF"
+		return "#33b2d9"
 	case 8:
-		return "#E8E8E8"
+		return "#0099cc"
 	default:
-		return "#FFFFFF"
+		return "#ffffff"
 	}
 }
 
