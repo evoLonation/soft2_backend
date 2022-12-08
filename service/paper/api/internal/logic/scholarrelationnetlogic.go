@@ -65,8 +65,8 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 	scholarSource := scholarRes["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})
 
 	majorCoNode := types.CoNetNodeJSON{
-		Id:    scholarSource["id"].(string),
-		Label: scholarSource["name"].(string),
+		Id:    NilHandler(scholarSource["id"], "string").(string),
+		Label: NilHandler(scholarSource["name"], "string").(string),
 		Size:  0,
 		CoNum: 0,
 		Type:  "major",
@@ -75,8 +75,8 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 		},
 	}
 	majorCiNode := types.CiNetNodeJSON{
-		Id:    scholarSource["id"].(string),
-		Label: scholarSource["name"].(string),
+		Id:    NilHandler(scholarSource["id"], "string").(string),
+		Label: NilHandler(scholarSource["name"], "string").(string),
 		Size:  0,
 		CiNum: 0,
 		Type:  "major",
@@ -87,7 +87,7 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 	coNodes[scholarSource["id"].(string)] = majorCoNode
 	ciNodes[scholarSource["id"].(string)] = majorCiNode
 
-	pubs := scholarSource["pubs"].([]interface{})
+	pubs := NilHandler(scholarSource["pubs"], "list").([]interface{})
 	pubIds := make([]string, 0)
 	for _, pub := range pubs {
 		pubIds = append(pubIds, pub.(map[string]interface{})["i"].(string))
@@ -105,6 +105,9 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 
 	pubs = pubRes["docs"].([]interface{})
 	for _, pub := range pubs {
+		if pub.(map[string]interface{})["found"].(bool) == false {
+			continue
+		}
 		authors := pub.(map[string]interface{})["_source"].(map[string]interface{})["authors"].([]interface{})
 		for _, author := range authors {
 			authorId := NilHandler(author.(map[string]interface{})["id"].(string), "string").(string)
@@ -176,6 +179,9 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 
 		references = referenceRes["docs"].([]interface{})
 		for _, reference := range references {
+			if reference.(map[string]interface{})["found"].(bool) == false {
+				continue
+			}
 			firstAuthor := reference.(map[string]interface{})["_source"].(map[string]interface{})["authors"].([]interface{})[0].(map[string]interface{})
 			authorId := NilHandler(firstAuthor["id"].(string), "string").(string)
 			if _, ok := ciNodes[authorId]; ok && authorId != "" {
