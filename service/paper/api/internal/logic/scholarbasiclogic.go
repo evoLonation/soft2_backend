@@ -47,8 +47,8 @@ func (l *ScholarBasicLogic) ScholarBasic(req *types.ScholarBasicRequest) (resp *
 	var tags = make([]types.TagJSON, 0)
 	for _, tag := range source["tags"].([]interface{}) {
 		tags = append(tags, types.TagJSON{
-			T: tag.(map[string]interface{})["t"].(string),
-			W: int(tag.(map[string]interface{})["w"].(float64)),
+			T: NilHandler(tag.(map[string]interface{})["t"], "string").(string),
+			W: NilHandler(tag.(map[string]interface{})["w"], "int").(int),
 		})
 	}
 	var institutions []string
@@ -78,13 +78,13 @@ func (l *ScholarBasicLogic) ScholarBasic(req *types.ScholarBasicRequest) (resp *
 	sort.Sort(sort.Reverse(sort.IntSlice(years)))
 
 	resp = &types.ScholarBasicResponse{
-		ScholarId:   source["id"].(string),
-		Name:        source["name"].(string),
+		ScholarId:   NilHandler(source["id"], "string").(string),
+		Name:        NilHandler(source["name"], "string").(string),
 		Institution: institutions,
 		Position:    NilHandler(source["position"], "string").(string),
-		RefNum:      int(source["n_citation"].(float64)),
-		AchNum:      int(source["n_pubs"].(float64)),
-		HIndex:      int(source["h_index"].(float64)),
+		RefNum:      NilHandler(source["n_citation"], "int").(int),
+		AchNum:      NilHandler(source["n_pubs"], "int").(int),
+		HIndex:      NilHandler(source["h_index"], "int").(int),
 		Years:       years,
 		Tags:        tags,
 	}
