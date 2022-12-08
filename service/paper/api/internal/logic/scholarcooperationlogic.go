@@ -44,10 +44,10 @@ func (l *ScholarCooperationLogic) ScholarCooperation(req *types.ScholarCooperati
 	res := database.SearchAuthor(authorBuf)
 
 	source := res["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})
-	pubs := source["pubs"].([]interface{})
+	pubs := NilHandler(source["pubs"], "list").([]interface{})
 	var pubIds []string
 	for _, pub := range pubs {
-		pubIds = append(pubIds, pub.(map[string]interface{})["i"].(string))
+		pubIds = append(pubIds, NilHandler(pub.(map[string]interface{})["i"], "string").(string))
 	}
 	var paperBuf bytes.Buffer
 	mget := map[string]interface{}{
@@ -62,7 +62,7 @@ func (l *ScholarCooperationLogic) ScholarCooperation(req *types.ScholarCooperati
 	papers := res["docs"].([]interface{})
 	coopList := make(map[string]types.CoopJSON)
 	for _, paper := range papers {
-		authors := paper.(map[string]interface{})["_source"].(map[string]interface{})["authors"].([]interface{})
+		authors := NilHandler(paper.(map[string]interface{})["_source"].(map[string]interface{})["authors"], "list").([]interface{})
 		for _, author := range authors {
 			v, ok := coopList[author.(map[string]interface{})["id"].(string)]
 			if ok {
