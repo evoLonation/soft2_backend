@@ -47,7 +47,7 @@ func (l *FieldScholarLogic) FieldScholar(req *types.FieldScholarRequest) (resp *
 	hits := scholarRes["hits"].(map[string]interface{})["hits"].([]interface{})
 	for _, hit := range hits {
 		source := hit.(map[string]interface{})["_source"].(map[string]interface{})
-		tags := source["tags"].([]interface{})
+		tags := NilHandler(source["tags"], "list").([]interface{})
 		var totalWeight float64
 		var thisWeight float64
 		var minLevenshtein = 100.0
@@ -60,8 +60,8 @@ func (l *FieldScholarLogic) FieldScholar(req *types.FieldScholarRequest) (resp *
 		}
 
 		scholars = append(scholars, types.FieldScholarJSON{
-			ScholarId: source["id"].(string),
-			Name:      source["name"].(string),
+			ScholarId: NilHandler(source["id"], "string").(string),
+			Name:      NilHandler(source["name"], "string").(string),
 			NPaper:    NilHandler(source["n_pubs"], "int").(int),
 			NCitation: NilHandler(source["n_citation"], "int").(int),
 			Weight:    thisWeight / totalWeight,
