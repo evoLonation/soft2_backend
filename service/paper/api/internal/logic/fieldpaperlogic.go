@@ -56,18 +56,18 @@ func (l *FieldPaperLogic) FieldPaper(req *types.FieldPaperRequest) (resp *types.
 				hasId = true
 			}
 			authors = append(authors, types.AuthorJSON{
-				Name:  author.(map[string]interface{})["name"].(string),
+				Name:  NilHandler(author.(map[string]interface{})["name"], "string").(string),
 				Id:    NilHandler(author.(map[string]interface{})["id"], "string").(string),
 				HasId: hasId,
 			})
 		}
 		papers = append(papers, types.PaperResponseJSON{
-			Title:     source["title"].(string),
+			Title:     NilHandler(source["title"], "string").(string),
 			Abstract:  NilHandler(source["abstract"], "string").(string),
 			Authors:   authors,
 			Year:      NilHandler(source["year"], "int").(int),
 			NCitation: NilHandler(source["n_citation"], "int").(int),
-			Publisher: NilHandler(source["venue"].(map[string]interface{})["raw"], "string").(string),
+			Publisher: NilHandler(source["venue"], "string").(string),
 		})
 	}
 
