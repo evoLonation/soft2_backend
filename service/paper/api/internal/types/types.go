@@ -320,12 +320,24 @@ type HomeInfoRequest struct {
 }
 
 type HomeInfoResponse struct {
-	Areas    []AreaJSON `json:"areas"`
-	Journals []string   `json:"journals"`
+	Areas []AreaJSON `json:"areas"`
 }
 
 type AreaJSON struct {
-	Type     string                 `json:"type"`
-	Papers   []PaperResponseJSON    `json:"papers"`
-	Scholars []ScholarBasicResponse `json:"scholars"`
+	Type     string            `json:"type"`
+	Papers   []PaperInfoJSON   `json:"papers"`
+	Scholars []ScholarInfoJSON `json:"scholars"`
+	Journals []string          `json:"journals"`
+}
+
+type PaperInfoJSON struct {
+	Title     string   `json:"title"`
+	Authors   []string `json:"authors"`
+	NCitation int      `json:"n_citation"`
+}
+
+type ScholarInfoJSON struct {
+	ScholarId string `json:"scholar_id"`
+	Name      string `json:"name"`
+	RefNum    int    `json:"ref_num"`
 }
