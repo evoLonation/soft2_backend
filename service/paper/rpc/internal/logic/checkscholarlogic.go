@@ -53,8 +53,8 @@ func (l *CheckScholarLogic) CheckScholar(in *paper.CheckScholarReq) (*paper.Crea
 		Id: in.ScholarId,
 	})
 	resp := &paper.CreateScholarReply{
-		ScholarName: source["name"].(string),
-		Org:         source["orgs"].([]interface{})[0].(string),
+		ScholarName: NilHandler(source["name"], "string").(string),
+		Org:         NilHandler(source["orgs"].([]interface{})[0], "string").(string),
 		PaperNum:    NilHandler(source["n_pubs"], "int").(int64),
 		Url:         avatarUrl.Url,
 	}

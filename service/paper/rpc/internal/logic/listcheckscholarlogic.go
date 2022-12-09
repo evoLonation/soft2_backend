@@ -50,10 +50,13 @@ func (l *ListCheckScholarLogic) ListCheckScholar(in *paper.ListCheckScholarReq) 
 		Ids: in.ScholarId,
 	})
 	for i, scholar := range scholars {
+		if scholar.(map[string]interface{})["found"].(bool) == false {
+			continue
+		}
 		source := scholar.(map[string]interface{})["_source"].(map[string]interface{})
 		scholarList = append(scholarList, &paper.CreateScholarReply{
-			ScholarName: source["name"].(string),
-			Org:         source["orgs"].([]interface{})[0].(string),
+			ScholarName: NilHandler(source["name"], "string").(string),
+			Org:         NilHandler(source["orgs"].([]interface{})[0], "string").(string),
 			PaperNum:    NilHandler(source["n_pubs"], "int").(int64),
 			Url:         avatarUrls.Urls[i].Url,
 		})

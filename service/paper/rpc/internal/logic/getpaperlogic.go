@@ -51,7 +51,7 @@ func (l *GetPaperLogic) GetPaper(in *paper.GetPaperReq) (*paper.GetPaperReply, e
 			hasId = true
 		}
 		authors = append(authors, &paper.AuthorJSON{
-			Name:  author.(map[string]interface{})["name"].(string),
+			Name:  NilHandler(author.(map[string]interface{})["name"], "string").(string),
 			Id:    NilHandler(author.(map[string]interface{})["id"], "string").(string),
 			HasId: hasId,
 		})
@@ -72,7 +72,7 @@ func (l *GetPaperLogic) GetPaper(in *paper.GetPaperReq) (*paper.GetPaperReply, e
 	firstAuthorRes := database.SearchAuthor(buf)
 
 	firstAuthorSource := firstAuthorRes["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})
-	firstAuthorOrg := firstAuthorSource["orgs"].([]interface{})[0].(string)
+	firstAuthorOrg := NilHandler(firstAuthorSource["orgs"].([]interface{})[0], "string").(string)
 
 	return &paper.GetPaperReply{
 		PaperName: source["title"].(string),

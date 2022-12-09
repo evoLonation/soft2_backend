@@ -46,6 +46,9 @@ func (l *ListGetPaperLogic) ListGetPaper(in *paper.ListGetPaperReq) (*paper.List
 	papers := NilHandler(res["docs"], "list").([]interface{})
 	paperList := make([]*paper.GetPaperReply, 0)
 	for _, p := range papers {
+		if p.(map[string]interface{})["found"].(bool) == false {
+			continue
+		}
 		source := p.(map[string]interface{})["_source"].(map[string]interface{})
 		var authors []*paper.AuthorJSON
 		for _, author := range source["authors"].([]interface{}) {
@@ -54,7 +57,7 @@ func (l *ListGetPaperLogic) ListGetPaper(in *paper.ListGetPaperReq) (*paper.List
 				hasId = true
 			}
 			authors = append(authors, &paper.AuthorJSON{
-				Name:  author.(map[string]interface{})["name"].(string),
+				Name:  NilHandler(author.(map[string]interface{})["name"], "string").(string),
 				Id:    NilHandler(author.(map[string]interface{})["id"], "string").(string),
 				HasId: hasId,
 			})
@@ -75,7 +78,7 @@ func (l *ListGetPaperLogic) ListGetPaper(in *paper.ListGetPaperReq) (*paper.List
 		firstAuthorRes := database.SearchAuthor(buf)
 
 		firstAuthorSource := firstAuthorRes["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})
-		firstAuthorOrg := firstAuthorSource["orgs"].([]interface{})[0].(string)
+		firstAuthorOrg := NilHandler(firstAuthorSource["orgs"].([]interface{})[0], "string").(string)
 
 		paperList = append(paperList, &paper.GetPaperReply{
 			PaperName: source["title"].(string),
