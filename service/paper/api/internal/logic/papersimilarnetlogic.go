@@ -106,6 +106,7 @@ func DFSSimilar(referenceIds []string, fatherNode types.PaperNodeJSON, level int
 			continue
 		}
 		source := paper.(map[string]interface{})["_source"].(map[string]interface{})
+		log.Println(source)
 		node := types.PaperNodeJSON{
 			Id:    NilHandler(source["id"], "string").(string),
 			Label: NilHandler(source["authors"].([]interface{})[0].(map[string]interface{})["name"], "string").(string) + strconv.Itoa(NilHandler(source["year"], "int").(int)),
