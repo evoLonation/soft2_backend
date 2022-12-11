@@ -45,7 +45,6 @@ func (l *PaperRelationNetLogic) PaperRelationNet(req *types.PaperRelationNetRequ
 	maxCitationRelation = 0
 	minCitationRelation = 1000000
 	nodeMapRelation = make(map[string]int, 0)
-	log.Println(nodeMapRelation)
 
 	var thisPaperBuf bytes.Buffer
 	thisPaperQuery := map[string]interface{}{
@@ -93,9 +92,6 @@ func (l *PaperRelationNetLogic) PaperRelationNet(req *types.PaperRelationNetRequ
 	references := NilHandler(thisPaperSource["references"], "list").([]interface{})
 	referenceIds := make([]string, 0)
 	for _, reference := range references {
-		if len(referenceIds) >= 5 {
-			break
-		}
 		_, ok := nodeMapRelation[reference.(string)]
 		if ok {
 			continue
@@ -103,6 +99,7 @@ func (l *PaperRelationNetLogic) PaperRelationNet(req *types.PaperRelationNetRequ
 		referenceIds = append(referenceIds, reference.(string))
 	}
 	log.Println(referenceIds)
+	log.Println(nodeMapRelation)
 
 	DFSRelation(referenceIds, majorNode, 0)
 
@@ -136,10 +133,17 @@ func DFSRelation(referenceIds []string, fatherNode types.PaperNodeJSON, level in
 	referenceRes := database.MgetPaper(referenceBuf)
 
 	papers := NilHandler(referenceRes["docs"], "list").([]interface{})
+	var levelPaperCnt = 0
 	for _, paper := range papers {
 		if paper.(map[string]interface{})["found"].(bool) == false {
 			continue
 		}
+		if (levelPaperCnt >= 5 && level == 0) ||
+			(levelPaperCnt >= 4 && level == 1) ||
+			(levelPaperCnt >= 3 && level == 2) {
+			break
+		}
+		levelPaperCnt++
 		source := paper.(map[string]interface{})["_source"].(map[string]interface{})
 		authors := NilHandler(source["authors"], "list").([]interface{})
 		var author string
@@ -175,12 +179,8 @@ func DFSRelation(referenceIds []string, fatherNode types.PaperNodeJSON, level in
 
 		references := NilHandler(source["references"], "list").([]interface{})
 		referenceIds = make([]string, 0)
+		log.Println(nodeMapRelation)
 		for _, reference := range references {
-			if (len(referenceIds) >= 5 && level == 0) ||
-				(len(referenceIds) >= 4 && level == 1) ||
-				(len(referenceIds) >= 3 && level == 2) {
-				break
-			}
 			_, ok := nodeMapRelation[reference.(string)]
 			if ok {
 				continue

@@ -103,7 +103,9 @@ func (l *PaperSimilarNetLogic) PaperSimilarNet(req *types.PaperSimilarNetRequest
 
 	DFSSimilar(referenceIds, majorNode, 0)
 
+	log.Printf("maxCitation: %d, minCitation: %d", maxCitationSimilar, minCitationSimilar)
 	for i, node := range nodesSimilar {
+		log.Printf("node %d: %d", i, node.Size)
 		nodesSimilar[i].Size = GetSize(node.Size, maxCitationSimilar, minCitationSimilar)
 		nodesSimilar[i].Style.Fill = GetColor(GetD(node.Info.Year, maxYearSimilar, minYearSimilar))
 	}
@@ -177,7 +179,6 @@ func DFSSimilar(referenceIds []string, fatherNode types.PaperNodeJSON, level int
 
 		references := NilHandler(source["relateds"], "list").([]interface{})
 		referenceIds = make([]string, 0)
-		log.Println(referenceIds)
 		log.Println(nodeMapSimilar)
 		for _, reference := range references {
 			_, ok := nodeMapSimilar[reference.(string)]
