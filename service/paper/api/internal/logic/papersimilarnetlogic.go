@@ -45,7 +45,6 @@ func (l *PaperSimilarNetLogic) PaperSimilarNet(req *types.PaperSimilarNetRequest
 	maxCitationSimilar = 0
 	minCitationSimilar = 1000000
 	nodeMapSimilar = make(map[string]int, 0)
-	log.Println(nodeMapRelation)
 
 	var thisPaperBuf bytes.Buffer
 	thisPaperQuery := map[string]interface{}{
@@ -132,17 +131,17 @@ func DFSSimilar(referenceIds []string, fatherNode types.PaperNodeJSON, level int
 	referenceRes := database.MgetPaper(referenceBuf)
 
 	papers := NilHandler(referenceRes["docs"], "list").([]interface{})
-	var levelCnt = 0
+	var levelPaperCnt = 0
 	for _, paper := range papers {
 		if paper.(map[string]interface{})["found"].(bool) == false {
 			continue
 		}
-		if (levelCnt >= 5 && level == 0) ||
-			(levelCnt >= 4 && level == 1) ||
-			(levelCnt >= 3 && level == 2) {
+		if (levelPaperCnt >= 10 && level == 0) ||
+			(levelPaperCnt >= 8 && level == 1) ||
+			(levelPaperCnt >= 5 && level == 2) {
 			break
 		}
-		levelCnt++
+		levelPaperCnt++
 		source := paper.(map[string]interface{})["_source"].(map[string]interface{})
 		authors := NilHandler(source["authors"], "list").([]interface{})
 		var author string
