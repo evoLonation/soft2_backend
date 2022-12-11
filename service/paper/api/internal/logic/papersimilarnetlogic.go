@@ -153,6 +153,9 @@ func DFSSimilar(referenceIds []string, fatherNode types.PaperNodeJSON, level int
 			if (i >= 5 && level == 0) || (i >= 4 && level == 1) || (i >= 3 && level == 2) {
 				break
 			}
+			if reference.(string) == fatherNode.Id {
+				continue
+			}
 			referenceIds = append(referenceIds, reference.(string))
 		}
 

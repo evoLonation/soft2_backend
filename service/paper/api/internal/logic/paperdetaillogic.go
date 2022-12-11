@@ -86,6 +86,9 @@ func (l *PaperDetailLogic) PaperDetail(req *types.PaperDetailRequest) (resp *typ
 	referenceRes := database.MgetPaper(referenceBuf)
 	papers := NilHandler(referenceRes["docs"], "list").([]interface{})
 	for _, paper := range papers {
+		if paper.(map[string]interface{})["found"].(bool) == false {
+			continue
+		}
 		source := paper.(map[string]interface{})["_source"].(map[string]interface{})
 		authors := NilHandler(source["authors"].([]interface{}), "list").([]interface{})
 		var author string
@@ -119,6 +122,9 @@ func (l *PaperDetailLogic) PaperDetail(req *types.PaperDetailRequest) (resp *typ
 	log.Println(similarRes)
 	papers = NilHandler(similarRes["docs"], "list").([]interface{})
 	for _, paper := range papers {
+		if paper.(map[string]interface{})["found"].(bool) == false {
+			continue
+		}
 		source := paper.(map[string]interface{})["_source"].(map[string]interface{})
 		authors := NilHandler(source["authors"].([]interface{}), "list").([]interface{})
 		var author string
