@@ -5,6 +5,7 @@ import (
 	"github.com/zeromicro/go-zero/zrpc"
 	"soft2_backend/service/apply/api/internal/config"
 	"soft2_backend/service/apply/model"
+	"soft2_backend/service/message/rpc/messageclient"
 	"soft2_backend/service/paper/rpc/streamgreeter"
 )
 
@@ -13,7 +14,8 @@ type ServiceContext struct {
 	ApplyModel      model.ApplyModel
 	VerifycodeModel model.VerifycodeModel
 
-	PaperRpc streamgreeter.StreamGreeter
+	PaperRpc   streamgreeter.StreamGreeter
+	MessageRpc messageclient.Message
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -23,5 +25,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		ApplyModel:      model.NewApplyModel(conn),
 		VerifycodeModel: model.NewVerifycodeModel(conn),
 		PaperRpc:        streamgreeter.NewStreamGreeter(zrpc.MustNewClient(c.PaperRpc)),
+		MessageRpc:      messageclient.NewMessage(zrpc.MustNewClient(c.MessageRpc)),
 	}
 }
