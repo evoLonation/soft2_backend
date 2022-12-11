@@ -109,6 +109,9 @@ func DFSRelation(referenceIds []string, fatherNode types.PaperNodeJSON, level in
 
 	papers := NilHandler(referenceRes["docs"], "list").([]interface{})
 	for _, paper := range papers {
+		if paper.(map[string]interface{})["found"].(bool) == false {
+			continue
+		}
 		source := paper.(map[string]interface{})["_source"].(map[string]interface{})
 		node := types.PaperNodeJSON{
 			Id:    NilHandler(source["id"], "string").(string),
