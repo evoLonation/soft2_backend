@@ -124,7 +124,6 @@ func DFSRelation(referenceIds []string, fatherNode types.PaperNodeJSON, level in
 			continue
 		}
 		source := paper.(map[string]interface{})["_source"].(map[string]interface{})
-		log.Println(source)
 		authors := NilHandler(source["authors"], "list").([]interface{})
 		var author string
 		if len(authors) == 0 {
