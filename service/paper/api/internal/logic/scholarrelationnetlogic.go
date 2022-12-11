@@ -60,7 +60,8 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 	log.Println(scholarBuf.String())
 	scholarRes := database.SearchAuthor(scholarBuf)
 
-	scholarSource := scholarRes["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})
+	hits := NilHandler(scholarRes["hits"].(map[string]interface{})["hits"], "list").([]interface{})
+	scholarSource := hits[0].(map[string]interface{})["_source"].(map[string]interface{})
 
 	majorCoNode := types.CoNetNodeJSON{
 		Id:    NilHandler(scholarSource["id"], "string").(string),
@@ -107,31 +108,32 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 		if pub.(map[string]interface{})["found"].(bool) == false {
 			continue
 		}
-		authors := pub.(map[string]interface{})["_source"].(map[string]interface{})["authors"].([]interface{})
+		authors := NilHandler(pub.(map[string]interface{})["_source"].(map[string]interface{})["authors"], "list").([]interface{})
 		for _, author := range authors {
 			authorId := NilHandler(author.(map[string]interface{})["id"].(string), "string").(string)
-			if authorId != req.ScholarId {
-				if _, ok := coNodes[authorId]; ok && authorId != "" {
-					thisNode := coNodes[authorId]
-					thisNode.CoNum++
-					coNodes[authorId] = thisNode
-				} else {
-					coNode := types.CoNetNodeJSON{
-						Id:    authorId,
-						Label: author.(map[string]interface{})["name"].(string),
-						Size:  0,
-						CoNum: 1,
-						Style: types.StyleJSON{
-							Fill: strconv.Itoa(NilHandler(author.(map[string]interface{})["n_citation"], "int").(int)),
-						},
-					}
-					coNodes[authorId] = coNode
-					if req.ScholarId != authorId {
-						coEdges = append(coEdges, types.EdgeJSON{
-							Source: req.ScholarId,
-							Target: authorId,
-						})
-					}
+			if authorId == req.ScholarId {
+				continue
+			}
+			if _, ok := coNodes[authorId]; ok && authorId != "" {
+				thisNode := coNodes[authorId]
+				thisNode.CoNum++
+				coNodes[authorId] = thisNode
+			} else {
+				coNode := types.CoNetNodeJSON{
+					Id:    authorId,
+					Label: author.(map[string]interface{})["name"].(string),
+					Size:  0,
+					CoNum: 1,
+					Style: types.StyleJSON{
+						Fill: strconv.Itoa(NilHandler(author.(map[string]interface{})["n_citation"], "int").(int)),
+					},
+				}
+				coNodes[authorId] = coNode
+				if req.ScholarId != authorId {
+					coEdges = append(coEdges, types.EdgeJSON{
+						Source: req.ScholarId,
+						Target: authorId,
+					})
 				}
 			}
 		}
@@ -161,7 +163,7 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 	}
 
 	for _, pub := range pubs {
-		references := pub.(map[string]interface{})["_source"].(map[string]interface{})["references"].([]interface{})
+		references := NilHandler(pub.(map[string]interface{})["_source"].(map[string]interface{})["references"], "list").([]interface{})
 		referenceIds := make([]string, 0)
 		for _, reference := range references {
 			referenceIds = append(referenceIds, reference.(string))
@@ -176,13 +178,18 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 		}
 		referenceRes := database.MgetPaper(referenceBuf)
 
-		references = referenceRes["docs"].([]interface{})
+		references = NilHandler(referenceRes["docs"], "list").([]interface{})
 		for _, reference := range references {
 			if reference.(map[string]interface{})["found"].(bool) == false {
 				continue
 			}
-			firstAuthor := reference.(map[string]interface{})["_source"].(map[string]interface{})["authors"].([]interface{})[0].(map[string]interface{})
+
+			firstAuthors := NilHandler(reference.(map[string]interface{})["_source"].(map[string]interface{})["authors"], "list").([]interface{})
+			firstAuthor := firstAuthors[0].(map[string]interface{})
 			authorId := NilHandler(firstAuthor["id"].(string), "string").(string)
+			if authorId == req.ScholarId {
+				continue
+			}
 			if _, ok := ciNodes[authorId]; ok && authorId != "" {
 				thisNode := ciNodes[authorId]
 				thisNode.CiNum++
@@ -194,7 +201,7 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 					Size:  0,
 					CiNum: 1,
 					Style: types.StyleJSON{
-						Fill: NilHandler(firstAuthor["n_citation"], "int").(string),
+						Fill: strconv.Itoa(NilHandler(firstAuthor["n_citation"], "int").(int)),
 					},
 				}
 				ciNodes[authorId] = ciNode
