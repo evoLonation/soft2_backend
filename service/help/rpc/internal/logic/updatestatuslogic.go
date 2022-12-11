@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	model2 "soft2_backend/service/help/model"
+	"soft2_backend/service/message/rpc/types/message"
 	"soft2_backend/service/user/model"
 
 	"soft2_backend/service/help/rpc/internal/svc"
@@ -56,6 +57,12 @@ func (l *UpDateStatusLogic) UpDateStatus(in *help.UpdateReq) (*help.Reply, error
 	user.Help += 1
 	user.Wealth += theRequest.Wealth
 	err = l.svcCtx.UserHelpModel.Update(l.ctx, user)
+	_, err = l.svcCtx.MessageRpc.CreateMessage(l.ctx, &message.CreateMessageReq{
+		UId:         theRequest.UserId,
+		RId:         theRequest.Id,
+		Content:     "你发起的文献互助收到援助",
+		MessageType: 7,
+	})
 	if err != nil {
 		return nil, err
 	}

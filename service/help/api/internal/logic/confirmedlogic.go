@@ -41,7 +41,9 @@ func (l *ConfirmedLogic) Confirmed(req *types.ConfirmedReq) error {
 	help.HelpStatus = 2
 	err = l.svcCtx.LiteratureHelpModel.Update(l.ctx, help)
 	_, err = l.svcCtx.MessageRpc.CreateMessage(l.ctx, &message.CreateMessageReq{
+		UId:         help.UserId,
 		RId:         req.RequestId,
+		Content:     "你的应助得到确认",
 		MessageType: 8,
 	})
 	if err != nil {
