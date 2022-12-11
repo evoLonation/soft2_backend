@@ -30,11 +30,11 @@ func NewPaperSimilarNetLogic(ctx context.Context, svcCtx *svc.ServiceContext) *P
 
 var nodesSimilar []types.PaperNodeJSON
 var edgesSimilar []types.EdgeJSON
-var maxYearSimilar = 0
-var minYearSimilar = 3000
-var maxCitationSimilar = 0
-var minCitationSimilar = 1000000
-var nodeMapSimilar = make(map[string]int)
+var maxYearSimilar int
+var minYearSimilar int
+var maxCitationSimilar int
+var minCitationSimilar int
+var nodeMapSimilar map[string]int
 
 func (l *PaperSimilarNetLogic) PaperSimilarNet(req *types.PaperSimilarNetRequest) (resp *types.PaperSimilarNetResponse, err error) {
 	// todo: add your logic here and delete this line
@@ -44,7 +44,7 @@ func (l *PaperSimilarNetLogic) PaperSimilarNet(req *types.PaperSimilarNetRequest
 	minYearSimilar = 3000
 	maxCitationSimilar = 0
 	minCitationSimilar = 1000000
-	nodeMapSimilar = make(map[string]int)
+	nodeMapSimilar = make(map[string]int, 0)
 	log.Println(nodeMapRelation)
 
 	var thisPaperBuf bytes.Buffer

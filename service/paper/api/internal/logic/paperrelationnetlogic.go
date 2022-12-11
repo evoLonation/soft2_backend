@@ -30,11 +30,11 @@ func NewPaperRelationNetLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 
 var nodesRelation []types.PaperNodeJSON
 var edgesRelation []types.EdgeJSON
-var maxYearRelation = 0
-var minYearRelation = 3000
-var maxCitationRelation = 0
-var minCitationRelation = 1000000
-var nodeMapRelation = make(map[string]int)
+var maxYearRelation int
+var minYearRelation int
+var maxCitationRelation int
+var minCitationRelation int
+var nodeMapRelation map[string]int
 
 func (l *PaperRelationNetLogic) PaperRelationNet(req *types.PaperRelationNetRequest) (resp *types.PaperRelationNetResponse, err error) {
 	// todo: add your logic here and delete this line
@@ -44,7 +44,7 @@ func (l *PaperRelationNetLogic) PaperRelationNet(req *types.PaperRelationNetRequ
 	minYearRelation = 3000
 	maxCitationRelation = 0
 	minCitationRelation = 1000000
-	nodeMapRelation = make(map[string]int)
+	nodeMapRelation = make(map[string]int, 0)
 	log.Println(nodeMapRelation)
 
 	var thisPaperBuf bytes.Buffer
