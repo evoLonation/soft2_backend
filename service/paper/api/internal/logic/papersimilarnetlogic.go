@@ -75,7 +75,7 @@ func (l *PaperSimilarNetLogic) PaperSimilarNet(req *types.PaperSimilarNetRequest
 	references := NilHandler(thisPaperSource["relateds"], "list").([]interface{})
 	referenceIds := make([]string, 0)
 	for i, reference := range references {
-		if i >= 10 {
+		if i >= 5 {
 			break
 		}
 		referenceIds = append(referenceIds, reference.(string))
@@ -96,7 +96,7 @@ func (l *PaperSimilarNetLogic) PaperSimilarNet(req *types.PaperSimilarNetRequest
 }
 
 func DFSSimilar(referenceIds []string, fatherNode types.PaperNodeJSON, level int) {
-	if level == 1 {
+	if level == 3 {
 		return
 	}
 
@@ -150,7 +150,7 @@ func DFSSimilar(referenceIds []string, fatherNode types.PaperNodeJSON, level int
 		references := NilHandler(source["relateds"], "list").([]interface{})
 		referenceIds = make([]string, 0)
 		for i, reference := range references {
-			if i >= 10 {
+			if (i >= 5 && level == 0) || (i >= 4 && level == 1) || (i >= 3 && level == 2) {
 				break
 			}
 			referenceIds = append(referenceIds, reference.(string))

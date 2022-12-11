@@ -81,7 +81,10 @@ func (l *PaperRelationNetLogic) PaperRelationNet(req *types.PaperRelationNetRequ
 
 	references := NilHandler(thisPaperSource["references"], "list").([]interface{})
 	referenceIds := make([]string, 0)
-	for _, reference := range references {
+	for i, reference := range references {
+		if i >= 5 {
+			break
+		}
 		referenceIds = append(referenceIds, reference.(string))
 	}
 
@@ -100,7 +103,7 @@ func (l *PaperRelationNetLogic) PaperRelationNet(req *types.PaperRelationNetRequ
 }
 
 func DFSRelation(referenceIds []string, fatherNode types.PaperNodeJSON, level int) {
-	if level == 1 {
+	if level == 3 {
 		return
 	}
 
@@ -153,7 +156,10 @@ func DFSRelation(referenceIds []string, fatherNode types.PaperNodeJSON, level in
 
 		references := NilHandler(source["references"], "list").([]interface{})
 		referenceIds = make([]string, 0)
-		for _, reference := range references {
+		for i, reference := range references {
+			if (i >= 5 && level == 0) || (i >= 4 && level == 1) || (i >= 3 && level == 2) {
+				break
+			}
 			referenceIds = append(referenceIds, reference.(string))
 		}
 
