@@ -45,12 +45,18 @@ func (l *PaperSimilarNetLogic) PaperSimilarNet(req *types.PaperSimilarNetRequest
 
 	thisPaperSource := thisPaperRes["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})
 
+	authors := NilHandler(thisPaperSource["authors"], "list").([]interface{})
+	var author string
+	if len(authors) == 0 {
+		author = ""
+	} else {
+		author = NilHandler(authors[0].(map[string]interface{})["name"], "string").(string)
+	}
 	majorNode := types.PaperNodeJSON{
-		Id: req.Id,
-		Label: NilHandler(thisPaperSource["authors"].([]interface{})[0].(map[string]interface{})["name"], "string").(string) +
-			strconv.Itoa(NilHandler(thisPaperSource["year"], "int").(int)),
-		Size: NilHandler(thisPaperSource["n_citation"], "int").(int),
-		Type: "major",
+		Id:    req.Id,
+		Label: author + strconv.Itoa(NilHandler(thisPaperSource["year"], "int").(int)),
+		Size:  NilHandler(thisPaperSource["n_citation"], "int").(int),
+		Type:  "major",
 		Style: types.StyleJSON{
 			Fill: strconv.Itoa(NilHandler(thisPaperSource["year"], "int").(int)),
 		},
@@ -68,7 +74,10 @@ func (l *PaperSimilarNetLogic) PaperSimilarNet(req *types.PaperSimilarNetRequest
 
 	references := NilHandler(thisPaperSource["relateds"], "list").([]interface{})
 	referenceIds := make([]string, 0)
-	for _, reference := range references {
+	for i, reference := range references {
+		if i >= 10 {
+			break
+		}
 		referenceIds = append(referenceIds, reference.(string))
 	}
 
@@ -140,7 +149,10 @@ func DFSSimilar(referenceIds []string, fatherNode types.PaperNodeJSON, level int
 
 		references := NilHandler(source["relateds"], "list").([]interface{})
 		referenceIds = make([]string, 0)
-		for _, reference := range references {
+		for i, reference := range references {
+			if i >= 10 {
+				break
+			}
 			referenceIds = append(referenceIds, reference.(string))
 		}
 
