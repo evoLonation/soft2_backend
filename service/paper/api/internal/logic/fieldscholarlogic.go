@@ -44,6 +44,7 @@ func (l *FieldScholarLogic) FieldScholar(req *types.FieldScholarRequest) (resp *
 	}
 	log.Println(scholarBuf.String())
 	scholarRes := database.SearchAuthor(scholarBuf)
+	log.Println(scholarRes)
 
 	var scholars []types.FieldScholarJSON
 	hits := scholarRes["hits"].(map[string]interface{})["hits"].([]interface{})
