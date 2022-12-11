@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
-	"errors"
 	"soft2_backend/service/apply/api/internal/svc"
 	"soft2_backend/service/apply/api/internal/types"
 	"soft2_backend/service/apply/model"
@@ -26,17 +25,21 @@ func NewEmailIdentifyLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ema
 	}
 }
 
-func (l *EmailIdentifyLogic) EmailIdentify(req *types.EmailIdentifyRequest) error {
+func (l *EmailIdentifyLogic) EmailIdentify(req *types.EmailIdentifyRequest) (resp *types.EmailIdentifyResponse, err error) {
 	verifyCode, err := l.svcCtx.VerifycodeModel.FindOne(l.ctx, req.Email)
 	if err != nil {
-		return errors.New("验证码错误!")
+		return &types.EmailIdentifyResponse{
+			Msg: "验证码错误!",
+		}, nil
 	}
 	if verifyCode.Code != req.VerifyCode {
-		return errors.New("验证码错误!")
+		return &types.EmailIdentifyResponse{
+			Msg: "验证码错误!",
+		}, nil
 	}
 	err = l.svcCtx.VerifycodeModel.Delete(l.ctx, req.Email)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	userId, _ := l.ctx.Value("UserId").(json.Number).Int64()
@@ -48,7 +51,9 @@ func (l *EmailIdentifyLogic) EmailIdentify(req *types.EmailIdentifyRequest) erro
 	}
 	_, err = l.svcCtx.ApplyModel.Insert(l.ctx, &newApply)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return errors.New("验证码正确!")
+	return &types.EmailIdentifyResponse{
+		Msg: "验证码正确!",
+	}, nil
 }
