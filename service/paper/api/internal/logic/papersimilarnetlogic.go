@@ -136,9 +136,9 @@ func DFSSimilar(referenceIds []string, fatherNode types.PaperNodeJSON, level int
 		if paper.(map[string]interface{})["found"].(bool) == false {
 			continue
 		}
-		if (levelPaperCnt >= 10 && level == 0) ||
-			(levelPaperCnt >= 8 && level == 1) ||
-			(levelPaperCnt >= 5 && level == 2) {
+		if (levelPaperCnt >= 5 && level == 0) ||
+			(levelPaperCnt >= 4 && level == 1) ||
+			(levelPaperCnt >= 3 && level == 2) {
 			break
 		}
 		levelPaperCnt++
