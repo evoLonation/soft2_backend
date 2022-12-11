@@ -71,9 +71,10 @@ func (m *defaultSubscribeModel) FindOne(ctx context.Context, subscribeId int64) 
 }
 
 func (m *defaultSubscribeModel) FindSubscribeId(ctx context.Context, userId int64, scholarId string) (*Subscribe, error) {
-	query := fmt.Sprintf("select %s from %s where user_id = %d and scholar_id=%s", subscribeRows, m.table, userId, scholarId)
+	//query := fmt.Sprintf("select %s from %s where user_id = %d and scholar_id =%s", subscribeRows, m.table, userId, scholarId)
+	query := fmt.Sprintf("select %s from %s where `user_id` = ? and `scholar_id` = ? limit 2", subscribeRows, m.table)
 	var resp Subscribe
-	err := m.conn.QueryRowCtx(ctx, &resp, query)
+	err := m.conn.QueryRowCtx(ctx, &resp, query, userId, scholarId)
 	switch err {
 	case nil:
 		return &resp, nil

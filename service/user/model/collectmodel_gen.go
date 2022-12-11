@@ -75,8 +75,8 @@ func (m *defaultCollectModel) FindOne(ctx context.Context, collectId int64) (*Co
 func (m *defaultCollectModel) FindOneByTwo(ctx context.Context, userId int64, paperId string) (*Collect, error) {
 	var resp Collect
 	var query string
-	query = fmt.Sprintf("select %s from %s where user_id = %d and paper_id = %s", collectRows, m.table, userId, paperId)
-	err := m.conn.QueryRowCtx(ctx, &resp, query)
+	query = fmt.Sprintf("select %s from %s where `user_id` = ? and `paper_id` = ? limit 2", collectRows, m.table)
+	err := m.conn.QueryRowCtx(ctx, &resp, query, userId, paperId)
 	switch err {
 	case nil:
 		return &resp, nil
