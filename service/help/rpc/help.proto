@@ -21,9 +21,12 @@ message WealthReq{
 message WealthReply{
   int64 wealth = 1;
 }
+message UpdateReply{
+  int64 userId = 1;
+}
 
 service help {
   rpc registerUser(IdReq) returns(Reply);
-  rpc upDateStatus(UpdateReq) returns(Reply);
+  rpc upDateStatus(UpdateReq) returns(UpdateReply);
   rpc getUserWealth(WealthReq) returns(WealthReply);
 }

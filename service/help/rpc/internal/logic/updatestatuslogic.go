@@ -25,7 +25,7 @@ func NewUpDateStatusLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpDa
 	}
 }
 
-func (l *UpDateStatusLogic) UpDateStatus(in *help.UpdateReq) (*help.Reply, error) {
+func (l *UpDateStatusLogic) UpDateStatus(in *help.UpdateReq) (*help.UpdateReply, error) {
 	// todo: add your logic here and delete this line
 	//求助表状态更新 应助表状态更新 用户表状态更新
 	theRequest, _ := l.svcCtx.LiteratureRequestModel.FindOne(l.ctx, in.RequestId)
@@ -65,5 +65,7 @@ func (l *UpDateStatusLogic) UpDateStatus(in *help.UpdateReq) (*help.Reply, error
 	if err != nil {
 		return nil, err
 	}
-	return &help.Reply{}, nil
+	return &help.UpdateReply{
+		UserId: theRequest.UserId,
+	}, nil
 }
