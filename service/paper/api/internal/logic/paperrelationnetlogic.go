@@ -87,9 +87,9 @@ func (l *PaperRelationNetLogic) PaperRelationNet(req *types.PaperRelationNetRequ
 
 	DFSRelation(referenceIds, majorNode, 0)
 
-	for _, node := range nodes {
-		node.Size = GetSize(node.Size, maxCitation, minCitation)
-		node.Style.Fill = GetColor(GetD(node.Info.Year, maxYear, minYear))
+	for i, node := range nodes {
+		nodes[i].Size = GetSize(node.Size, maxCitation, minCitation)
+		nodes[i].Style.Fill = GetColor(GetD(node.Info.Year, maxYear, minYear))
 	}
 
 	resp = &types.PaperRelationNetResponse{
