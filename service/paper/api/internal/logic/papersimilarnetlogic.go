@@ -122,6 +122,7 @@ func DFSSimilar(referenceIds []string, fatherNode types.PaperNodeJSON, level int
 	if level == 3 {
 		return
 	}
+	log.Println(level)
 
 	var referenceBuf bytes.Buffer
 	referenceQuery := map[string]interface{}{
@@ -138,7 +139,6 @@ func DFSSimilar(referenceIds []string, fatherNode types.PaperNodeJSON, level int
 			continue
 		}
 		source := paper.(map[string]interface{})["_source"].(map[string]interface{})
-		log.Println(source)
 		authors := NilHandler(source["authors"], "list").([]interface{})
 		var author string
 		if len(authors) == 0 {
@@ -172,6 +172,7 @@ func DFSSimilar(referenceIds []string, fatherNode types.PaperNodeJSON, level int
 
 		references := NilHandler(source["relateds"], "list").([]interface{})
 		referenceIds = make([]string, 0)
+		log.Println(referenceIds)
 		for _, reference := range references {
 			if (len(referenceIds) >= 5 && level == 0) ||
 				(len(referenceIds) >= 4 && level == 1) ||

@@ -124,6 +124,7 @@ func DFSRelation(referenceIds []string, fatherNode types.PaperNodeJSON, level in
 	if level == 3 {
 		return
 	}
+	log.Println(level)
 
 	var referenceBuf bytes.Buffer
 	referenceQuery := map[string]interface{}{
