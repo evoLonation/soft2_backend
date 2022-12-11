@@ -201,7 +201,7 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 					Size:  0,
 					CiNum: 1,
 					Style: types.StyleJSON{
-						Fill: NilHandler(firstAuthor["n_citation"], "int").(string),
+						Fill: strconv.Itoa(NilHandler(firstAuthor["n_citation"], "int").(int)),
 					},
 				}
 				ciNodes[authorId] = ciNode
