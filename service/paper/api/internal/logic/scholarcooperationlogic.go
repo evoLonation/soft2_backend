@@ -59,7 +59,7 @@ func (l *ScholarCooperationLogic) ScholarCooperation(req *types.ScholarCooperati
 	log.Println(paperBuf.String())
 	res = database.MgetPaper(paperBuf)
 
-	papers := res["docs"].([]interface{})
+	papers := NilHandler(res["docs"], "list").([]interface{})
 	coopList := make(map[string]types.CoopJSON)
 	for _, paper := range papers {
 		authors := NilHandler(paper.(map[string]interface{})["_source"].(map[string]interface{})["authors"], "list").([]interface{})
