@@ -38,6 +38,15 @@ var nodeMapSimilar = make(map[string]int)
 
 func (l *PaperSimilarNetLogic) PaperSimilarNet(req *types.PaperSimilarNetRequest) (resp *types.PaperSimilarNetResponse, err error) {
 	// todo: add your logic here and delete this line
+	nodesSimilar = make([]types.PaperNodeJSON, 0)
+	edgesSimilar = make([]types.EdgeJSON, 0)
+	maxYearSimilar = 0
+	minYearSimilar = 3000
+	maxCitationSimilar = 0
+	minCitationSimilar = 1000000
+	nodeMapSimilar = make(map[string]int)
+	log.Println(nodeMapRelation)
+
 	var thisPaperBuf bytes.Buffer
 	thisPaperQuery := map[string]interface{}{
 		"query": map[string]interface{}{

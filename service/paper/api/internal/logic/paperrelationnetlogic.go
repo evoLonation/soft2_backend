@@ -38,6 +38,15 @@ var nodeMapRelation = make(map[string]int)
 
 func (l *PaperRelationNetLogic) PaperRelationNet(req *types.PaperRelationNetRequest) (resp *types.PaperRelationNetResponse, err error) {
 	// todo: add your logic here and delete this line
+	nodesRelation = make([]types.PaperNodeJSON, 0)
+	edgesRelation = make([]types.EdgeJSON, 0)
+	maxYearRelation = 0
+	minYearRelation = 3000
+	maxCitationRelation = 0
+	minCitationRelation = 1000000
+	nodeMapRelation = make(map[string]int)
+	log.Println(nodeMapRelation)
+
 	var thisPaperBuf bytes.Buffer
 	thisPaperQuery := map[string]interface{}{
 		"query": map[string]interface{}{
