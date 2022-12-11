@@ -28,26 +28,24 @@ func NewScholarRelationNetLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 	}
 }
 
-var coNodes map[string]types.CoNetNodeJSON
-var coNodeList []types.CoNetNodeJSON
-var coEdges []types.EdgeJSON
-var maxCoNum = 0
-var minCoNum = 1000000
-var maxCoCitation = 0
-var minCoCitation = 1000000
-
-var ciNodes map[string]types.CiNetNodeJSON
-var ciNodeList []types.CiNetNodeJSON
-var ciEdges []types.EdgeJSON
-var maxCiNum = 0
-var minCiNum = 1000000
-var maxCiCitation = 0
-var minCiCitation = 1000000
-
 func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationNetRequest) (resp *types.ScholarRelationNetResponse, err error) {
 	// todo: add your logic here and delete this line
-	coNodes = make(map[string]types.CoNetNodeJSON)
-	ciNodes = make(map[string]types.CiNetNodeJSON)
+	var coNodes = make(map[string]types.CoNetNodeJSON, 0)
+	var coNodeList = make([]types.CoNetNodeJSON, 0)
+	var coEdges = make([]types.EdgeJSON, 0)
+	var maxCoNum = 0
+	var minCoNum = 1000000
+	var maxCoCitation = 0
+	var minCoCitation = 1000000
+
+	var ciNodes = make(map[string]types.CiNetNodeJSON, 0)
+	var ciNodeList = make([]types.CiNetNodeJSON, 0)
+	var ciEdges = make([]types.EdgeJSON, 0)
+	var maxCiNum = 0
+	var minCiNum = 1000000
+	var maxCiCitation = 0
+	var minCiCitation = 1000000
+
 	var scholarBuf bytes.Buffer
 	scholarQuery := map[string]interface{}{
 		"query": map[string]interface{}{
@@ -92,6 +90,7 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 	for _, pub := range pubs {
 		pubIds = append(pubIds, pub.(map[string]interface{})["i"].(string))
 	}
+	log.Printf("pubIds: %v", pubIds)
 
 	var pubBuf bytes.Buffer
 	pubQuery := map[string]interface{}{
