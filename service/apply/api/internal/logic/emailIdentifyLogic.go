@@ -50,5 +50,5 @@ func (l *EmailIdentifyLogic) EmailIdentify(req *types.EmailIdentifyRequest) erro
 	if err != nil {
 		return err
 	}
-	return nil
+	return errors.New("验证码正确!")
 }
