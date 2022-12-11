@@ -96,7 +96,7 @@ func (l *PaperSimilarNetLogic) PaperSimilarNet(req *types.PaperSimilarNetRequest
 }
 
 func DFSSimilar(referenceIds []string, fatherNode types.PaperNodeJSON, level int) {
-	if level == 3 {
+	if level == 1 {
 		return
 	}
 

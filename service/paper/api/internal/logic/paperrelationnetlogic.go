@@ -100,7 +100,7 @@ func (l *PaperRelationNetLogic) PaperRelationNet(req *types.PaperRelationNetRequ
 }
 
 func DFSRelation(referenceIds []string, fatherNode types.PaperNodeJSON, level int) {
-	if level == 3 {
+	if level == 1 {
 		return
 	}
 

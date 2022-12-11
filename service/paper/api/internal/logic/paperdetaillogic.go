@@ -88,10 +88,16 @@ func (l *PaperDetailLogic) PaperDetail(req *types.PaperDetailRequest) (resp *typ
 	for _, paper := range papers {
 		source := paper.(map[string]interface{})["_source"].(map[string]interface{})
 		authors := NilHandler(source["authors"].([]interface{}), "list").([]interface{})
+		var author string
+		if len(authors) == 0 {
+			author = ""
+		} else {
+			author = NilHandler(authors[0].(map[string]interface{})["name"], "string").(string)
+		}
 		referencePapers = append(referencePapers, types.PaperJSON{
 			Id:     NilHandler(source["id"], "string").(string),
 			Title:  NilHandler(source["title"], "string").(string),
-			Author: NilHandler(authors[0].(map[string]interface{})["name"], "string").(string),
+			Author: author,
 			Year:   NilHandler(source["year"], "int").(int),
 		})
 	}
