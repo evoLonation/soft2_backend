@@ -68,8 +68,12 @@ func (l *FieldScholarLogic) FieldScholar(req *types.FieldScholarRequest) (resp *
 		})
 	}
 
+	scholarNum := int(scholarRes["hits"].(map[string]interface{})["total"].(map[string]interface{})["value"].(float64))
+	if scholarNum > 10000 {
+		scholarNum = 10000
+	}
 	resp = &types.FieldScholarResponse{
-		ScholarNum: scholarRes["hits"].(map[string]interface{})["total"].(map[string]interface{})["value"].(int),
+		ScholarNum: scholarNum,
 		Scholars:   scholars,
 	}
 	return resp, nil

@@ -72,8 +72,12 @@ func (l *FieldPaperLogic) FieldPaper(req *types.FieldPaperRequest) (resp *types.
 		})
 	}
 
+	paperNum := int(paperRes["hits"].(map[string]interface{})["total"].(map[string]interface{})["value"].(float64))
+	if paperNum > 10000 {
+		paperNum = 10000
+	}
 	resp = &types.FieldPaperResponse{
-		PaperNum: int(paperRes["hits"].(map[string]interface{})["total"].(map[string]interface{})["value"].(float64)),
+		PaperNum: paperNum,
 		Papers:   papers,
 	}
 	return resp, nil
