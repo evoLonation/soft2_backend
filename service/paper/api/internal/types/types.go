@@ -53,10 +53,10 @@ type ScholarResponse struct {
 }
 
 type ScholarResponseJSON struct {
-	Id          string   `json:"id"`
-	Name        string   `json:"name"`
-	Institution []string `json:"institution"`
-	PaperNum    int      `json:"paper_num"`
+	Id          string `json:"id"`
+	Name        string `json:"name"`
+	Institution string `json:"institution"`
+	PaperNum    int    `json:"paper_num"`
 }
 
 type AutoCompleteRequest struct {

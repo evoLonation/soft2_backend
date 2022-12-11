@@ -92,7 +92,7 @@ func (l *PaperRelationNetLogic) PaperRelationNet(req *types.PaperRelationNetRequ
 
 	log.Printf("maxCitation: %d, minCitation: %d", maxCitation, minCitation)
 	for i, node := range nodes {
-		log.Printf("node %d: %v", i, node)
+		log.Printf("node %d: %d", i, node.Size)
 		nodes[i].Size = GetSize(node.Size, maxCitation, minCitation)
 		nodes[i].Style.Fill = GetColor(GetD(node.Info.Year, maxYear, minYear))
 	}

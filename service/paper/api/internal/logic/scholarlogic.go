@@ -58,20 +58,28 @@ func (l *ScholarLogic) Scholar(req *types.ScholarRequest) (resp *types.ScholarRe
 	var scholars []types.ScholarResponseJSON
 	for _, hit := range res["hits"].(map[string]interface{})["hits"].([]interface{}) {
 		source := hit.(map[string]interface{})["_source"].(map[string]interface{})
-		var orgs []string
-		for _, org := range source["orgs"].([]interface{}) {
-			orgs = append(orgs, NilHandler(org, "string").(string))
+		orgs := NilHandler(source["orgs"], "list").([]interface{})
+		var org string
+		if len(orgs) == 0 {
+			org = ""
+		} else {
+			org = orgs[0].(string)
 		}
 		scholar := types.ScholarResponseJSON{
 			Id:          NilHandler(source["id"], "string").(string),
 			Name:        NilHandler(source["name"], "string").(string),
-			Institution: orgs,
+			Institution: org,
 			PaperNum:    NilHandler(source["n_pubs"], "int").(int),
 		}
 		scholars = append(scholars, scholar)
 	}
+
+	scholarNum := int(res["hits"].(map[string]interface{})["total"].(map[string]interface{})["value"].(float64))
+	if scholarNum > 10000 {
+		scholarNum = 10000
+	}
 	resp = &types.ScholarResponse{
-		ScholarNum: int(res["hits"].(map[string]interface{})["total"].(map[string]interface{})["value"].(float64)),
+		ScholarNum: scholarNum,
 		Scholar:    scholars,
 	}
 	return
