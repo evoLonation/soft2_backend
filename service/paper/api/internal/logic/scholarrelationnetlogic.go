@@ -107,6 +107,7 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 		if pub.(map[string]interface{})["found"].(bool) == false {
 			continue
 		}
+
 		authors := pub.(map[string]interface{})["_source"].(map[string]interface{})["authors"].([]interface{})
 		for _, author := range authors {
 			authorId := NilHandler(author.(map[string]interface{})["id"].(string), "string").(string)
