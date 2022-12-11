@@ -102,6 +102,7 @@ func (l *PaperSimilarNetLogic) PaperSimilarNet(req *types.PaperSimilarNetRequest
 		}
 		referenceIds = append(referenceIds, reference.(string))
 	}
+	log.Println(referenceIds)
 
 	DFSSimilar(referenceIds, majorNode, 0)
 
@@ -183,6 +184,7 @@ func DFSSimilar(referenceIds []string, fatherNode types.PaperNodeJSON, level int
 			}
 			referenceIds = append(referenceIds, reference.(string))
 		}
+		log.Println(referenceIds)
 
 		DFSSimilar(referenceIds, node, level+1)
 	}

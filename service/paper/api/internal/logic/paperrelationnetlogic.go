@@ -102,6 +102,7 @@ func (l *PaperRelationNetLogic) PaperRelationNet(req *types.PaperRelationNetRequ
 		}
 		referenceIds = append(referenceIds, reference.(string))
 	}
+	log.Println(referenceIds)
 
 	DFSRelation(referenceIds, majorNode, 0)
 
@@ -185,6 +186,7 @@ func DFSRelation(referenceIds []string, fatherNode types.PaperNodeJSON, level in
 			}
 			referenceIds = append(referenceIds, reference.(string))
 		}
+		log.Println(referenceIds)
 
 		DFSRelation(referenceIds, node, level+1)
 	}
