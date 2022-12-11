@@ -64,6 +64,10 @@ func (l *ScholarCooperationLogic) ScholarCooperation(req *types.ScholarCooperati
 	for _, paper := range papers {
 		authors := NilHandler(paper.(map[string]interface{})["_source"].(map[string]interface{})["authors"], "list").([]interface{})
 		for _, author := range authors {
+			authorId := NilHandler(author.(map[string]interface{})["id"], "string").(string)
+			if authorId == req.ScholarId {
+				continue
+			}
 			v, ok := coopList[author.(map[string]interface{})["id"].(string)]
 			if ok {
 				v.Time++
