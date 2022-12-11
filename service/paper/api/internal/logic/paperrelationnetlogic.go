@@ -113,9 +113,17 @@ func DFSRelation(referenceIds []string, fatherNode types.PaperNodeJSON, level in
 			continue
 		}
 		source := paper.(map[string]interface{})["_source"].(map[string]interface{})
+		log.Println(source)
+		authors := NilHandler(source["authors"], "list").([]interface{})
+		var author string
+		if len(authors) == 0 {
+			author = ""
+		} else {
+			author = NilHandler(authors[0].(map[string]interface{})["name"], "string").(string)
+		}
 		node := types.PaperNodeJSON{
 			Id:    NilHandler(source["id"], "string").(string),
-			Label: NilHandler(source["authors"].([]interface{})[0].(map[string]interface{})["name"], "string").(string) + strconv.Itoa(NilHandler(source["year"], "int").(int)),
+			Label: author + strconv.Itoa(NilHandler(source["year"], "int").(int)),
 			Size:  NilHandler(source["n_citation"], "int").(int),
 			Style: types.StyleJSON{
 				Fill: strconv.Itoa(NilHandler(source["year"], "int").(int)),
