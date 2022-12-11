@@ -17,15 +17,15 @@ import (
 var (
 	subscribeFieldNames          = builder.RawFieldNames(&Subscribe{})
 	subscribeRows                = strings.Join(subscribeFieldNames, ",")
-	subscribeRowsExpectAutoSet   = strings.Join(stringx.Remove(subscribeFieldNames, "`subscribe_id`", "`update_at`", "`updated_at`", "`update_time`", "`create_at`", "`created_at`", "`create_time`"), ",")
-	subscribeRowsWithPlaceHolder = strings.Join(stringx.Remove(subscribeFieldNames, "`subscribe_id`", "`update_at`", "`updated_at`", "`update_time`", "`create_at`", "`created_at`", "`create_time`"), "=?,") + "=?"
+	subscribeRowsExpectAutoSet   = strings.Join(stringx.Remove(subscribeFieldNames, "`subscribe_id`", "`updated_at`", "`update_time`", "`create_at`", "`created_at`", "`create_time`", "`update_at`"), ",")
+	subscribeRowsWithPlaceHolder = strings.Join(stringx.Remove(subscribeFieldNames, "`subscribe_id`", "`updated_at`", "`update_time`", "`create_at`", "`created_at`", "`create_time`", "`update_at`"), "=?,") + "=?"
 )
 
 type (
 	subscribeModel interface {
 		Insert(ctx context.Context, data *Subscribe) (sql.Result, error)
 		FindOne(ctx context.Context, subscribeId int64) (*Subscribe, error)
-		FindSubscribeId(ctx context.Context, userId int64, scholarId int64) (*Subscribe, error)
+		FindSubscribeId(ctx context.Context, userId int64, scholarId string) (*Subscribe, error)
 		FindByUserId(ctx context.Context, userId int64) ([]Subscribe, error)
 		Update(ctx context.Context, data *Subscribe) error
 		Delete(ctx context.Context, subscribeId int64) error
@@ -37,9 +37,9 @@ type (
 	}
 
 	Subscribe struct {
-		SubscribeId int64 `db:"subscribe_id"`
-		UserId      int64 `db:"user_id"`
-		ScholarId   int64 `db:"scholar_id"`
+		SubscribeId int64  `db:"subscribe_id"`
+		UserId      int64  `db:"user_id"`
+		ScholarId   string `db:"scholar_id"`
 	}
 )
 
@@ -70,8 +70,8 @@ func (m *defaultSubscribeModel) FindOne(ctx context.Context, subscribeId int64) 
 	}
 }
 
-func (m *defaultSubscribeModel) FindSubscribeId(ctx context.Context, userId int64, scholarId int64) (*Subscribe, error) {
-	query := fmt.Sprintf("select %s from %s where user_id = %d and scholar_id=%d", subscribeRows, m.table, userId, scholarId)
+func (m *defaultSubscribeModel) FindSubscribeId(ctx context.Context, userId int64, scholarId string) (*Subscribe, error) {
+	query := fmt.Sprintf("select %s from %s where user_id = %d and scholar_id=%s", subscribeRows, m.table, userId, scholarId)
 	var resp Subscribe
 	err := m.conn.QueryRowCtx(ctx, &resp, query)
 	switch err {

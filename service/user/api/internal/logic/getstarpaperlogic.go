@@ -7,7 +7,6 @@ import (
 	"soft2_backend/service/user/api/internal/svc"
 	"soft2_backend/service/user/api/internal/types"
 	"soft2_backend/service/user/model"
-	"strconv"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -36,7 +35,7 @@ func (l *GetStarPaperLogic) GetStarPaper(req *types.GetStarPaperRequest) (resp *
 	sum := len(reqList)
 	var paperIds []string
 	for i := 0; i < sum; i++ {
-		paperIds = append(paperIds, strconv.FormatInt(reqList[i].PaperId, 10))
+		paperIds = append(paperIds, reqList[i].PaperId)
 	} //获取收藏的文献id
 	ListPaperReply, err := l.svcCtx.PaperRpc.ListGetPaper(l.ctx, &paper.ListGetPaperReq{PaperId: paperIds}) //获取收藏的文献详情
 	var reql []types.PaperStarReply

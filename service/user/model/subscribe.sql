@@ -1,7 +1,7 @@
 create table subscribe(
     subscribe_id int primary key auto_increment,
     user_id int not null ,
-    scholar_id int not null ,
+    scholar_id varchar(20) not null ,
     primary key (subscribe_id),
     key idx_uid(user_id),
     key idx_sid(scholar_id)

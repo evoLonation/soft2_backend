@@ -3,7 +3,6 @@ package logic
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"soft2_backend/service/user/model"
 
 	"soft2_backend/service/user/api/internal/svc"
@@ -53,10 +52,8 @@ func (l *IfLikedLogic) IfLiked(req *types.IsLikeCommentRequest) (resp *types.IsL
 	} else {
 		firstCommentReply.IsLiked = 0
 	}
-	fmt.Printf("\n~~%d~~\n", firstComment.CommentId)
 	reql = append(reql, firstCommentReply)
 	for i, oneReq := range reqList {
-		fmt.Printf("\n~~~%d~~~\n", oneReq.CommentId)
 		if i > sum {
 			break
 		}

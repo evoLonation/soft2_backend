@@ -26,7 +26,7 @@ type (
 	commentModel interface {
 		Insert(ctx context.Context, data *Comment) (sql.Result, error)
 		FindOne(ctx context.Context, commentId int64) (*Comment, error)
-		FindByPaperId(ctx context.Context, paperId int64) ([]Comment, error)
+		FindByPaperId(ctx context.Context, paperId string) ([]Comment, error)
 		Update(ctx context.Context, data *Comment) error
 		Delete(ctx context.Context, commentId int64) error
 	}
@@ -40,7 +40,7 @@ type (
 		CommentId    int64     `db:"comment_id"`
 		UserId       int64     `db:"user_id"`
 		UserNickname string    `db:"user_nickname"`
-		PaperId      int64     `db:"paper_id"`
+		PaperId      string    `db:"paper_id"`
 		Content      string    `db:"content"`
 		Likes        int64     `db:"likes"`
 		CreateTime   time.Time `db:"create_time"`
@@ -74,10 +74,10 @@ func (m *defaultCommentModel) FindOne(ctx context.Context, commentId int64) (*Co
 	}
 }
 
-func (m *defaultCommentModel) FindByPaperId(ctx context.Context, paperId int64) ([]Comment, error) {
+func (m *defaultCommentModel) FindByPaperId(ctx context.Context, paperId string) ([]Comment, error) {
 	var resp []Comment
 	var query string
-	query = fmt.Sprintf("select %s from %s where paper_id=%d", commentRows, m.table, paperId)
+	query = fmt.Sprintf("select %s from %s where paper_id=%s", commentRows, m.table, paperId)
 	err := m.conn.QueryRowsCtx(ctx, &resp, query)
 	switch err {
 	case nil:

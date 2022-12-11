@@ -43,7 +43,7 @@ type UserInfoResponse struct {
 }
 
 type CollectPaperRequest struct {
-	PaperId int64 `json:"paper_id"`
+	PaperId string `json:"paper_id"`
 }
 
 type CollectPaperResponse struct {
@@ -51,7 +51,7 @@ type CollectPaperResponse struct {
 }
 
 type CancelCollectPaperRequest struct {
-	PaperId int64 `json:"paper_id"`
+	PaperId string `json:"paper_id"`
 }
 
 type CancelCollectPaperResponse struct {
@@ -59,7 +59,7 @@ type CancelCollectPaperResponse struct {
 }
 
 type CommentPaperRequest struct {
-	PaperId int64  `json:"paper_id"`
+	PaperId string `json:"paper_id"`
 	Content string `json:"content"`
 }
 
@@ -92,7 +92,7 @@ type CancelLikeResponse struct {
 }
 
 type SubscribeRequest struct {
-	ScholarId int64 `json:"scholar_id"`
+	ScholarId string `json:"scholar_id"`
 }
 
 type SubscribeResponse struct {
@@ -100,8 +100,8 @@ type SubscribeResponse struct {
 }
 
 type DeleteSubscribeRequest struct {
-	UserId    int64 `json:"user_id"`
-	ScholarId int64 `json:"scholar_id"`
+	UserId    int64  `json:"user_id"`
+	ScholarId string `json:"scholar_id"`
 }
 
 type DeleteSubscribeResponse struct {
@@ -109,8 +109,8 @@ type DeleteSubscribeResponse struct {
 }
 
 type LaunchGrievanceRequest struct {
-	PaperId   int64 `json:"paper_id"`
-	ScholarId int64 `json:"scholar_id"` //被申诉学者id
+	PaperId   string `json:"paper_id"`
+	ScholarId string `json:"scholar_id"` //被申诉学者id
 }
 
 type LaunchGrievanceResponse struct {
@@ -131,7 +131,7 @@ type GrievanceRefuseResponse struct {
 }
 
 type GetCommentRequest struct {
-	PaperId int64 `json:"paper_id"`
+	PaperId string `json:"paper_id"`
 }
 
 type GetCommentReply struct {
@@ -139,7 +139,7 @@ type GetCommentReply struct {
 }
 
 type IfCollectPaperRequest struct {
-	PaperId int64 `json:"paper_id"`
+	PaperId string `json:"paper_id"`
 }
 
 type IfCollectPaperResponse struct {
@@ -147,7 +147,7 @@ type IfCollectPaperResponse struct {
 }
 
 type IsLikeCommentRequest struct {
-	PaperId int64 `json:"paper_id"`
+	PaperId string `json:"paper_id"`
 }
 
 type IsLikeCommentResponse struct {
@@ -182,7 +182,7 @@ type CommentLikedReply struct {
 }
 
 type PaperStarReply struct {
-	PaperId   int64         `json:"paper_id"`
+	PaperId   string        `json:"paper_id"`
 	PaperName string        `json:"paper_name"`
 	Author    []AuthorReply `json:"author"`
 	Org       string        `json:"org"`
@@ -195,7 +195,7 @@ type AuthorReply struct {
 }
 
 type ScholarSubscribeReply struct {
-	ScholarId   int64  `json:"scholar_id"`
+	ScholarId   string `json:"scholar_id"`
 	ScholarName string `json:"scholar_name"`
 	Org         string `json:"org"`
 	PaperNum    int64  `json:"paper_num"`
