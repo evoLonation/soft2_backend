@@ -232,6 +232,10 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 		ciNodeList = append(ciNodeList, ciNode)
 	}
 
+	coNodeList[0].CoNum = 0
+	ciNodeList[0].Size = 40
+	ciNodeList[0].CiNum = 0
+
 	resp = &types.ScholarRelationNetResponse{
 		CoNet: types.CoNetJSON{
 			CoNetNodes: coNodeList,
