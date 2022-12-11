@@ -28,12 +28,13 @@ func NewPaperRelationNetLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 	}
 }
 
-var nodes []types.PaperNodeJSON
-var edges []types.EdgeJSON
-var maxYear = 0
-var minYear = 3000
-var maxCitation = 0
-var minCitation = 1000000
+var nodesRelation []types.PaperNodeJSON
+var edgesRelation []types.EdgeJSON
+var maxYearRelation = 0
+var minYearRelation = 3000
+var maxCitationRelation = 0
+var minCitationRelation = 1000000
+var nodeMapRelation = make(map[string]int)
 
 func (l *PaperRelationNetLogic) PaperRelationNet(req *types.PaperRelationNetRequest) (resp *types.PaperRelationNetResponse, err error) {
 	// todo: add your logic here and delete this line
@@ -75,31 +76,36 @@ func (l *PaperRelationNetLogic) PaperRelationNet(req *types.PaperRelationNetRequ
 			Year:     NilHandler(thisPaperSource["year"], "int").(int),
 		},
 	}
-	nodes = append(nodes, majorNode)
-	UpdateMaxMin(&maxYear, &minYear, majorNode.Info.Year)
-	UpdateMaxMin(&maxCitation, &minCitation, majorNode.Size)
+	nodesRelation = append(nodesRelation, majorNode)
+	nodeMapRelation[req.Id] = 0
+	UpdateMaxMin(&maxYearRelation, &minYearRelation, majorNode.Info.Year)
+	UpdateMaxMin(&maxCitationRelation, &minCitationRelation, majorNode.Size)
 
 	references := NilHandler(thisPaperSource["references"], "list").([]interface{})
 	referenceIds := make([]string, 0)
-	for i, reference := range references {
-		if i >= 5 {
+	for _, reference := range references {
+		if len(referenceIds) >= 5 {
 			break
+		}
+		_, ok := nodeMapRelation[reference.(string)]
+		if ok {
+			continue
 		}
 		referenceIds = append(referenceIds, reference.(string))
 	}
 
 	DFSRelation(referenceIds, majorNode, 0)
 
-	log.Printf("maxCitation: %d, minCitation: %d", maxCitation, minCitation)
-	for i, node := range nodes {
+	log.Printf("maxCitation: %d, minCitation: %d", maxCitationRelation, minCitationRelation)
+	for i, node := range nodesRelation {
 		log.Printf("node %d: %d", i, node.Size)
-		nodes[i].Size = GetSize(node.Size, maxCitation, minCitation)
-		nodes[i].Style.Fill = GetColor(GetD(node.Info.Year, maxYear, minYear))
+		nodesRelation[i].Size = GetSize(node.Size, maxCitationRelation, minCitationRelation)
+		nodesRelation[i].Style.Fill = GetColor(GetD(node.Info.Year, maxYearRelation, minYearRelation))
 	}
 
 	resp = &types.PaperRelationNetResponse{
-		Nodes: nodes,
-		Edges: edges,
+		Nodes: nodesRelation,
+		Edges: edgesRelation,
 	}
 	return resp, nil
 }
@@ -146,22 +152,26 @@ func DFSRelation(referenceIds []string, fatherNode types.PaperNodeJSON, level in
 				Year:     NilHandler(source["year"], "int").(int),
 			},
 		}
-		nodes = append(nodes, node)
-		UpdateMaxMin(&maxYear, &minYear, node.Info.Year)
-		UpdateMaxMin(&maxCitation, &minCitation, node.Size)
+		nodesRelation = append(nodesRelation, node)
+		nodeMapRelation[node.Id] = len(nodesRelation) - 1
+		UpdateMaxMin(&maxYearRelation, &minYearRelation, node.Info.Year)
+		UpdateMaxMin(&maxCitationRelation, &minCitationRelation, node.Size)
 
-		edges = append(edges, types.EdgeJSON{
+		edgesRelation = append(edgesRelation, types.EdgeJSON{
 			Source: fatherNode.Id,
 			Target: node.Id,
 		})
 
 		references := NilHandler(source["references"], "list").([]interface{})
 		referenceIds = make([]string, 0)
-		for i, reference := range references {
-			if (i >= 5 && level == 0) || (i >= 4 && level == 1) || (i >= 3 && level == 2) {
+		for _, reference := range references {
+			if (len(referenceIds) >= 5 && level == 0) ||
+				(len(referenceIds) >= 4 && level == 1) ||
+				(len(referenceIds) >= 3 && level == 2) {
 				break
 			}
-			if reference.(string) == fatherNode.Id {
+			_, ok := nodeMapRelation[reference.(string)]
+			if ok {
 				continue
 			}
 			referenceIds = append(referenceIds, reference.(string))
