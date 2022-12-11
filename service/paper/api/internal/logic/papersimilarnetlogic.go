@@ -103,6 +103,7 @@ func (l *PaperSimilarNetLogic) PaperSimilarNet(req *types.PaperSimilarNetRequest
 		referenceIds = append(referenceIds, reference.(string))
 	}
 	log.Println(referenceIds)
+	log.Println(nodeMapSimilar)
 
 	DFSSimilar(referenceIds, majorNode, 0)
 
@@ -132,7 +133,7 @@ func DFSSimilar(referenceIds []string, fatherNode types.PaperNodeJSON, level int
 		log.Printf("encode query error: %v", err)
 	}
 	referenceRes := database.MgetPaper(referenceBuf)
-
+	log.Println(referenceRes)
 	papers := NilHandler(referenceRes["docs"], "list").([]interface{})
 	for _, paper := range papers {
 		if paper.(map[string]interface{})["found"].(bool) == false {
@@ -162,6 +163,7 @@ func DFSSimilar(referenceIds []string, fatherNode types.PaperNodeJSON, level int
 			},
 		}
 		nodesSimilar = append(nodesSimilar, node)
+		nodeMapSimilar[node.Id] = len(nodesSimilar) - 1
 		UpdateMaxMin(&maxYearSimilar, &minYearSimilar, node.Info.Year)
 		UpdateMaxMin(&maxCitationSimilar, &minCitationSimilar, node.Size)
 
@@ -173,6 +175,7 @@ func DFSSimilar(referenceIds []string, fatherNode types.PaperNodeJSON, level int
 		references := NilHandler(source["relateds"], "list").([]interface{})
 		referenceIds = make([]string, 0)
 		log.Println(referenceIds)
+		log.Println(nodeMapSimilar)
 		for _, reference := range references {
 			if (len(referenceIds) >= 5 && level == 0) ||
 				(len(referenceIds) >= 4 && level == 1) ||
