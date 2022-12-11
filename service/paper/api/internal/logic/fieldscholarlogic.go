@@ -52,7 +52,7 @@ func (l *FieldScholarLogic) FieldScholar(req *types.FieldScholarRequest) (resp *
 		var thisWeight float64
 		var minLevenshtein = 100.0
 		for _, tag := range tags {
-			totalWeight += NilHandler(tag.(map[string]interface{})["w"], "int").(float64)
+			totalWeight += float64(NilHandler(tag.(map[string]interface{})["w"], "int").(int))
 			if Levenshtein(req.Field, tag.(map[string]interface{})["t"].(string), 1, 1, 1) < minLevenshtein {
 				minLevenshtein = Levenshtein(req.Field, tag.(map[string]interface{})["t"].(string), 1, 1, 1)
 				thisWeight = tag.(map[string]interface{})["w"].(float64)
