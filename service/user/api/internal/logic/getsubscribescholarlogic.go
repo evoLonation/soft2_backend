@@ -4,11 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"soft2_backend/service/paper/rpc/paper"
-	"soft2_backend/service/user/model"
-	"strconv"
-
 	"soft2_backend/service/user/api/internal/svc"
 	"soft2_backend/service/user/api/internal/types"
+	"soft2_backend/service/user/model"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -37,7 +35,7 @@ func (l *GetSubscribeScholarLogic) GetSubscribeScholar(req *types.GetSubscribeSc
 	sum := len(reqList)
 	var scholarIds []string
 	for i := 0; i < sum; i++ {
-		scholarIds = append(scholarIds, strconv.FormatInt(reqList[i].ScholarId, 10))
+		scholarIds = append(scholarIds, reqList[i].ScholarId)
 	}
 	ListScholarReply, err := l.svcCtx.PaperRpc.ListCheckScholar(l.ctx, &paper.ListCheckScholarReq{ScholarId: scholarIds})
 	var reql []types.ScholarSubscribeReply

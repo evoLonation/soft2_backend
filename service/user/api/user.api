@@ -43,7 +43,7 @@ type (
 	// 用户信息
 	//收藏文献
 	CollectPaperRequest {
-		PaperId int64 `json:"paper_id"`
+		PaperId string `json:"paper_id"`
 	}
 	CollectPaperResponse {
 		Code int64 `json:"code"` //0收藏成功 1已收藏 2尚未登录
@@ -51,7 +51,7 @@ type (
 	//收藏文献
 	//取消收藏文献
 	CancelCollectPaperRequest {
-		PaperId int64 `json:"paper_id"`
+		PaperId string `json:"paper_id"`
 	}
 	CancelCollectPaperResponse {
 		Code int64 `json:"code"` //0取消成功 1尚未登录
@@ -59,7 +59,7 @@ type (
 	//取消收藏文献
 	//评论文献
 	CommentPaperRequest {
-		PaperId int64  `json:"paper_id"`
+		PaperId string `json:"paper_id"`
 		Content string `json:"content"`
 	}
 	CommentPaperResponse {
@@ -93,7 +93,7 @@ type (
 	//取消点赞
 	//订阅
 	SubscribeRequest {
-		ScholarId int64 `json:"scholar_id"`
+		ScholarId string `json:"scholar_id"`
 	}
 	SubscribeResponse {
 		Code int64 `json:"code"` //0订阅成功 1订阅收藏过
@@ -101,8 +101,8 @@ type (
 	//订阅
 	//取消订阅
 	DeleteSubscribeRequest {
-		UserId    int64 `json:"user_id"`
-		ScholarId int64 `json:"scholar_id"`
+		UserId    int64  `json:"user_id"`
+		ScholarId string `json:"scholar_id"`
 	}
 	DeleteSubscribeResponse {
 		Code int64 `json:"code"` //0取消成功 1没有订阅过
@@ -110,8 +110,8 @@ type (
 	//取消订阅
 	//发起误认领申诉
 	LaunchGrievanceRequest {
-		PaperId   int64 `json:"paper_id"`
-		ScholarId int64 `json:"scholar_id"` //被申诉学者id
+		PaperId   string `json:"paper_id"`
+		ScholarId string `json:"scholar_id"` //被申诉学者id
 	}
 	LaunchGrievanceResponse {
 	}
@@ -131,14 +131,14 @@ type (
 	}
 	//拒绝误认领申诉
 	GetCommentRequest {
-		PaperId int64 `json:"paper_id"`
+		PaperId string `json:"paper_id"`
 	}
 	GetCommentReply {
 		Comments []CommentReply `json:"requests"`
 	}
 	//是否收藏过文献
 	IfCollectPaperRequest {
-		PaperId int64 `json:"paper_id"`
+		PaperId string `json:"paper_id"`
 	}
 	IfCollectPaperResponse {
 		IsStar int64 `json:"is_star"` //0收藏过 1没有收藏过
@@ -146,7 +146,7 @@ type (
 	//是否收藏过文献
 	//是否点赞过评论
 	IsLikeCommentRequest {
-		PaperId int64 `json:"paper_id"`
+		PaperId string `json:"paper_id"`
 	}
 	IsLikeCommentResponse {
 		CommentLiked []CommentLikedReply `json:"comments_liked"`
@@ -175,7 +175,7 @@ type CommentLikedReply {
 	IsLiked int64 `json:"is_liked"`
 }
 type PaperStarReply {
-	PaperId   int64         `json:"paper_id"`
+	PaperId   string        `json:"paper_id"`
 	PaperName string        `json:"paper_name"`
 	Author    []AuthorReply `json:"author"`
 	Org       string        `json:"org"`
@@ -186,7 +186,7 @@ type AuthorReply {
 	Name string `json:"name"`
 }
 type ScholarSubscribeReply {
-	ScholarId   int64  `json:"scholar_id"`
+	ScholarId   string `json:"scholar_id"`
 	ScholarName string `json:"scholar_name"`
 	Org         string `json:"org"`
 	PaperNum    int64  `json:"paper_num"`
