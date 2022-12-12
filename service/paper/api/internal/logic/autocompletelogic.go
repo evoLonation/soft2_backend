@@ -58,8 +58,14 @@ func (l *AutoCompleteLogic) AutoComplete(req *types.AutoCompleteRequest) (resp *
 			autoCompletes = append(autoCompletes, option.(map[string]interface{})["text"].(string))
 		}
 	}
-	resp = &types.AutoCompleteResponse{
-		AutoCompletes: autoCompletes,
+	if len(autoCompletes) != 0 {
+		resp = &types.AutoCompleteResponse{
+			AutoCompletes: autoCompletes,
+		}
+	} else {
+		resp = &types.AutoCompleteResponse{
+			AutoCompletes: make([]string, 0),
+		}
 	}
 	return resp, nil
 }
