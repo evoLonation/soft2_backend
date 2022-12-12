@@ -21,4 +21,4 @@ MessageRpcConf:
   Etcd:
     Hosts:
       - 120.46.220.182:2379
-    Key: apply.rpc
+    Key: message.rpc
