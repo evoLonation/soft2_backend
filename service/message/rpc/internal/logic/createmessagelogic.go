@@ -80,6 +80,10 @@ func (l *CreateMessageLogic) CreateMessage(in *message.CreateMessageReq) (*messa
 		break
 	case 7:
 	case 8:
+		newMessage.UId = sql.NullInt64{
+			Int64: in.UId,
+			Valid: true,
+		}
 		newMessage.RId = sql.NullInt64{
 			Int64: in.RId,
 			Valid: true,
