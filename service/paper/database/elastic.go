@@ -59,23 +59,6 @@ func SearchAuthor(query bytes.Buffer) map[string]interface{} {
 	return res
 }
 
-func SearchAuthorWithoutContext(query bytes.Buffer) map[string]interface{} {
-	var res map[string]interface{}
-	resp, err := es.Search(
-		es.Search.WithIndex("authors"),
-		es.Search.WithBody(&query),
-		es.Search.WithTrackTotalHits(true),
-		es.Search.WithPretty(),
-	)
-	if err != nil {
-		log.Printf("Error getting response: %s\n", err)
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&res); err != nil {
-		log.Printf("Error parsing the response body: %s\n", err)
-	}
-	return res
-}
-
 func SearchAutoComplete(query bytes.Buffer) (map[string]interface{}, error) {
 	var res map[string]interface{}
 	log.Println(query.String())
