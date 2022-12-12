@@ -230,7 +230,7 @@ service help-api {
 )
 service help-api {
 	@handler complaintList
-	post /api/help/complait-list (ComplaintListReq) returns (ComplaintListReply)
+	post /api/admin/complait-list (ComplaintListReq) returns (ComplaintListReply)
 }
 
 @server(
