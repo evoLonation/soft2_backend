@@ -99,7 +99,8 @@ func (l *ScholarPapersLogic) ScholarPapers(req *types.ScholarPapersRequest) (res
 		}
 		if NilHandler(paper["year"], "int").(int) > maxYear {
 			maxYear = NilHandler(paper["year"], "int").(int)
-		} else if NilHandler(paper["year"], "int").(int) < minYear {
+		}
+		if NilHandler(paper["year"], "int").(int) < minYear {
 			minYear = NilHandler(paper["year"], "int").(int)
 		}
 		papers = append(papers, &types.PaperResponseJSON{
