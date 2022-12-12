@@ -53,9 +53,18 @@ func (l *UpDateStatusLogic) UpDateStatus(in *help.UpdateReq) (*help.UpdateReply,
 		}
 	}
 	user, _ := l.svcCtx.UserHelpModel.FindOne(l.ctx, in.UserId)
-	user.Help += 1
-	user.Wealth += theRequest.Wealth
-	err = l.svcCtx.UserHelpModel.Update(l.ctx, user)
+	if err == model.ErrNotFound {
+		var newUser = new(model2.UserHelp)
+		newUser.UserId = in.UserId
+		newUser.Help = 1
+		newUser.Wealth = 100 + theRequest.Wealth
+		newUser.Request = 0
+		_, err = l.svcCtx.UserHelpModel.Insert(l.ctx, newUser)
+	} else {
+		user.Help += 1
+		user.Wealth += theRequest.Wealth
+		err = l.svcCtx.UserHelpModel.Update(l.ctx, user)
+	}
 	//_, err = l.svcCtx.MessageRpc.CreateMessage(l.ctx, &message.CreateMessageReq{
 	//	UId:         theRequest.UserId,
 	//	RId:         theRequest.Id,
@@ -65,8 +74,7 @@ func (l *UpDateStatusLogic) UpDateStatus(in *help.UpdateReq) (*help.UpdateReply,
 	if err != nil {
 		return nil, err
 	}
-	//return &help.UpdateReply{
-	//	UserId: theRequest.UserId,
-	//}, nil
-	return nil, nil
+	return &help.UpdateReply{
+		UserId: theRequest.UserId,
+	}, nil
 }
