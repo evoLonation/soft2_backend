@@ -4,16 +4,12 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"github.com/zeromicro/go-zero/core/logx"
 	"log"
 	"soft2_backend/service/paper/api/internal/svc"
 	"soft2_backend/service/paper/api/internal/types"
 	"soft2_backend/service/paper/database"
-	"sort"
-
-	"github.com/zeromicro/go-zero/core/logx"
 )
-
-type Coops []*types.CoopJSON
 
 type ScholarCooperationLogic struct {
 	logx.Logger
@@ -89,7 +85,6 @@ func (l *ScholarCooperationLogic) ScholarCooperation(req *types.ScholarCooperati
 					Name:      author.(map[string]interface{})["name"].(string),
 					Time:      1,
 				}
-
 				var coopBuf bytes.Buffer
 				authorQuery := map[string]interface{}{
 					"query": map[string]interface{}{
@@ -102,46 +97,33 @@ func (l *ScholarCooperationLogic) ScholarCooperation(req *types.ScholarCooperati
 					log.Printf("Error encoding query: %s\n", err)
 				}
 				log.Println(coopBuf.String())
-				res = database.SearchAuthor(coopBuf)
-				source := res["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})
+				coopRes := database.SearchAuthor(coopBuf)
+				coopHits := NilHandler(coopRes["hits"].(map[string]interface{})["hits"], "list").([]interface{})
+				if len(coopHits) == 0 {
+					continue
+				}
+				coopSource := coopHits[0].(map[string]interface{})["_source"].(map[string]interface{})
 				var institutions []string
-				for _, institution := range source["orgs"].([]interface{}) {
+				for _, institution := range coopSource["orgs"].([]interface{}) {
 					institutions = append(institutions, institution.(string))
 				}
 				coopJSON.Institution = institutions
 				coopList[author.(map[string]interface{})["id"].(string)] = coopJSON
-
 			}
 		}
 	}
 
-	var coopJSONs Coops
+	var coopJSONs []types.CoopJSON
 	for _, v := range coopList {
-		coopJSONs = append(coopJSONs, &v)
+		coopJSONs = append(coopJSONs, v)
 	}
 
-	sort.Sort(sort.Reverse(coopJSONs))
-	var coopListResp []types.CoopJSON
-	for i := 0; i < len(coopJSONs); i++ {
-		if i > 4 {
-			break
-		}
-		coopListResp = append(coopListResp, *coopJSONs[i])
+	if len(coopJSONs) > 4 {
+		coopJSONs = coopJSONs[:4]
 	}
+
 	resp = &types.ScholarCooperationResponse{
-		CoopList: coopListResp,
+		CoopList: coopJSONs,
 	}
 	return resp, nil
-}
-
-func (p Coops) Len() int {
-	return len(p)
-}
-
-func (p Coops) Less(i, j int) bool {
-	return p[i].Time < p[j].Time
-}
-
-func (p Coops) Swap(i, j int) {
-	p[i], p[j] = p[j], p[i]
 }
