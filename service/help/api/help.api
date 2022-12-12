@@ -88,6 +88,20 @@ type (
 		RequestId int64  `json:"request_id"`
 		Content   string `json:"content"`
 	}
+
+	ComplaintListReq {
+		Start int64 `json:"start"`
+		End   int64 `json:"end"`
+	}
+
+	ComplaintListReply {
+		Complaints []Complaint `json:"list"`
+		Num        int64       `json:"num"`
+	}
+	ComplaintDealReq {
+		RequestId int64 `json:"request_id"`
+		Res       int64 `json:"res"`
+	}
 )
 type Request {
 	Id             int64  `json:"request_id"`
@@ -122,6 +136,13 @@ type UserReq {
 	Magazine       string `json:"magazine"`
 	Link           string `json:"link"`
 	Wealth         int64  `json:"wealth"`
+}
+type Complaint {
+	RequestId    int64  `json:"request_id"`
+	RequestTime  string `json:"request_time"`
+	RequestTitle string `json:"request_title"`
+	Content      string `json:"content"`
+	Url          string `json:"url"`
 }
 
 @server(
@@ -202,4 +223,20 @@ service help-api {
 service help-api {
 	@handler complaint
 	post /api/help/complaint (ComplaintReq) returns ()
+}
+
+@server(
+	jwt: Auth
+)
+service help-api {
+	@handler complaintList
+	post /api/admin/complait-list (ComplaintListReq) returns (ComplaintListReply)
+}
+
+@server(
+	jwt: Auth
+)
+service help-api {
+	@handler complaintDeal
+	post /api/admin/complait-deal (ComplaintDealReq) returns ()
 }

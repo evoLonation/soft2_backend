@@ -91,6 +91,21 @@ type ComplaintReq struct {
 	Content   string `json:"content"`
 }
 
+type ComplaintListReq struct {
+	Start int64 `json:"start"`
+	End   int64 `json:"end"`
+}
+
+type ComplaintListReply struct {
+	Complaints []Complaint `json:"list"`
+	Num        int64       `json:"num"`
+}
+
+type ComplaintDealReq struct {
+	RequestId int64 `json:"request_id"`
+	Res       int64 `json:"res"`
+}
+
 type Request struct {
 	Id             int64  `json:"request_id"`
 	Title          string `json:"title"`
@@ -126,4 +141,12 @@ type UserReq struct {
 	Magazine       string `json:"magazine"`
 	Link           string `json:"link"`
 	Wealth         int64  `json:"wealth"`
+}
+
+type Complaint struct {
+	RequestId    int64  `json:"request_id"`
+	RequestTime  string `json:"request_time"`
+	RequestTitle string `json:"request_title"`
+	Content      string `json:"content"`
+	Url          string `json:"url"`
 }

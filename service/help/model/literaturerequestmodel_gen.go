@@ -28,6 +28,7 @@ type (
 		FindOne(ctx context.Context, id int64) (*LiteratureRequest, error)
 		FindAll(ctx context.Context, order int64) ([]LiteratureRequest, error)
 		FindByContent(ctx context.Context, content string) ([]LiteratureRequest, error)
+		FindComplaint(ctx context.Context) ([]LiteratureRequest, error)
 		FindByUser(ctx context.Context, userId int64, status int64) ([]LiteratureRequest, error)
 		Update(ctx context.Context, data *LiteratureRequest) error
 		Delete(ctx context.Context, id int64) error
@@ -103,6 +104,21 @@ func (m *defaultLiteratureRequestModel) FindByContent(ctx context.Context, conte
 	var resp []LiteratureRequest
 	var query string
 	query = fmt.Sprintf("(select %s from %s where title = %s and request_status = 0) union (select %s from %s where request_content = %s and request_status = 0)", literatureRequestRows, m.table, content, literatureRequestRows, m.table, content)
+	err := m.conn.QueryRowsCtx(ctx, &resp, query)
+	switch err {
+	case nil:
+		return resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
+
+func (m *defaultLiteratureRequestModel) FindComplaints(ctx context.Context) ([]LiteratureRequest, error) {
+	var resp []LiteratureRequest
+	var query string
+	query = fmt.Sprintf("select %s from %s where request_status = 3", literatureRequestRows, m.table)
 	err := m.conn.QueryRowsCtx(ctx, &resp, query)
 	switch err {
 	case nil:
