@@ -104,7 +104,7 @@ type PaperCiteResponse struct {
 	Gb     string `json:"gb"`
 	Mla    string `json:"mla"`
 	Apa    string `json:"apa"`
-	Bibtex string `json:"bibix"`
+	Bibtex string `json:"bibtex"`
 	CajCd  string `json:"caj_cd"`
 }
 
