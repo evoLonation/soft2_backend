@@ -124,7 +124,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
-				Path:    "/api/admin/complait-list",
+				Path:    "/api/help/complait-list",
 				Handler: complaintListHandler(serverCtx),
 			},
 		},
