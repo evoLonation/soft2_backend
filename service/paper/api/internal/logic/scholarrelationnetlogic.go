@@ -91,7 +91,7 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 	for _, pub := range pubs {
 		pubIds = append(pubIds, pub.(map[string]interface{})["i"].(string))
 	}
-	log.Printf("pubIds: %v", pubIds)
+	//log.Printf("pubIds: %v", pubIds)
 
 	var pubBuf bytes.Buffer
 	pubQuery := map[string]interface{}{
@@ -100,7 +100,7 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 	if err := json.NewEncoder(&pubBuf).Encode(pubQuery); err != nil {
 		log.Printf("Error encoding query: %s", err)
 	}
-	log.Println(pubBuf.String())
+	//log.Println(pubBuf.String())
 	pubRes := database.MgetPaper(pubBuf)
 
 	pubs = pubRes["docs"].([]interface{})
@@ -190,6 +190,10 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 			if reference.(map[string]interface{})["found"].(bool) == false {
 				continue
 			}
+			if referenceCnt > 10 {
+				break
+			}
+			referenceCnt++
 
 			firstAuthors := NilHandler(reference.(map[string]interface{})["_source"].(map[string]interface{})["authors"], "list").([]interface{})
 			var firstAuthor map[string]interface{}
@@ -205,11 +209,6 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 			if authorId == req.ScholarId {
 				continue
 			}
-
-			if referenceCnt > 5 {
-				break
-			}
-			referenceCnt++
 
 			if _, ok := ciNodes[authorId]; ok && authorId != "" {
 				thisNode := ciNodes[authorId]
