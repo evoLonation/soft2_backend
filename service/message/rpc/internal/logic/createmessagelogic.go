@@ -38,11 +38,25 @@ func (l *CreateMessageLogic) CreateMessage(in *message.CreateMessageReq) (*messa
 	}
 	switch in.MessageType {
 	case 1:
-	case 2:
+		newMessage.UId = sql.NullInt64{
+			Int64: in.UId,
+			Valid: true,
+		}
 		newMessage.PId = sql.NullString{
 			String: in.PId,
 			Valid:  true,
 		}
+		break
+	case 2:
+		newMessage.UId = sql.NullInt64{
+			Int64: in.UId,
+			Valid: true,
+		}
+		newMessage.PId = sql.NullString{
+			String: in.PId,
+			Valid:  true,
+		}
+		break
 	case 3:
 		newMessage.UId = sql.NullInt64{
 			Int64: in.UId,
@@ -63,6 +77,12 @@ func (l *CreateMessageLogic) CreateMessage(in *message.CreateMessageReq) (*messa
 			Valid:  true,
 		}
 		break
+	case 5:
+		newMessage.Result = sql.NullInt64{
+			Int64: in.Result,
+			Valid: true,
+		}
+		break
 	case 6:
 		newMessage.GId = sql.NullInt64{
 			Int64: in.GId,
@@ -72,18 +92,23 @@ func (l *CreateMessageLogic) CreateMessage(in *message.CreateMessageReq) (*messa
 			String: in.PId,
 			Valid:  true,
 		}
-	case 5:
 		newMessage.Result = sql.NullInt64{
 			Int64: in.Result,
 			Valid: true,
 		}
 		break
 	case 7:
+		newMessage.RId = sql.NullInt64{
+			Int64: in.RId,
+			Valid: true,
+		}
+		break
 	case 8:
 		newMessage.RId = sql.NullInt64{
 			Int64: in.RId,
 			Valid: true,
 		}
+		break
 	}
 
 	_, err := l.svcCtx.MessageModel.Insert(l.ctx, &newMessage)
