@@ -34,10 +34,6 @@ func NewScholarPapersLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Sch
 
 func (l *ScholarPapersLogic) ScholarPapers(req *types.ScholarPapersRequest) (resp *types.ScholarPapersResponse, err error) {
 	// todo: add your logic here and delete this line
-	log.Println("ScholarPapers")
-	log.Println(req.IsFirst)
-	log.Printf("in scholar papers is_first: %v", req.IsFirst)
-
 	var authorBuf bytes.Buffer
 	query := map[string]interface{}{
 		"query": map[string]interface{}{
@@ -115,11 +111,14 @@ func (l *ScholarPapersLogic) ScholarPapers(req *types.ScholarPapersRequest) (res
 			Publisher: NilHandler(paper["venue"], "string").(string),
 		})
 	}
+	log.Println(papers)
 	if !req.TimeOrder {
 		sort.Sort(sort.Reverse(papers))
 	} else {
 		sort.Sort(papers)
 	}
+	log.Println("sort")
+	log.Println(papers)
 	var sortedPapers []types.PaperResponseJSON
 	for _, paper := range papers {
 		sortedPapers = append(sortedPapers, *paper)
