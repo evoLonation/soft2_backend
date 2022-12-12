@@ -38,8 +38,11 @@ func (l *LaunchGrievanceLogic) LaunchGrievance(req *types.LaunchGrievanceRequest
 	plaintiff, _ := l.svcCtx.ApplyRpc.CheckIdentify(l.ctx, &apply.CheckIdentifyReq{
 		UserId: tempId,
 	})
+
 	plaintiffId := plaintiff.ScholarId //申诉学者id
+	fmt.Printf("1111111111111\n")
 	defendantUser, _ := l.svcCtx.ApplyRpc.CheckUser(l.ctx, &apply.CheckUserReq{ScholarId: defendantId})
+	fmt.Printf("2222222222222\n")
 	defendantUserId := defendantUser.UserId //被申诉用户的id
 	newGrievance := model.Grievance{
 		PlaintiffId: plaintiffId,
@@ -52,6 +55,7 @@ func (l *LaunchGrievanceLogic) LaunchGrievance(req *types.LaunchGrievanceRequest
 	paperName := paper.PaperName
 	content := fmt.Sprintf("%s 对你的文献 %s 发起申诉", username, paperName)
 	//给被申诉者发通知
+	fmt.Printf("333333333333\n")
 	_, _ = l.svcCtx.MessageRpc.CreateMessage(l.ctx, &message2.CreateMessageReq{
 		ReceiverId:  defendantUserId,
 		Content:     content,
@@ -61,5 +65,6 @@ func (l *LaunchGrievanceLogic) LaunchGrievance(req *types.LaunchGrievanceRequest
 		PId:         paperId,
 		//RId:         0,
 	})
+	fmt.Printf("4444444444444\n")
 	return &types.LaunchGrievanceResponse{}, nil
 }
