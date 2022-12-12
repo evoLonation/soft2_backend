@@ -42,6 +42,7 @@ func (l *ScholarBarchartLogic) ScholarBarchart(req *types.ScholarBarchartRequest
 	}
 	log.Println(buf.String())
 	res := database.SearchAuthor(buf)
+	log.Println(res)
 
 	var statistic = make([]types.StatisticJSON, 0)
 	source := res["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})
