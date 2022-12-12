@@ -43,7 +43,12 @@ func (l *ScholarBasicLogic) ScholarBasic(req *types.ScholarBasicRequest) (resp *
 	log.Println(authorBuf.String())
 	res := database.SearchAuthor(authorBuf)
 
-	source := res["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})
+	hits := NilHandler(res["hits"].(map[string]interface{})["hits"], "list").([]interface{})
+	if len(hits) == 0 {
+		return &types.ScholarBasicResponse{}, nil
+	}
+
+	source := hits[0].(map[string]interface{})["_source"].(map[string]interface{})
 	var tags = make([]types.TagJSON, 0)
 	for _, tag := range source["tags"].([]interface{}) {
 		tags = append(tags, types.TagJSON{
