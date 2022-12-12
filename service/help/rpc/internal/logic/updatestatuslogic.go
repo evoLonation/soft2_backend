@@ -65,7 +65,8 @@ func (l *UpDateStatusLogic) UpDateStatus(in *help.UpdateReq) (*help.UpdateReply,
 	if err != nil {
 		return nil, err
 	}
-	return &help.UpdateReply{
-		UserId: theRequest.UserId,
-	}, nil
+	//return &help.UpdateReply{
+	//	UserId: theRequest.UserId,
+	//}, nil
+	return nil, nil
 }
