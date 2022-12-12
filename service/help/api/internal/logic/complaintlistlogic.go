@@ -2,12 +2,10 @@ package logic
 
 import (
 	"context"
+	"github.com/zeromicro/go-zero/core/logx"
 	"soft2_backend/service/file/rpc/types/file"
-
 	"soft2_backend/service/help/api/internal/svc"
 	"soft2_backend/service/help/api/internal/types"
-
-	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type ComplaintListLogic struct {
@@ -25,7 +23,6 @@ func NewComplaintListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Com
 }
 
 func (l *ComplaintListLogic) ComplaintList(req *types.ComplaintListReq) (resp *types.ComplaintListReply, err error) {
-	// todo: add your logic here and delete this line
 	reqList, err := l.svcCtx.LiteratureRequestModel.FindComplaint(l.ctx)
 	sum := len(reqList)
 	var reql []types.Complaint
@@ -39,10 +36,14 @@ func (l *ComplaintListLogic) ComplaintList(req *types.ComplaintListReq) (resp *t
 			request.RequestTitle = oneReq.Title
 			request.RequestTime = oneReq.RequestTime.Format("2006-1-02 15:04")
 			request.Content = oneReq.Complaint
-			helpFile, _ := l.svcCtx.FileRpc.GetHelpFile(l.ctx, &file.ApplyIdReq{
+			helpFile, err := l.svcCtx.FileRpc.GetHelpFile(l.ctx, &file.ApplyIdReq{
 				Id: oneReq.Id,
 			})
-			request.Url = helpFile.Url
+			if err != nil {
+				request.Url = ""
+			} else {
+				request.Url = helpFile.Url
+			}
 			reql = append(reql, request)
 		}
 	}

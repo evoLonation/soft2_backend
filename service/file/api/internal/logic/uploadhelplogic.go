@@ -56,5 +56,8 @@ func (l *UploadHelpLogic) UploadHelp() error {
 		Content:     "你发起的文献互助收到援助",
 		MessageType: 7,
 	})
+	if err != nil {
+		return err
+	}
 	return nil
 }

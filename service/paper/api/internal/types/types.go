@@ -60,8 +60,8 @@ type ScholarResponseJSON struct {
 }
 
 type AutoCompleteRequest struct {
-	SearchType int    `json:"search_type"`
-	Text       string `json:"text"`
+	Size int    `json:"size,optional"`
+	Text string `json:"text"`
 }
 
 type AutoCompleteResponse struct {

@@ -2,8 +2,6 @@ package logic
 
 import (
 	"context"
-	"soft2_backend/service/user/model"
-
 	"soft2_backend/service/help/api/internal/svc"
 	"soft2_backend/service/help/api/internal/types"
 
@@ -25,13 +23,12 @@ func NewComplaintDealLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Com
 }
 
 func (l *ComplaintDealLogic) ComplaintDeal(req *types.ComplaintDealReq) error {
-	// todo: add your logic here and delete this line
 	theReq, err := l.svcCtx.LiteratureRequestModel.FindOne(l.ctx, req.RequestId)
 	if err != nil {
 		return err
 	}
 	help, err := l.svcCtx.LiteratureHelpModel.FindOneByReqId(l.ctx, req.RequestId)
-	if err == model.ErrNotFound {
+	if err != nil {
 		if req.Res == 0 {
 			theReq.RequestStatus = 4
 		} else {
@@ -50,9 +47,9 @@ func (l *ComplaintDealLogic) ComplaintDeal(req *types.ComplaintDealReq) error {
 			return err
 		}
 	}
-	err = l.svcCtx.LiteratureRequestModel.Update(l.ctx, theReq)
-	if err != nil {
-		return err
+	e := l.svcCtx.LiteratureRequestModel.Update(l.ctx, theReq)
+	if e != nil {
+		return e
 	}
 	return nil
 }
