@@ -185,7 +185,15 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 			}
 
 			firstAuthors := NilHandler(reference.(map[string]interface{})["_source"].(map[string]interface{})["authors"], "list").([]interface{})
-			firstAuthor := firstAuthors[0].(map[string]interface{})
+			var firstAuthor map[string]interface{}
+			if len(firstAuthors) == 0 {
+				firstAuthor = map[string]interface{}{
+					"id":   "",
+					"name": "",
+				}
+			} else {
+				firstAuthor = firstAuthors[0].(map[string]interface{})
+			}
 			authorId := NilHandler(firstAuthor["id"].(string), "string").(string)
 			if authorId == req.ScholarId {
 				continue
