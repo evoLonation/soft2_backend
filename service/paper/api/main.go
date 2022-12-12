@@ -3,10 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
+	"soft2_backend/service/paper/database"
+
 	"soft2_backend/service/paper/api/internal/config"
 	"soft2_backend/service/paper/api/internal/handler"
 	"soft2_backend/service/paper/api/internal/svc"
-	"soft2_backend/service/paper/database"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/rest"
@@ -20,7 +21,7 @@ func main() {
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
 
-	server := rest.MustNewServer(c.RestConf, rest.WithCors())
+	server := rest.MustNewServer(c.RestConf)
 	defer server.Stop()
 
 	ctx := svc.NewServiceContext(c)
