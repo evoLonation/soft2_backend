@@ -8,6 +8,7 @@ import (
 	"soft2_backend/service/file/filecommon"
 	"soft2_backend/service/file/model"
 	"soft2_backend/service/help/rpc/types/help"
+	"soft2_backend/service/message/rpc/types/message"
 )
 
 type UploadHelpLogic struct {
@@ -45,9 +46,15 @@ func (l *UploadHelpLogic) UploadHelp() error {
 		return err
 	}
 	userId := filecommon.GetUserId(l.ctx)
-	_, err = l.svcCtx.Help.UpDateStatus(l.ctx, &help.UpdateReq{Status: 1, UserId: userId, RequestId: l.RequestId})
+	res, err := l.svcCtx.Help.UpDateStatus(l.ctx, &help.UpdateReq{Status: 1, UserId: userId, RequestId: l.RequestId})
 	if err != nil {
 		return err
 	}
+	_, err = l.svcCtx.Message.CreateMessage(l.ctx, &message.CreateMessageReq{
+		ReceiverId:  res.UserId,
+		RId:         l.RequestId,
+		Content:     "你发起的文献互助收到援助",
+		MessageType: 7,
+	})
 	return nil
 }

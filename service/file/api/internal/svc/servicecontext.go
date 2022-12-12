@@ -7,6 +7,7 @@ import (
 	"soft2_backend/service/file/api/internal/config"
 	"soft2_backend/service/file/model"
 	"soft2_backend/service/help/rpc/helpclient"
+	"soft2_backend/service/message/rpc/messageclient"
 )
 
 type ServiceContext struct {
@@ -15,6 +16,7 @@ type ServiceContext struct {
 	model.UserAvatarModel
 	helpclient.Help
 	applyclient.Apply
+	messageclient.Message
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -25,5 +27,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		HelpFileModel:   model.NewHelpFileModel(conn),
 		Help:            helpclient.NewHelp(zrpc.MustNewClient(c.HelpRpcConf)),
 		Apply:           applyclient.NewApply(zrpc.MustNewClient(c.ApplyRpcConf)),
+		Message:         messageclient.NewMessage(zrpc.MustNewClient(c.MessageRpcConf)),
 	}
 }
