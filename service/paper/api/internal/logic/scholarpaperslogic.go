@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"log"
 	"math"
 	"soft2_backend/service/paper/database"
@@ -50,11 +51,16 @@ func (l *ScholarPapersLogic) ScholarPapers(req *types.ScholarPapersRequest) (res
 	var papers Papers
 	var maxYear = 0
 	var minYear = 3000
-	pubs := res["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})["pubs"].([]interface{})
+
+	hits := NilHandler(res["hits"].(map[string]interface{})["hits"], "list").([]interface{})
+	if len(hits) == 0 {
+		return nil, errors.New("no such scholar")
+	}
+	pubs := hits[0].(map[string]interface{})["_source"].(map[string]interface{})["pubs"].([]interface{})
 	for _, pub := range pubs {
-		if req.IsFirst && int(pub.(map[string]interface{})["r"].(float64)) != 0 {
+		if req.IsFirst == 1 && int(pub.(map[string]interface{})["r"].(float64)) != 0 {
 			continue
-		} else if !req.IsFirst && int(pub.(map[string]interface{})["r"].(float64)) == 0 {
+		} else if req.IsFirst == 2 && int(pub.(map[string]interface{})["r"].(float64)) == 0 {
 			continue
 		}
 		var paperBuf bytes.Buffer
@@ -70,8 +76,11 @@ func (l *ScholarPapersLogic) ScholarPapers(req *types.ScholarPapersRequest) (res
 		}
 		log.Println(paperBuf.String())
 		paperRes := database.SearchPaper(paperBuf)
-		log.Println(paperRes)
-		paper := paperRes["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})
+		paperHits := NilHandler(paperRes["hits"].(map[string]interface{})["hits"], "list").([]interface{})
+		if len(paperHits) == 0 {
+			continue
+		}
+		paper := paperHits[0].(map[string]interface{})["_source"].(map[string]interface{})
 		if req.Year != 0 && NilHandler(paper["year"], "int").(int) != req.Year {
 			continue
 		}
@@ -101,8 +110,10 @@ func (l *ScholarPapersLogic) ScholarPapers(req *types.ScholarPapersRequest) (res
 			Publisher: NilHandler(paper["venue"], "string").(string),
 		})
 	}
-	if req.TimeOrder {
+	if !req.TimeOrder {
 		sort.Sort(sort.Reverse(papers))
+	} else {
+		sort.Sort(papers)
 	}
 	var sortedPapers []types.PaperResponseJSON
 	for _, paper := range papers {

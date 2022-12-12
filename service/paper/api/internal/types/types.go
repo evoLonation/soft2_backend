@@ -60,8 +60,8 @@ type ScholarResponseJSON struct {
 }
 
 type AutoCompleteRequest struct {
-	Size int    `json:"size,optional"`
-	Text string `json:"text"`
+	SearchType int    `json:"search_type"`
+	Text       string `json:"text"`
 }
 
 type AutoCompleteResponse struct {
@@ -190,7 +190,7 @@ type CoopJSON struct {
 
 type ScholarPapersRequest struct {
 	ScholarId string `json:"scholar_id"`
-	IsFirst   bool   `json:"is_first, optional"`
+	IsFirst   int    `json:"is_first, optional"`
 	Year      int    `json:"year, optional"`
 	TimeOrder bool   `json:"time_order, optional"`
 	Start     int    `json:"start"`
