@@ -81,6 +81,6 @@ func (l *GetPaperLogic) GetPaper(in *paper.GetPaperReq) (*paper.GetPaperReply, e
 		PaperName: source["title"].(string),
 		Authors:   authorsJSON,
 		Org:       firstAuthorOrg,
-		Year:      NilHandler(source["year"], "int").(int64),
+		Year:      int64(NilHandler(source["year"], "int").(int)),
 	}, nil
 }
