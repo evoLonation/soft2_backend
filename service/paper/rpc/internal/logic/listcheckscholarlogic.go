@@ -46,9 +46,13 @@ func (l *ListCheckScholarLogic) ListCheckScholar(in *paper.ListCheckScholarReq) 
 
 	scholars := NilHandler(res["docs"], "list").([]interface{})
 	scholarList := make([]*paper.CreateScholarReply, 0)
-	avatarUrls, _ := l.svcCtx.FileRpc.GetScholarAvatarList(l.ctx, &file.ListScholarIdReq{
+	avatarUrls, err := l.svcCtx.FileRpc.GetScholarAvatarList(l.ctx, &file.ListScholarIdReq{
 		Ids: in.ScholarId,
 	})
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
 	for i, scholar := range scholars {
 		if scholar.(map[string]interface{})["found"].(bool) == false {
 			continue
