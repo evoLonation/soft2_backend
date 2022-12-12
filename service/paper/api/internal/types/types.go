@@ -190,7 +190,7 @@ type CoopJSON struct {
 
 type ScholarPapersRequest struct {
 	ScholarId string `json:"scholar_id"`
-	IsFirst   int    `json:"is_first, optional"`
+	IsFirst   int    `json:"is_first"`
 	Year      int    `json:"year, optional"`
 	TimeOrder bool   `json:"time_order, optional"`
 	Start     int    `json:"start"`
