@@ -104,10 +104,16 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 	pubRes := database.MgetPaper(pubBuf)
 
 	pubs = pubRes["docs"].([]interface{})
+	pubCnt := 0
 	for _, pub := range pubs {
 		if pub.(map[string]interface{})["found"].(bool) == false {
 			continue
 		}
+		if pubCnt > 10 {
+			break
+		}
+		pubCnt++
+
 		authors := NilHandler(pub.(map[string]interface{})["_source"].(map[string]interface{})["authors"], "list").([]interface{})
 		for _, author := range authors {
 			authorId := NilHandler(author.(map[string]interface{})["id"].(string), "string").(string)
@@ -179,6 +185,7 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 		referenceRes := database.MgetPaper(referenceBuf)
 
 		references = NilHandler(referenceRes["docs"], "list").([]interface{})
+		referenceCnt := 0
 		for _, reference := range references {
 			if reference.(map[string]interface{})["found"].(bool) == false {
 				continue
@@ -198,6 +205,12 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 			if authorId == req.ScholarId {
 				continue
 			}
+
+			if referenceCnt > 5 {
+				break
+			}
+			referenceCnt++
+
 			if _, ok := ciNodes[authorId]; ok && authorId != "" {
 				thisNode := ciNodes[authorId]
 				thisNode.CiNum++
