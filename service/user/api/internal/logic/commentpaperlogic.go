@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"encoding/json"
+	message2 "soft2_backend/service/message/rpc/types/message"
 	"soft2_backend/service/user/model"
 	"time"
 
@@ -39,5 +40,15 @@ func (l *CommentPaperLogic) CommentPaper(req *types.CommentPaperRequest) (resp *
 		CreateTime:   time.Time{},
 	}
 	_, err = l.svcCtx.CommentModel.Insert(l.ctx, &newComment)
+	_, _ = l.svcCtx.MessageRpc.CreateMessage(l.ctx, &message2.CreateMessageReq{
+		ReceiverId:  0,
+		Content:     "",
+		MessageType: 0,
+		Result:      0,
+		UId:         0,
+		GId:         0,
+		PId:         "",
+		RId:         0,
+	})
 	return &types.CommentPaperResponse{Code: 0}, nil
 }
