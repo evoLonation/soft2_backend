@@ -5,13 +5,15 @@ import (
 	"context"
 	"encoding/json"
 	"log"
-	"soft2_backend/service/paper/database"
-
 	"soft2_backend/service/paper/api/internal/svc"
 	"soft2_backend/service/paper/api/internal/types"
+	"soft2_backend/service/paper/database"
+	"sort"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
+
+type Coops []*types.CoopJSON
 
 type ScholarCooperationLogic struct {
 	logx.Logger
@@ -66,7 +68,7 @@ func (l *ScholarCooperationLogic) ScholarCooperation(req *types.ScholarCooperati
 		if paper.(map[string]interface{})["found"].(bool) == false {
 			continue
 		}
-		if paperCnt > 100 {
+		if paperCnt > 80 {
 			break
 		}
 		paperCnt++
@@ -113,15 +115,33 @@ func (l *ScholarCooperationLogic) ScholarCooperation(req *types.ScholarCooperati
 		}
 	}
 
-	var coopJSONs []types.CoopJSON
+	var coopJSONs Coops
 	for _, v := range coopList {
-		coopJSONs = append(coopJSONs, v)
+		coopJSONs = append(coopJSONs, &v)
 	}
-	if len(coopJSONs) > 4 {
-		coopJSONs = coopJSONs[:4]
+
+	sort.Sort(sort.Reverse(coopJSONs))
+	var coopListResp []types.CoopJSON
+	for i := 0; i < len(coopJSONs); i++ {
+		if i > 4 {
+			break
+		}
+		coopListResp = append(coopListResp, *coopJSONs[i])
 	}
 	resp = &types.ScholarCooperationResponse{
-		CoopList: coopJSONs,
+		CoopList: coopListResp,
 	}
 	return resp, nil
+}
+
+func (p Coops) Len() int {
+	return len(p)
+}
+
+func (p Coops) Less(i, j int) bool {
+	return p[i].Time < p[j].Time
+}
+
+func (p Coops) Swap(i, j int) {
+	p[i], p[j] = p[j], p[i]
 }
