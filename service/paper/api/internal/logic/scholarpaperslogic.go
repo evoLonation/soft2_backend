@@ -61,7 +61,8 @@ func (l *ScholarPapersLogic) ScholarPapers(req *types.ScholarPapersRequest) (res
 	for _, pub := range pubs {
 		if req.IsFirst == 1 && int(pub.(map[string]interface{})["r"].(float64)) != 0 {
 			continue
-		} else if req.IsFirst == 2 && int(pub.(map[string]interface{})["r"].(float64)) == 0 {
+		}
+		if req.IsFirst == 2 && int(pub.(map[string]interface{})["r"].(float64)) == 0 {
 			continue
 		}
 		var paperBuf bytes.Buffer
@@ -82,6 +83,12 @@ func (l *ScholarPapersLogic) ScholarPapers(req *types.ScholarPapersRequest) (res
 			continue
 		}
 		paper := paperHits[0].(map[string]interface{})["_source"].(map[string]interface{})
+		if NilHandler(paper["year"], "int").(int) > maxYear {
+			maxYear = NilHandler(paper["year"], "int").(int)
+		}
+		if NilHandler(paper["year"], "int").(int) < minYear {
+			minYear = NilHandler(paper["year"], "int").(int)
+		}
 		if req.Year != 0 && NilHandler(paper["year"], "int").(int) != req.Year {
 			continue
 		}
@@ -96,12 +103,6 @@ func (l *ScholarPapersLogic) ScholarPapers(req *types.ScholarPapersRequest) (res
 				Id:    NilHandler(author.(map[string]interface{})["id"], "string").(string),
 				HasId: hasId,
 			})
-		}
-		if NilHandler(paper["year"], "int").(int) > maxYear {
-			maxYear = NilHandler(paper["year"], "int").(int)
-		}
-		if NilHandler(paper["year"], "int").(int) < minYear {
-			minYear = NilHandler(paper["year"], "int").(int)
 		}
 		papers = append(papers, &types.PaperResponseJSON{
 			Title:     NilHandler(paper["title"], "string").(string),
