@@ -52,7 +52,7 @@ func (l *UpDateStatusLogic) UpDateStatus(in *help.UpdateReq) (*help.UpdateReply,
 			return nil, err
 		}
 	}
-	user, _ := l.svcCtx.UserHelpModel.FindOne(l.ctx, in.UserId)
+	user, err := l.svcCtx.UserHelpModel.FindOne(l.ctx, in.UserId)
 	if err == model.ErrNotFound {
 		var newUser = new(model2.UserHelp)
 		newUser.UserId = in.UserId
