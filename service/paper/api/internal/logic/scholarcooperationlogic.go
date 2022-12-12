@@ -87,30 +87,28 @@ func (l *ScholarCooperationLogic) ScholarCooperation(req *types.ScholarCooperati
 					Name:      author.(map[string]interface{})["name"].(string),
 					Time:      1,
 				}
-				coopList[author.(map[string]interface{})["id"].(string)] = coopJSON
-				go func() {
-					var coopBuf bytes.Buffer
-					authorQuery := map[string]interface{}{
-						"query": map[string]interface{}{
-							"match": map[string]interface{}{
-								"id": author.(map[string]interface{})["id"].(string),
-							},
+
+				var coopBuf bytes.Buffer
+				authorQuery := map[string]interface{}{
+					"query": map[string]interface{}{
+						"match": map[string]interface{}{
+							"id": author.(map[string]interface{})["id"].(string),
 						},
-					}
-					if err := json.NewEncoder(&coopBuf).Encode(authorQuery); err != nil {
-						log.Printf("Error encoding query: %s\n", err)
-					}
-					log.Println(coopBuf.String())
-					res = database.SearchAuthor(coopBuf)
-					source := res["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})
-					var institutions []string
-					for _, institution := range source["orgs"].([]interface{}) {
-						institutions = append(institutions, institution.(string))
-					}
-					tmpCoop := coopList[author.(map[string]interface{})["id"].(string)]
-					tmpCoop.Institution = institutions
-					coopList[author.(map[string]interface{})["id"].(string)] = tmpCoop
-				}()
+					},
+				}
+				if err := json.NewEncoder(&coopBuf).Encode(authorQuery); err != nil {
+					log.Printf("Error encoding query: %s\n", err)
+				}
+				log.Println(coopBuf.String())
+				res = database.SearchAuthor(coopBuf)
+				source := res["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})
+				var institutions []string
+				for _, institution := range source["orgs"].([]interface{}) {
+					institutions = append(institutions, institution.(string))
+				}
+				coopJSON.Institution = institutions
+				coopList[author.(map[string]interface{})["id"].(string)] = coopJSON
+
 			}
 		}
 	}
