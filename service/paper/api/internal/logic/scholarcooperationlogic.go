@@ -78,6 +78,7 @@ func (l *ScholarCooperationLogic) ScholarCooperation(req *types.ScholarCooperati
 					Name:      author.(map[string]interface{})["name"].(string),
 					Time:      1,
 				}
+				coopList[author.(map[string]interface{})["id"].(string)] = coopJSON
 				go func() {
 					var coopBuf bytes.Buffer
 					authorQuery := map[string]interface{}{
@@ -97,8 +98,9 @@ func (l *ScholarCooperationLogic) ScholarCooperation(req *types.ScholarCooperati
 					for _, institution := range source["orgs"].([]interface{}) {
 						institutions = append(institutions, institution.(string))
 					}
-					coopJSON.Institution = institutions
-					coopList[author.(map[string]interface{})["id"].(string)] = coopJSON
+					tmpCoop := coopList[author.(map[string]interface{})["id"].(string)]
+					tmpCoop.Institution = institutions
+					coopList[author.(map[string]interface{})["id"].(string)] = tmpCoop
 				}()
 			}
 		}
