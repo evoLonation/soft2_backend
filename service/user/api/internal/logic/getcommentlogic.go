@@ -27,15 +27,13 @@ func (l *GetCommentLogic) GetComment(req *types.GetCommentRequest) (resp *types.
 	// todo: add your logic here and delete this line
 	search := "'" + req.PaperId + "'"
 	reqList, err := l.svcCtx.CommentModel.FindByPaperId(l.ctx, search)
-	//if err == model.ErrNotFound {
-	//	return &types.GetCommentReply{Comments: nil}, nil
-	//}
+
 	var reql []types.CommentReply
 	sum := len(reqList)
 	if sum == 0 {
 		return &types.GetCommentReply{Comments: nil}, nil
 	}
-	biggest := 0
+	biggest := -1
 	temp := 0
 	for i := 0; i < sum; i++ {
 		if int(reqList[i].Likes) > biggest {
