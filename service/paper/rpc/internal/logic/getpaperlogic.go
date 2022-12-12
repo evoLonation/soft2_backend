@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"log"
 	"soft2_backend/service/paper/database"
 
@@ -44,7 +45,12 @@ func (l *GetPaperLogic) GetPaper(in *paper.GetPaperReq) (*paper.GetPaperReply, e
 	res := database.SearchPaper(buf)
 	log.Println(res)
 
-	source := res["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})
+	hits := NilHandler(res["hits"].(map[string]interface{})["hits"], "list").([]interface{})
+	if len(hits) == 0 {
+		return nil, errors.New("paper not found")
+	}
+
+	source := hits[0].(map[string]interface{})["_source"].(map[string]interface{})
 	var authorsJSON []*paper.AuthorJSON
 	authors := NilHandler(source["authors"], "list").([]interface{})
 	for _, author := range authors {

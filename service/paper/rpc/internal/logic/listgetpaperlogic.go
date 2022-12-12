@@ -64,22 +64,25 @@ func (l *ListGetPaperLogic) ListGetPaper(in *paper.ListGetPaperReq) (*paper.List
 			})
 		}
 
-		firstAuthorId := authors[0].Id
-		firstAuthorQuery := map[string]interface{}{
-			"query": map[string]interface{}{
-				"match": map[string]interface{}{
-					"id": firstAuthorId,
+		firstAuthorOrg := ""
+		if len(authors) > 0 {
+			firstAuthorId := authors[0].Id
+			firstAuthorQuery := map[string]interface{}{
+				"query": map[string]interface{}{
+					"match": map[string]interface{}{
+						"id": firstAuthorId,
+					},
 				},
-			},
+			}
+			if err := json.NewEncoder(&buf).Encode(firstAuthorQuery); err != nil {
+				log.Printf("Error encoding query: %s\n", err)
+			}
+			log.Println(buf.String())
+			firstAuthorRes := database.SearchAuthor(buf)
+			firstAuthorHits := NilHandler(firstAuthorRes["hits"].(map[string]interface{})["hits"], "list").([]interface{})
+			firstAuthorSource := firstAuthorHits[0].(map[string]interface{})["_source"].(map[string]interface{})
+			firstAuthorOrg = NilHandler(firstAuthorSource["orgs"].([]interface{})[0], "string").(string)
 		}
-		if err := json.NewEncoder(&buf).Encode(firstAuthorQuery); err != nil {
-			log.Printf("Error encoding query: %s\n", err)
-		}
-		log.Println(buf.String())
-		firstAuthorRes := database.SearchAuthor(buf)
-
-		firstAuthorSource := firstAuthorRes["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})
-		firstAuthorOrg := NilHandler(firstAuthorSource["orgs"].([]interface{})[0], "string").(string)
 
 		paperList = append(paperList, &paper.GetPaperReply{
 			PaperName: source["title"].(string),
