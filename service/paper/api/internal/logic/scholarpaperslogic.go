@@ -116,7 +116,7 @@ func (l *ScholarPapersLogic) ScholarPapers(req *types.ScholarPapersRequest) (res
 	} else {
 		sort.Sort(papers)
 	}
-	var sortedPapers []types.PaperResponseJSON
+	var sortedPapers = make([]types.PaperResponseJSON, 0)
 	for _, paper := range papers {
 		sortedPapers = append(sortedPapers, *paper)
 	}
