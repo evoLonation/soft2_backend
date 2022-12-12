@@ -42,7 +42,8 @@ func (l *CheckScholarLogic) CheckScholar(in *paper.CheckScholarReq) (*paper.Crea
 		log.Printf("Error encoding query: %s\n", err)
 	}
 	log.Println(buf.String())
-	res := database.SearchPaper(buf)
+	res := database.SearchAuthor(buf)
+	log.Println(res)
 
 	hits := res["hits"].(map[string]interface{})["hits"].([]interface{})
 	if len(hits) == 0 {
