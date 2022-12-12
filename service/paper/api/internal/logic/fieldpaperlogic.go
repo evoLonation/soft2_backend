@@ -38,6 +38,11 @@ func (l *FieldPaperLogic) FieldPaper(req *types.FieldPaperRequest) (resp *types.
 				"keywords": req.Field,
 			},
 		},
+		"sort": map[string]interface{}{
+			"n_citation": map[string]interface{}{
+				"order": "desc",
+			},
+		},
 	}
 	if err := json.NewEncoder(&paperBuf).Encode(paperQuery); err != nil {
 		log.Printf("Error encoding query: %s\n", err)

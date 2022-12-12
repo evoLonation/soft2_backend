@@ -77,7 +77,8 @@ func (m *defaultCommentModel) FindOne(ctx context.Context, commentId int64) (*Co
 func (m *defaultCommentModel) FindByPaperId(ctx context.Context, paperId string) ([]Comment, error) {
 	var resp []Comment
 	var query string
-	query = fmt.Sprintf("select %s from %s where paper_id=%s", commentRows, m.table, paperId)
+	//query = fmt.Sprintf("select %s from %s where `paper_id` = ? limit 1", commentRows, m.table)
+	query = fmt.Sprintf("select %s from %s where paper_id = %s", commentRows, m.table, paperId)
 	err := m.conn.QueryRowsCtx(ctx, &resp, query)
 	switch err {
 	case nil:

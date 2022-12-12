@@ -3,8 +3,6 @@ package logic
 import (
 	"context"
 	"fmt"
-	"soft2_backend/service/user/model"
-
 	"soft2_backend/service/user/api/internal/svc"
 	"soft2_backend/service/user/api/internal/types"
 
@@ -27,13 +25,15 @@ func NewGetCommentLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetCom
 
 func (l *GetCommentLogic) GetComment(req *types.GetCommentRequest) (resp *types.GetCommentReply, err error) {
 	// todo: add your logic here and delete this line
-	reqList, err := l.svcCtx.CommentModel.FindByPaperId(l.ctx, req.PaperId)
-	if err == model.ErrNotFound {
-		return &types.GetCommentReply{Comments: nil}, nil
-	}
+	search := "'" + req.PaperId + "'"
+	reqList, err := l.svcCtx.CommentModel.FindByPaperId(l.ctx, search)
+
 	var reql []types.CommentReply
 	sum := len(reqList)
-	biggest := 0
+	if sum == 0 {
+		return &types.GetCommentReply{Comments: nil}, nil
+	}
+	biggest := -1
 	temp := 0
 	for i := 0; i < sum; i++ {
 		if int(reqList[i].Likes) > biggest {
@@ -60,6 +60,7 @@ func (l *GetCommentLogic) GetComment(req *types.GetCommentRequest) (resp *types.
 		request.CommentId = oneReq.CommentId
 		request.UserName = oneReq.UserNickname
 		request.UserId = oneReq.UserId
+		request.Content = oneReq.Content
 		request.Date = fmt.Sprintf("%d年%d月%d日", oneReq.CreateTime.Year(), oneReq.CreateTime.Month(), oneReq.CreateTime.Day())
 		request.Likes = oneReq.Likes
 		reql = append(reql, request)

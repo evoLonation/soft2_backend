@@ -91,7 +91,7 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 	for _, pub := range pubs {
 		pubIds = append(pubIds, pub.(map[string]interface{})["i"].(string))
 	}
-	log.Printf("pubIds: %v", pubIds)
+	//log.Printf("pubIds: %v", pubIds)
 
 	var pubBuf bytes.Buffer
 	pubQuery := map[string]interface{}{
@@ -100,14 +100,20 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 	if err := json.NewEncoder(&pubBuf).Encode(pubQuery); err != nil {
 		log.Printf("Error encoding query: %s", err)
 	}
-	log.Println(pubBuf.String())
+	//log.Println(pubBuf.String())
 	pubRes := database.MgetPaper(pubBuf)
 
 	pubs = pubRes["docs"].([]interface{})
+	pubCnt := 0
 	for _, pub := range pubs {
 		if pub.(map[string]interface{})["found"].(bool) == false {
 			continue
 		}
+		if pubCnt > 10 {
+			break
+		}
+		pubCnt++
+
 		authors := NilHandler(pub.(map[string]interface{})["_source"].(map[string]interface{})["authors"], "list").([]interface{})
 		for _, author := range authors {
 			authorId := NilHandler(author.(map[string]interface{})["id"].(string), "string").(string)
@@ -179,17 +185,31 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 		referenceRes := database.MgetPaper(referenceBuf)
 
 		references = NilHandler(referenceRes["docs"], "list").([]interface{})
+		referenceCnt := 0
 		for _, reference := range references {
 			if reference.(map[string]interface{})["found"].(bool) == false {
 				continue
 			}
+			if referenceCnt > 10 {
+				break
+			}
+			referenceCnt++
 
 			firstAuthors := NilHandler(reference.(map[string]interface{})["_source"].(map[string]interface{})["authors"], "list").([]interface{})
-			firstAuthor := firstAuthors[0].(map[string]interface{})
+			var firstAuthor map[string]interface{}
+			if len(firstAuthors) == 0 {
+				firstAuthor = map[string]interface{}{
+					"id":   "",
+					"name": "",
+				}
+			} else {
+				firstAuthor = firstAuthors[0].(map[string]interface{})
+			}
 			authorId := NilHandler(firstAuthor["id"].(string), "string").(string)
 			if authorId == req.ScholarId {
 				continue
 			}
+
 			if _, ok := ciNodes[authorId]; ok && authorId != "" {
 				thisNode := ciNodes[authorId]
 				thisNode.CiNum++
