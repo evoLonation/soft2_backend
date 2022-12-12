@@ -80,7 +80,9 @@ func (l *GetPaperLogic) GetPaper(in *paper.GetPaperReq) (*paper.GetPaperReply, e
 		}
 		log.Println(buf.String())
 		firstAuthorRes := database.SearchAuthor(buf)
-		firstAuthorSource := firstAuthorRes["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})
+		log.Println(firstAuthorRes)
+		firstAuthorHits := NilHandler(firstAuthorRes["hits"].(map[string]interface{})["hits"], "list").([]interface{})
+		firstAuthorSource := firstAuthorHits[0].(map[string]interface{})["_source"].(map[string]interface{})
 		firstAuthorOrg = NilHandler(firstAuthorSource["orgs"].([]interface{})[0], "string").(string)
 	}
 
