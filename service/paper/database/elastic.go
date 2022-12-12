@@ -41,15 +41,13 @@ func SearchPaper(query bytes.Buffer) map[string]interface{} {
 
 func SearchAuthor(query bytes.Buffer) map[string]interface{} {
 	var res map[string]interface{}
-	log.Println(query.String())
 	resp, err := es.Search(
-		//es.Search.WithContext(context.Background()),
+		es.Search.WithContext(context.Background()),
 		es.Search.WithIndex("authors"),
 		es.Search.WithBody(&query),
 		es.Search.WithTrackTotalHits(true),
 		es.Search.WithPretty(),
 	)
-	log.Printf(resp.String())
 	if err != nil {
 		log.Printf("Error getting response: %s\n", err)
 	}
