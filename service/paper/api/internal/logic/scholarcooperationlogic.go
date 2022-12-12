@@ -66,7 +66,7 @@ func (l *ScholarCooperationLogic) ScholarCooperation(req *types.ScholarCooperati
 		if paper.(map[string]interface{})["found"].(bool) == false {
 			continue
 		}
-		if paperCnt > 200 {
+		if paperCnt > 100 {
 			break
 		}
 		paperCnt++
