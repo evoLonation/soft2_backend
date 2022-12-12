@@ -27,15 +27,15 @@ func NewIfLikedLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IfLikedLo
 
 func (l *IfLikedLogic) IfLiked(req *types.IsLikeCommentRequest) (resp *types.IsLikeCommentResponse, err error) {
 	// todo: add your logic here and delete this line
-
+	search := "'" + req.PaperId + "'"
 	userId, _ := l.ctx.Value("UserId").(json.Number).Int64()
-	reqList, err := l.svcCtx.CommentModel.FindByPaperId(l.ctx, req.PaperId)
-	if err == model.ErrNotFound {
-		return &types.IsLikeCommentResponse{CommentLiked: nil}, nil
-	}
+	reqList, err := l.svcCtx.CommentModel.FindByPaperId(l.ctx, search)
 	var reql []types.CommentLikedReply
 	sum := len(reqList)
-	biggest := 0
+	if sum == 0 {
+		return &types.IsLikeCommentResponse{CommentLiked: nil}, nil
+	}
+	biggest := -1
 	temp := 0
 	for i := 0; i < sum; i++ {
 		if int(reqList[i].Likes) > biggest {
