@@ -115,7 +115,7 @@ func (m *defaultLiteratureRequestModel) FindByContent(ctx context.Context, conte
 	}
 }
 
-func (m *defaultLiteratureRequestModel) FindComplaints(ctx context.Context) ([]LiteratureRequest, error) {
+func (m *defaultLiteratureRequestModel) FindComplaint(ctx context.Context) ([]LiteratureRequest, error) {
 	var resp []LiteratureRequest
 	var query string
 	query = fmt.Sprintf("select %s from %s where request_status = 3", literatureRequestRows, m.table)
