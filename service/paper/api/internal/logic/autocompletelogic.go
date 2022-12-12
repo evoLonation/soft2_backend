@@ -27,16 +27,18 @@ func NewAutoCompleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Auto
 }
 
 func (l *AutoCompleteLogic) AutoComplete(req *types.AutoCompleteRequest) (resp *types.AutoCompleteResponse, err error) {
-	// todo: add your logic here and delete this line
 	var buf bytes.Buffer
+	if req.Size == 0 {
+		req.Size = 10
+	}
 	query := map[string]interface{}{
 		"suggest": map[string]interface{}{
 			"my_suggest": map[string]interface{}{
 				"text": req.Text,
 				"completion": map[string]interface{}{
-					"field":           TranslateSearchType(req.SearchType),
+					"field":           "hot_word",
 					"skip_duplicates": true,
-					"size":            10,
+					"size":            req.Size,
 				},
 			},
 		},
@@ -46,12 +48,10 @@ func (l *AutoCompleteLogic) AutoComplete(req *types.AutoCompleteRequest) (resp *
 	}
 	log.Println(buf.String())
 	var res map[string]interface{}
-	if req.SearchType == 6 {
-		res = database.SearchAuthor(buf)
-	} else {
-		res = database.SearchPaper(buf)
+	res, err = database.SearchAutoComplete(buf)
+	if err != nil {
+		return nil, err
 	}
-
 	var autoCompletes []string
 	for _, hit := range res["suggest"].(map[string]interface{})["my_suggest"].([]interface{}) {
 		for _, option := range hit.(map[string]interface{})["options"].([]interface{}) {

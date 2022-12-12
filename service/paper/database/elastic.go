@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
+	"fmt"
 	"github.com/elastic/go-elasticsearch/v7"
 	"io"
 	"log"
@@ -57,6 +59,27 @@ func SearchAuthor(query bytes.Buffer) map[string]interface{} {
 		log.Printf("Error parsing the response body: %s\n", err)
 	}
 	return res
+}
+func SearchAutoComplete(query bytes.Buffer) (map[string]interface{}, error) {
+	var res map[string]interface{}
+	log.Println(query.String())
+	resp, err := es.Search(
+		//es.Search.WithContext(context.Background()),
+		es.Search.WithIndex("auto-complete"),
+		es.Search.WithBody(&query),
+		es.Search.WithPretty(),
+	)
+	log.Printf(resp.String())
+	if err != nil {
+		return nil, err
+	}
+	if resp.IsError() {
+		return nil, errors.New(resp.Status())
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&res); err != nil {
+		return nil, errors.New(fmt.Sprintf("Error parsing the response body: %s\n", err))
+	}
+	return res, nil
 }
 
 func MgetPaper(query bytes.Buffer) map[string]interface{} {
