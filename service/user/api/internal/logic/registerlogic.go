@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"errors"
+	"fmt"
 	"github.com/golang-jwt/jwt/v4"
 	"soft2_backend/service/file/rpc/types/file"
 	"soft2_backend/service/help/rpc/helpclient"
@@ -58,11 +59,12 @@ func (l *RegisterLogic) Register(req *types.RegisterRequest) (resp *types.Regist
 		Id: newUser.UserId,
 	})
 	avatarUrl, _ := l.svcCtx.FileRpc.GetUserAvatar(l.ctx, &file.UserIdReq{Id: newUser.UserId})
-	_, _ = l.svcCtx.MessageRpc.CreateMessage(l.ctx, &message2.CreateMessageReq{
+	_, err = l.svcCtx.MessageRpc.CreateMessage(l.ctx, &message2.CreateMessageReq{
 		ReceiverId:  newUser.UserId,
 		Content:     "欢迎使用学术交流平台",
 		MessageType: 0,
 	})
+	fmt.Printf("``````\n%s\n", err)
 	return &types.RegisterResponse{
 		Code:      0,
 		UserId:    newUser.UserId,
