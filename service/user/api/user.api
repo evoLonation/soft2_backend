@@ -134,7 +134,8 @@ type (
 		PaperId string `json:"paper_id"`
 	}
 	GetCommentReply {
-		Comments []CommentReply `json:"requests"`
+		HasComment int64          `json:"hasComment"` //0 有 1 没有
+		Comments   []CommentReply `json:"comments"`
 	}
 	//是否收藏过文献
 	IfCollectPaperRequest {

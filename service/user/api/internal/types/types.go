@@ -135,7 +135,8 @@ type GetCommentRequest struct {
 }
 
 type GetCommentReply struct {
-	Comments []CommentReply `json:"requests"`
+	HasComment int64          `json:"hasComment"` //0 有 1 没有
+	Comments   []CommentReply `json:"comments"`
 }
 
 type IfCollectPaperRequest struct {
