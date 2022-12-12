@@ -72,9 +72,21 @@ func (l *MovePaperLogic) MovePaper(in *paper.MovePaperReq) (*paper.MovePaperRepl
 	log.Println(targetBuf.String())
 	targetRes := database.SearchAuthor(targetBuf)
 
-	paperSource := paperRes["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})
-	ownerSource := ownerRes["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})
-	targetSource := targetRes["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})
+	paperHits := NilHandler(paperRes["hits"].(map[string]interface{})["hits"], "list").([]interface{})
+	ownerHits := NilHandler(ownerRes["hits"].(map[string]interface{})["hits"], "list").([]interface{})
+	targetHits := NilHandler(targetRes["hits"].(map[string]interface{})["hits"], "list").([]interface{})
+	if len(paperHits) == 0 {
+		return nil, errors.New("paper not found")
+	}
+	if len(ownerHits) == 0 {
+		return nil, errors.New("owner not found")
+	}
+	if len(targetHits) == 0 {
+		return nil, errors.New("target not found")
+	}
+	paperSource := paperHits[0].(map[string]interface{})["_source"].(map[string]interface{})
+	ownerSource := ownerHits[0].(map[string]interface{})["_source"].(map[string]interface{})
+	targetSource := targetHits[0].(map[string]interface{})["_source"].(map[string]interface{})
 
 	paperAuthors := paperSource["authors"].([]interface{})
 	for i, author := range paperAuthors {
