@@ -3,8 +3,7 @@ package logic
 import (
 	"context"
 	"encoding/json"
-	"fmt"
-	"soft2_backend/service/paper/rpc/paper"
+	"soft2_backend/service/paper/rpc/streamgreeter"
 	"soft2_backend/service/user/api/internal/svc"
 	"soft2_backend/service/user/api/internal/types"
 	"soft2_backend/service/user/model"
@@ -38,8 +37,7 @@ func (l *GetSubscribeScholarLogic) GetSubscribeScholar(req *types.GetSubscribeSc
 	for i := 0; i < sum; i++ {
 		scholarIds = append(scholarIds, reqList[i].ScholarId)
 	}
-	ListScholarReply, err := l.svcCtx.PaperRpc.ListCheckScholar(l.ctx, &paper.ListCheckScholarReq{ScholarId: scholarIds})
-	fmt.Printf("````````\n%d\n", len(ListScholarReply.Scholars))
+	ListScholarReply, err := l.svcCtx.PaperRpc.ListCheckScholar(l.ctx, &streamgreeter.ListCheckScholarReq{ScholarId: scholarIds})
 	var reql []types.ScholarSubscribeReply
 	for i := 0; i < sum; i++ {
 		reql[i].ScholarId = reqList[i].ScholarId

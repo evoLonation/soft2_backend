@@ -3,9 +3,8 @@ package logic
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"github.com/zeromicro/go-zero/core/logx"
-	"soft2_backend/service/paper/rpc/paper"
+	"soft2_backend/service/paper/rpc/streamgreeter"
 	"soft2_backend/service/user/api/internal/svc"
 	"soft2_backend/service/user/api/internal/types"
 )
@@ -30,15 +29,13 @@ func (l *GetStarPaperLogic) GetStarPaper(req *types.GetStarPaperRequest) (resp *
 	reqList, err := l.svcCtx.CollectModel.FindByUserId(l.ctx, userId) //获取收藏的文献
 	sum := len(reqList)
 	if sum == 0 {
-
 		return &types.GetStarPaperResponse{PaperStar: nil}, nil
 	}
 	var paperIds []string
 	for i := 0; i < sum; i++ {
 		paperIds = append(paperIds, reqList[i].PaperId)
 	} //获取收藏的文献id
-	ListPaperReply, err := l.svcCtx.PaperRpc.ListGetPaper(l.ctx, &paper.ListGetPaperReq{PaperId: paperIds}) //获取收藏的文献详情
-	fmt.Printf("``````````\n%d\n```````", len(ListPaperReply.Papers))
+	ListPaperReply, err := l.svcCtx.PaperRpc.ListGetPaper(l.ctx, &streamgreeter.ListGetPaperReq{PaperId: paperIds}) //获取收藏的文献详情
 	var reql []types.PaperStarReply
 	for i := 0; i < sum; i++ {
 		reql[i].PaperId = reqList[i].PaperId

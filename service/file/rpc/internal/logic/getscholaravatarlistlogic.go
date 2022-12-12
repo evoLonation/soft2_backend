@@ -27,33 +27,39 @@ func NewGetScholarAvatarListLogic(ctx context.Context, svcCtx *svc.ServiceContex
 
 func (l *GetScholarAvatarListLogic) GetScholarAvatarList(in *file.ListScholarIdReq) (*file.ListUrlReply, error) {
 	var userId int64
-	ch := make(chan int)
+	ch := make(chan error, len(in.Ids))
 	mp := make(map[string]string)
-	for _, id := range in.GetIds() {
-		res, err := l.svcCtx.Apply.CheckUser(l.ctx, &apply.CheckUserReq{ScholarId: id})
+	go func() {
+		for _, id := range in.GetIds() {
+			res, err := l.svcCtx.Apply.CheckUser(l.ctx, &apply.CheckUserReq{ScholarId: id})
+			if err != nil {
+				ch <- err
+			}
+			if res.IsVerified {
+				userId = res.UserId
+				userAvatar, err := l.svcCtx.UserAvatarModel.FindOne(l.ctx, userId)
+				err = filecommon.SqlErrorCheck(err)
+				if err != nil && err != filecommon.NoRowError {
+					ch <- err
+				}
+				if err == filecommon.NoRowError {
+					mp[id] = filecommon.GetDefaultAvatarUrl()
+				} else {
+					mp[id] = filecommon.GetUrl(userAvatar.FileName)
+				}
+			} else {
+				mp[id] = filecommon.GetDefaultAvatarUrl()
+			}
+			ch <- nil
+		}
+	}()
+
+	urls := make([]*file.UrlReply, len(in.GetIds()))
+	for _, _ = range in.GetIds() {
+		err := <-ch
 		if err != nil {
 			return nil, err
 		}
-		if res.IsVerified {
-			userId = res.UserId
-			userAvatar, err := l.svcCtx.UserAvatarModel.FindOne(l.ctx, userId)
-			err = filecommon.SqlErrorCheck(err)
-			if err != nil && err != filecommon.NoRowError {
-				return nil, err
-			}
-			if err == filecommon.NoRowError {
-				mp[id] = filecommon.GetDefaultAvatarUrl()
-			} else {
-				mp[id] = filecommon.GetUrl(userAvatar.FileName)
-			}
-		} else {
-			mp[id] = filecommon.GetDefaultAvatarUrl()
-		}
-		ch <- 1
-	}
-	urls := make([]*file.UrlReply, len(in.GetIds()))
-	for _, _ = range in.GetIds() {
-		<-ch
 	}
 	for i, id := range in.GetIds() {
 		urls[i] = &file.UrlReply{

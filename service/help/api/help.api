@@ -102,6 +102,9 @@ type (
 		RequestId int64 `json:"request_id"`
 		Res       int64 `json:"res"`
 	}
+	RequestAgainReq {
+		RequestId int64 `json:"request_id"`
+	}
 )
 type Request {
 	Id             int64  `json:"request_id"`
@@ -233,4 +236,12 @@ service help-api {
 service help-api {
 	@handler complaintDeal
 	post /api/admin/complait-deal (ComplaintDealReq) returns ()
+}
+
+@server(
+	jwt: Auth
+)
+service help-api {
+	@handler requestAgain
+	post /api/help/request-again (RequestAgainReq) returns ()
 }

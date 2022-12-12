@@ -106,6 +106,10 @@ type ComplaintDealReq struct {
 	Res       int64 `json:"res"`
 }
 
+type RequestAgainReq struct {
+	RequestId int64 `json:"request_id"`
+}
+
 type Request struct {
 	Id             int64  `json:"request_id"`
 	Title          string `json:"title"`
