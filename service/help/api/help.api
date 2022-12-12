@@ -225,17 +225,11 @@ service help-api {
 	post /api/help/complaint (ComplaintReq) returns ()
 }
 
-@server(
-	jwt: Auth
-)
 service help-api {
 	@handler complaintList
 	post /api/admin/complait-list (ComplaintListReq) returns (ComplaintListReply)
 }
 
-@server(
-	jwt: Auth
-)
 service help-api {
 	@handler complaintDeal
 	post /api/admin/complait-deal (ComplaintDealReq) returns ()
