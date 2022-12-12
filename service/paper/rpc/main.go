@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"soft2_backend/service/paper/database"
 
 	"soft2_backend/service/paper/rpc/internal/config"
 	"soft2_backend/service/paper/rpc/internal/server"
@@ -33,6 +34,8 @@ func main() {
 		}
 	})
 	defer s.Stop()
+
+	database.Init()
 
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
 	s.Start()

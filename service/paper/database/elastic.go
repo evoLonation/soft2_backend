@@ -58,6 +58,7 @@ func SearchAuthor(query bytes.Buffer) map[string]interface{} {
 	}
 	return res
 }
+
 func SearchAutoComplete(query bytes.Buffer) (map[string]interface{}, error) {
 	var res map[string]interface{}
 	log.Println(query.String())
