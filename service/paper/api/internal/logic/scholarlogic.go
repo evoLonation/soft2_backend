@@ -48,6 +48,7 @@ func (l *ScholarLogic) Scholar(req *types.ScholarRequest) (resp *types.ScholarRe
 				},
 			},
 		},
+		"min_score": 3,
 	}
 	if err := json.NewEncoder(&buf).Encode(query); err != nil {
 		log.Printf("Error encoding query: %s\n", err)

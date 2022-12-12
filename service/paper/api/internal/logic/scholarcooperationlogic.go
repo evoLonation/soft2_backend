@@ -106,6 +106,9 @@ func (l *ScholarCooperationLogic) ScholarCooperation(req *types.ScholarCooperati
 	for _, v := range coopList {
 		coopJSONs = append(coopJSONs, v)
 	}
+	if len(coopJSONs) > 4 {
+		coopJSONs = coopJSONs[:4]
+	}
 	resp = &types.ScholarCooperationResponse{
 		CoopList: coopJSONs,
 	}
