@@ -38,6 +38,11 @@ func (l *FieldScholarLogic) FieldScholar(req *types.FieldScholarRequest) (resp *
 				"tags.t": req.Field,
 			},
 		},
+		"sort": map[string]interface{}{
+			"n_citation": map[string]interface{}{
+				"order": "desc",
+			},
+		},
 	}
 	if err := json.NewEncoder(&scholarBuf).Encode(scholarQuery); err != nil {
 		log.Printf("Error encoding query: %s", err)
@@ -61,7 +66,6 @@ func (l *FieldScholarLogic) FieldScholar(req *types.FieldScholarRequest) (resp *
 				thisWeight = tag.(map[string]interface{})["w"].(float64)
 			}
 		}
-		log.Printf("hit: %d, totalWeight: %f, thisWeight: %f, minLevenshtein: %f", i, totalWeight, thisWeight, minLevenshtein)
 
 		scholars = append(scholars, types.FieldScholarJSON{
 			ScholarId: NilHandler(source["id"], "string").(string),
@@ -70,13 +74,14 @@ func (l *FieldScholarLogic) FieldScholar(req *types.FieldScholarRequest) (resp *
 			NCitation: NilHandler(source["n_citation"], "int").(int),
 			Weight:    thisWeight / totalWeight,
 		})
-		log.Println(scholars)
+		log.Printf("%v", scholars[i])
 	}
 
 	scholarNum := int(scholarRes["hits"].(map[string]interface{})["total"].(map[string]interface{})["value"].(float64))
 	if scholarNum > 10000 {
 		scholarNum = 10000
 	}
+
 	resp = &types.FieldScholarResponse{
 		ScholarNum: scholarNum,
 		Scholars:   scholars,
