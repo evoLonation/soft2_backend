@@ -57,7 +57,7 @@ func (l *ListCheckScholarLogic) ListCheckScholar(in *paper.ListCheckScholarReq) 
 		scholarList = append(scholarList, &paper.CreateScholarReply{
 			ScholarName: NilHandler(source["name"], "string").(string),
 			Org:         NilHandler(source["orgs"].([]interface{})[0], "string").(string),
-			PaperNum:    NilHandler(source["n_pubs"], "int").(int64),
+			PaperNum:    int64(NilHandler(source["n_pubs"], "int").(int)),
 			Url:         avatarUrls.Urls[i].Url,
 		})
 	}

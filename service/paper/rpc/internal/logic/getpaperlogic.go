@@ -42,6 +42,7 @@ func (l *GetPaperLogic) GetPaper(in *paper.GetPaperReq) (*paper.GetPaperReply, e
 	}
 	log.Println(buf.String())
 	res := database.SearchPaper(buf)
+	log.Println(res)
 
 	source := res["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})
 	var authorsJSON []*paper.AuthorJSON

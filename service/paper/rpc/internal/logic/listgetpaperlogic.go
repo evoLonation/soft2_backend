@@ -42,6 +42,7 @@ func (l *ListGetPaperLogic) ListGetPaper(in *paper.ListGetPaperReq) (*paper.List
 	}
 	log.Println(buf.String())
 	res := database.MgetPaper(buf)
+	log.Println(res)
 
 	papers := NilHandler(res["docs"], "list").([]interface{})
 	paperList := make([]*paper.GetPaperReply, 0)
@@ -84,7 +85,7 @@ func (l *ListGetPaperLogic) ListGetPaper(in *paper.ListGetPaperReq) (*paper.List
 			PaperName: source["title"].(string),
 			Authors:   authors,
 			Org:       firstAuthorOrg,
-			Year:      NilHandler(source["year"], "int").(int64),
+			Year:      int64(NilHandler(source["year"], "int").(int)),
 		})
 	}
 
