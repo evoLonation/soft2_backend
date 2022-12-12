@@ -42,7 +42,7 @@ func (l *GetSubscribeScholarLogic) GetSubscribeScholar(req *types.GetSubscribeSc
 	fmt.Printf("222222222222\n%s", scholarIds[0])
 	ListScholarReply, err := l.svcCtx.PaperRpc.ListCheckScholar(l.ctx, &streamgreeter.ListCheckScholarReq{ScholarId: scholarIds})
 	fmt.Printf("33333333333\n%s", ListScholarReply.Scholars[0].ScholarName)
-	var reql []types.ScholarSubscribeReply
+	var reql = make([]types.ScholarSubscribeReply, sum)
 	for i := 0; i < sum; i++ {
 		fmt.Printf("4444444444444\n%d\n", i)
 		reql[i].ScholarId = reqList[i].ScholarId
