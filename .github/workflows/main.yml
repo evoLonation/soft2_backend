@@ -3,7 +3,7 @@ name: Java CI with Maven
 on:
   push:
     # 分支
-    branches: [ dev ]
+    branches: [ main ]
   pull_request:
     branches: [ main ]
 
