@@ -57,6 +57,7 @@ func (l *ScholarPapersLogic) ScholarPapers(req *types.ScholarPapersRequest) (res
 		return nil, errors.New("no such scholar")
 	}
 	pubs := hits[0].(map[string]interface{})["_source"].(map[string]interface{})["pubs"].([]interface{})
+
 	for _, pub := range pubs {
 		if req.IsFirst == 1 && int(pub.(map[string]interface{})["r"].(float64)) != 0 {
 			continue
