@@ -41,7 +41,6 @@ func SearchPaper(query bytes.Buffer) map[string]interface{} {
 
 func SearchAuthor(query bytes.Buffer) map[string]interface{} {
 	var res map[string]interface{}
-	log.Println("in search author, before search")
 	resp, err := es.Search(
 		es.Search.WithContext(context.Background()),
 		es.Search.WithIndex("authors"),
@@ -49,7 +48,6 @@ func SearchAuthor(query bytes.Buffer) map[string]interface{} {
 		es.Search.WithTrackTotalHits(true),
 		es.Search.WithPretty(),
 	)
-	log.Println("in search author, after search")
 	if err != nil {
 		log.Printf("Error getting response: %s\n", err)
 	}

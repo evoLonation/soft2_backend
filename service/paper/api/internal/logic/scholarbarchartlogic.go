@@ -45,7 +45,9 @@ func (l *ScholarBarchartLogic) ScholarBarchart(req *types.ScholarBarchartRequest
 
 	var statistic = make([]types.StatisticJSON, 0)
 	source := res["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})
+	log.Println(source)
 	statistics := NilHandler(source["statistics"], "list").([]interface{})
+	log.Println(statistics)
 	for _, s := range statistics {
 		s = append(statistic, types.StatisticJSON{
 			Year:         NilHandler(s.(map[string]interface{})["year"], "int").(int),
