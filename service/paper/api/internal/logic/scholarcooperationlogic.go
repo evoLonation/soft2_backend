@@ -61,7 +61,16 @@ func (l *ScholarCooperationLogic) ScholarCooperation(req *types.ScholarCooperati
 
 	papers := NilHandler(res["docs"], "list").([]interface{})
 	coopList := make(map[string]types.CoopJSON)
+	paperCnt := 0
 	for _, paper := range papers {
+		if paper.(map[string]interface{})["found"].(bool) == false {
+			continue
+		}
+		if paperCnt > 200 {
+			break
+		}
+		paperCnt++
+
 		authors := NilHandler(paper.(map[string]interface{})["_source"].(map[string]interface{})["authors"], "list").([]interface{})
 		for _, author := range authors {
 			authorId := NilHandler(author.(map[string]interface{})["id"], "string").(string)
