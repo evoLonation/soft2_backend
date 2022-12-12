@@ -66,6 +66,7 @@ func (l *ListGetPaperLogic) ListGetPaper(in *paper.ListGetPaperReq) (*paper.List
 
 		firstAuthorOrg := ""
 		if len(authors) > 0 {
+			var authorBuf bytes.Buffer
 			firstAuthorId := authors[0].Id
 			firstAuthorQuery := map[string]interface{}{
 				"query": map[string]interface{}{
@@ -74,11 +75,11 @@ func (l *ListGetPaperLogic) ListGetPaper(in *paper.ListGetPaperReq) (*paper.List
 					},
 				},
 			}
-			if err := json.NewEncoder(&buf).Encode(firstAuthorQuery); err != nil {
+			if err := json.NewEncoder(&authorBuf).Encode(firstAuthorQuery); err != nil {
 				log.Printf("Error encoding query: %s\n", err)
 			}
-			log.Println(buf.String())
-			firstAuthorRes := database.SearchAuthor(buf)
+			log.Println(authorBuf.String())
+			firstAuthorRes := database.SearchAuthor(authorBuf)
 			firstAuthorHits := NilHandler(firstAuthorRes["hits"].(map[string]interface{})["hits"], "list").([]interface{})
 			firstAuthorSource := firstAuthorHits[0].(map[string]interface{})["_source"].(map[string]interface{})
 			firstAuthorOrg = NilHandler(firstAuthorSource["orgs"].([]interface{})[0], "string").(string)
