@@ -4,10 +4,13 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
 	"soft2_backend/service/paper/api/internal/svc"
 	"soft2_backend/service/paper/api/internal/types"
 	"soft2_backend/service/paper/database"
+	"strconv"
+	"strings"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -26,17 +29,52 @@ func NewPaperLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PaperLogic 
 	}
 }
 
+func generateCompleteQuery(query string, years []int, themes []string) string {
+	var yearsQuery string
+	if len(years) != 0 {
+		yearsQuery += "AND year:("
+		yearStrs := make([]string, len(years))
+		for i, year := range years {
+			yearStrs[i] = strconv.Itoa(year)
+		}
+		yearsQuery += strings.Join(yearStrs, " OR ") + ")"
+	}
+	var themesQuery string
+	if len(themes) != 0 {
+		themesQuery += "AND keywords:("
+		for i, theme := range themes {
+			themes[i] = dealWord(theme, false)
+		}
+		themesQuery += strings.Join(themes, " OR ") + ")"
+	}
+	return query + yearsQuery + themesQuery
+}
+
+func dealWord(text string, isFuzzy bool) string {
+	reservedCharacters := ".?+*|{}[]()\"\\#@&<>~"
+	for _, char := range reservedCharacters {
+		charStr := fmt.Sprintf("%c", char)
+		text = strings.ReplaceAll(text, charStr, "\\"+charStr)
+	}
+	if isFuzzy {
+		arr := strings.Split(text, " ")
+		return strings.Join(arr, "~ AND")
+	} else {
+		return "\"" + text + "\""
+	}
+}
+
 func (l *PaperLogic) Paper(req *types.PaperRequest) (resp *types.PaperResponse, err error) {
-	// todo: add your logic here and delete this line
-	searchContent := req.Content
+	queryString := generateCompleteQuery(req.Query, req.Years, req.Themes)
+
 	var buf bytes.Buffer
-	var must []map[string]interface{}
-	var should []map[string]interface{}
-	var mustNot []map[string]interface{}
 	query := map[string]interface{}{
 		"from": req.Start,
 		"size": req.End - req.Start,
 		"query": map[string]interface{}{
+			"query_string": map[string]interface{}{
+				"query": queryString,
+			},
 			"bool": map[string]interface{}{
 				"filter": map[string]interface{}{
 					"range": map[string]interface{}{
@@ -48,60 +86,6 @@ func (l *PaperLogic) Paper(req *types.PaperRequest) (resp *types.PaperResponse, 
 				},
 			},
 		},
-	}
-	for _, content := range searchContent {
-		if content.Type == 0 { // 0 -> and -> must
-			if content.IsExact == 0 {
-				must = append(must, map[string]interface{}{
-					"match_phrase": map[string]interface{}{
-						TranslateSearchKey(content.SearchType): content.Content,
-					},
-				})
-			} else {
-				must = append(must, map[string]interface{}{
-					"match": map[string]interface{}{
-						TranslateSearchKey(content.SearchType): content.Content,
-					},
-				})
-			}
-		} else if content.Type == 1 { // 1 -> or -> should
-			if content.IsExact == 0 {
-				should = append(should, map[string]interface{}{
-					"match_phrase": map[string]interface{}{
-						TranslateSearchKey(content.SearchType): content.Content,
-					},
-				})
-			} else {
-				should = append(should, map[string]interface{}{
-					"match": map[string]interface{}{
-						TranslateSearchKey(content.SearchType): content.Content,
-					},
-				})
-			}
-		} else if content.Type == 2 { // 2 -> not -> must_not
-			if content.IsExact == 0 {
-				mustNot = append(mustNot, map[string]interface{}{
-					"match_phrase": map[string]interface{}{
-						TranslateSearchKey(content.SearchType): content.Content,
-					},
-				})
-			} else {
-				mustNot = append(mustNot, map[string]interface{}{
-					"match": map[string]interface{}{
-						TranslateSearchKey(content.SearchType): content.Content,
-					},
-				})
-			}
-		}
-	}
-	if len(must) != 0 {
-		query["query"].(map[string]interface{})["bool"].(map[string]interface{})["must"] = must
-	}
-	if len(should) != 0 {
-		query["query"].(map[string]interface{})["bool"].(map[string]interface{})["should"] = should
-	}
-	if len(mustNot) != 0 {
-		query["query"].(map[string]interface{})["bool"].(map[string]interface{})["must_not"] = mustNot
 	}
 	if req.SortType == 1 {
 		query["sort"] = map[string]interface{}{

@@ -59,6 +59,7 @@ func (l *RegisterLogic) Register(req *types.RegisterRequest) (resp *types.Regist
 		Id: newUser.UserId,
 	})
 	avatarUrl, _ := l.svcCtx.FileRpc.GetUserAvatar(l.ctx, &file.UserIdReq{Id: newUser.UserId})
+	fmt.Printf("!!!!!!!!!!!!!!!!!!!")
 	_, err = l.svcCtx.MessageRpc.CreateMessage(l.ctx, &message2.CreateMessageReq{
 		ReceiverId:  newUser.UserId,
 		Content:     "欢迎使用学术交流平台",
