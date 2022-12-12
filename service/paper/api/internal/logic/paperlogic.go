@@ -159,8 +159,12 @@ func (l *PaperLogic) Paper(req *types.PaperRequest) (resp *types.PaperResponse, 
 		years = append(years, int(source["year"].(float64)))
 	}
 
+	paperNum := int(res["hits"].(map[string]interface{})["total"].(map[string]interface{})["value"].(float64))
+	if paperNum > 10000 {
+		paperNum = 10000
+	}
 	resp = &types.PaperResponse{
-		PaperNum: int(res["hits"].(map[string]interface{})["total"].(map[string]interface{})["value"].(float64)),
+		PaperNum: paperNum,
 		Papers:   papers,
 		Themes:   getKeywords(themes),
 		Years:    years,

@@ -49,13 +49,14 @@ func (l *FieldPaperLogic) FieldPaper(req *types.FieldPaperRequest) (resp *types.
 	hits := paperRes["hits"].(map[string]interface{})["hits"].([]interface{})
 	for _, hit := range hits {
 		source := hit.(map[string]interface{})["_source"].(map[string]interface{})
-		var authors []types.AuthorJSON
-		for _, author := range source["authors"].([]interface{}) {
+		var authorJSONs []types.AuthorJSON
+		authors := NilHandler(source["authors"], "list").([]interface{})
+		for _, author := range authors {
 			hasId := false
 			if author.(map[string]interface{})["id"] != nil {
 				hasId = true
 			}
-			authors = append(authors, types.AuthorJSON{
+			authorJSONs = append(authorJSONs, types.AuthorJSON{
 				Name:  NilHandler(author.(map[string]interface{})["name"], "string").(string),
 				Id:    NilHandler(author.(map[string]interface{})["id"], "string").(string),
 				HasId: hasId,
@@ -64,15 +65,19 @@ func (l *FieldPaperLogic) FieldPaper(req *types.FieldPaperRequest) (resp *types.
 		papers = append(papers, types.PaperResponseJSON{
 			Title:     NilHandler(source["title"], "string").(string),
 			Abstract:  NilHandler(source["abstract"], "string").(string),
-			Authors:   authors,
+			Authors:   authorJSONs,
 			Year:      NilHandler(source["year"], "int").(int),
 			NCitation: NilHandler(source["n_citation"], "int").(int),
 			Publisher: NilHandler(source["venue"], "string").(string),
 		})
 	}
 
+	paperNum := int(paperRes["hits"].(map[string]interface{})["total"].(map[string]interface{})["value"].(float64))
+	if paperNum > 10000 {
+		paperNum = 10000
+	}
 	resp = &types.FieldPaperResponse{
-		PaperNum: int(paperRes["hits"].(map[string]interface{})["total"].(map[string]interface{})["value"].(float64)),
+		PaperNum: paperNum,
 		Papers:   papers,
 	}
 	return resp, nil

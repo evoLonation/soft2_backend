@@ -36,6 +36,10 @@ type EmailIdentifyRequest struct {
 	VerifyCode string `json:"verify_code"`
 }
 
+type EmailIdentifyResponse struct {
+	Msg string `json:"msg"`
+}
+
 type CheckScholarResponse struct {
 	Code      int64  `json:"code"`
 	ScholarId string `json:"scholar_id,optional"`

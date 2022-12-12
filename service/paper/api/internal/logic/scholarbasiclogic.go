@@ -84,7 +84,7 @@ func (l *ScholarBasicLogic) ScholarBasic(req *types.ScholarBasicRequest) (resp *
 		Position:    NilHandler(source["position"], "string").(string),
 		RefNum:      NilHandler(source["n_citation"], "int").(int),
 		AchNum:      NilHandler(source["n_pubs"], "int").(int),
-		HIndex:      NilHandler(source["h_index"], "int").(int),
+		HIndex:      int(source["h_index"].(float64)),
 		Years:       years,
 		Tags:        tags,
 	}

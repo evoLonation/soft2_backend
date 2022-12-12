@@ -18,11 +18,11 @@ func EmailIdentifyHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		}
 
 		l := logic.NewEmailIdentifyLogic(r.Context(), svcCtx)
-		err := l.EmailIdentify(&req)
+		resp, err := l.EmailIdentify(&req)
 		if err != nil {
 			httpx.Error(w, err)
 		} else {
-			httpx.Ok(w)
+			httpx.OkJson(w, resp)
 		}
 	}
 }

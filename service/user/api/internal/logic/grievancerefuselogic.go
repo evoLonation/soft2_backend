@@ -2,8 +2,10 @@ package logic
 
 import (
 	"context"
+	"fmt"
+	"soft2_backend/service/apply/rpc/types/apply"
 	message2 "soft2_backend/service/message/rpc/types/message"
-	"strconv"
+	paper2 "soft2_backend/service/paper/rpc/paper"
 
 	"soft2_backend/service/user/api/internal/svc"
 	"soft2_backend/service/user/api/internal/types"
@@ -30,14 +32,17 @@ func (l *GrievanceRefuseLogic) GrievanceRefuse(req *types.GrievanceRefuseRequest
 	//给申诉者发通知
 	grievance, err := l.svcCtx.GrievanceModel.FindOne(l.ctx, req.GrievanceId)
 	plantiffId := grievance.PlaintiffId
+	plaintiff, _ := l.svcCtx.ApplyRpc.CheckUser(l.ctx, &apply.CheckUserReq{ScholarId: plantiffId})
 	paperId := grievance.PaperId
+	paper, _ := l.svcCtx.PaperRpc.GetPaper(l.ctx, &paper2.GetPaperReq{PaperId: paperId})
+	content := fmt.Sprintf("你对文献 %s 的申诉未通过", paper.PaperName)
 	_, _ = l.svcCtx.MessageRpc.CreateMessage(l.ctx, &message2.CreateMessageReq{
-		ReceiverId:  plantiffId,
-		Content:     "",
+		ReceiverId:  plaintiff.UserId,
+		Content:     content,
 		MessageType: 6,
 		Result:      1,
 		GId:         req.GrievanceId,
-		PId:         strconv.FormatInt(paperId, 10),
+		PId:         paperId,
 	})
 	return &types.GrievanceRefuseResponse{}, nil
 }

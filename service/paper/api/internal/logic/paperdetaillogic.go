@@ -86,12 +86,21 @@ func (l *PaperDetailLogic) PaperDetail(req *types.PaperDetailRequest) (resp *typ
 	referenceRes := database.MgetPaper(referenceBuf)
 	papers := NilHandler(referenceRes["docs"], "list").([]interface{})
 	for _, paper := range papers {
+		if paper.(map[string]interface{})["found"].(bool) == false {
+			continue
+		}
 		source := paper.(map[string]interface{})["_source"].(map[string]interface{})
 		authors := NilHandler(source["authors"].([]interface{}), "list").([]interface{})
+		var author string
+		if len(authors) == 0 {
+			author = ""
+		} else {
+			author = NilHandler(authors[0].(map[string]interface{})["name"], "string").(string)
+		}
 		referencePapers = append(referencePapers, types.PaperJSON{
 			Id:     NilHandler(source["id"], "string").(string),
 			Title:  NilHandler(source["title"], "string").(string),
-			Author: NilHandler(authors[0].(map[string]interface{})["name"], "string").(string),
+			Author: author,
 			Year:   NilHandler(source["year"], "int").(int),
 		})
 	}
@@ -110,14 +119,24 @@ func (l *PaperDetailLogic) PaperDetail(req *types.PaperDetailRequest) (resp *typ
 		log.Printf("encode query error: %v", err)
 	}
 	similarRes := database.MgetPaper(similarBuf)
+	log.Println(similarRes)
 	papers = NilHandler(similarRes["docs"], "list").([]interface{})
 	for _, paper := range papers {
+		if paper.(map[string]interface{})["found"].(bool) == false {
+			continue
+		}
 		source := paper.(map[string]interface{})["_source"].(map[string]interface{})
 		authors := NilHandler(source["authors"].([]interface{}), "list").([]interface{})
+		var author string
+		if len(authors) == 0 {
+			author = ""
+		} else {
+			author = NilHandler(authors[0].(map[string]interface{})["name"], "string").(string)
+		}
 		SimilarPapers = append(SimilarPapers, types.PaperJSON{
 			Id:     NilHandler(source["id"], "string").(string),
 			Title:  NilHandler(source["title"], "string").(string),
-			Author: NilHandler(authors[0].(map[string]interface{})["name"], "string").(string),
+			Author: author,
 			Year:   NilHandler(source["year"], "int").(int),
 		})
 	}

@@ -18,15 +18,15 @@ import (
 var (
 	collectFieldNames          = builder.RawFieldNames(&Collect{})
 	collectRows                = strings.Join(collectFieldNames, ",")
-	collectRowsExpectAutoSet   = strings.Join(stringx.Remove(collectFieldNames, "`collect_id`", "`update_at`", "`updated_at`", "`update_time`", "`create_at`", "`created_at`", "`create_time`"), ",")
-	collectRowsWithPlaceHolder = strings.Join(stringx.Remove(collectFieldNames, "`collect_id`", "`update_at`", "`updated_at`", "`update_time`", "`create_at`", "`created_at`", "`create_time`"), "=?,") + "=?"
+	collectRowsExpectAutoSet   = strings.Join(stringx.Remove(collectFieldNames, "`collect_id`", "`create_at`", "`created_at`", "`create_time`", "`update_at`", "`updated_at`", "`update_time`"), ",")
+	collectRowsWithPlaceHolder = strings.Join(stringx.Remove(collectFieldNames, "`collect_id`", "`create_at`", "`created_at`", "`create_time`", "`update_at`", "`updated_at`", "`update_time`"), "=?,") + "=?"
 )
 
 type (
 	collectModel interface {
 		Insert(ctx context.Context, data *Collect) (sql.Result, error)
 		FindOne(ctx context.Context, collectId int64) (*Collect, error)
-		FindOneByTwo(ctx context.Context, userId int64, paperId int64) (*Collect, error)
+		FindOneByTwo(ctx context.Context, userId int64, paperId string) (*Collect, error)
 		FindByUserId(ctx context.Context, userId int64) ([]Collect, error)
 		Update(ctx context.Context, data *Collect) error
 		Delete(ctx context.Context, collectId int64) error
@@ -40,7 +40,7 @@ type (
 	Collect struct {
 		CollectId  int64     `db:"collect_id"`
 		UserId     int64     `db:"user_id"`
-		PaperId    int64     `db:"paper_id"`
+		PaperId    string    `db:"paper_id"`
 		CreateTime time.Time `db:"create_time"`
 	}
 )
@@ -72,11 +72,11 @@ func (m *defaultCollectModel) FindOne(ctx context.Context, collectId int64) (*Co
 	}
 }
 
-func (m *defaultCollectModel) FindOneByTwo(ctx context.Context, userId int64, paperId int64) (*Collect, error) {
+func (m *defaultCollectModel) FindOneByTwo(ctx context.Context, userId int64, paperId string) (*Collect, error) {
 	var resp Collect
 	var query string
-	query = fmt.Sprintf("select %s from %s where user_id = %d and paper_id = %d", collectRows, m.table, userId, paperId)
-	err := m.conn.QueryRowCtx(ctx, &resp, query)
+	query = fmt.Sprintf("select %s from %s where `user_id` = ? and `paper_id` = ? limit 2", collectRows, m.table)
+	err := m.conn.QueryRowCtx(ctx, &resp, query, userId, paperId)
 	switch err {
 	case nil:
 		return &resp, nil
@@ -86,7 +86,6 @@ func (m *defaultCollectModel) FindOneByTwo(ctx context.Context, userId int64, pa
 		return nil, err
 	}
 }
-
 func (m *defaultCollectModel) FindByUserId(ctx context.Context, userId int64) ([]Collect, error) {
 	var resp []Collect
 	var query string
@@ -101,7 +100,6 @@ func (m *defaultCollectModel) FindByUserId(ctx context.Context, userId int64) ([
 		return nil, err
 	}
 }
-
 func (m *defaultCollectModel) Insert(ctx context.Context, data *Collect) (sql.Result, error) {
 	query := fmt.Sprintf("insert into %s (%s) values (?, ?)", m.table, collectRowsExpectAutoSet)
 	ret, err := m.conn.ExecCtx(ctx, query, data.UserId, data.PaperId)

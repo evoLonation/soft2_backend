@@ -48,11 +48,17 @@ func (l *PaperCiteLogic) PaperCite(req *types.PaperCiteRequest) (resp *types.Pap
 		return nil, nil
 	}
 	source := res["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})
-
+	authors := NilHandler(source["authors"], "list").([]interface{})
+	var author string
+	if len(authors) == 0 {
+		author = ""
+	} else {
+		author = NilHandler(authors[0].(map[string]interface{})["name"], "string").(string)
+	}
 	// GB/T 7714
 	var gbCite string
 	gbCite += "[1] "
-	gbCite += NilHandler(source["authors"].([]interface{})[0].(map[string]interface{})["name"], "string").(string) + "."
+	gbCite += author + "."
 	gbCite += NilHandler(source["title"], "string").(string)
 	gbCite += "[" + ParseGBDocType(NilHandler(source["doc_type"], "string").(string)) + "]."
 	gbCite += NilHandler(source["venue"], "string").(string) + ", "
@@ -64,14 +70,14 @@ func (l *PaperCiteLogic) PaperCite(req *types.PaperCiteRequest) (resp *types.Pap
 
 	// MLA
 	var mlaCite string
-	author := NilHandler(source["authors"].([]interface{})[0].(map[string]interface{})["name"], "string").(string)
 	authorName := strings.Split(author, " ")
+	var mlaAuthor string
 	if len(authorName) >= 2 {
-		author = authorName[len(authorName)-1] + ", " + strings.Join(authorName[:len(authorName)-1], " ")
+		mlaAuthor = authorName[len(authorName)-1] + ", " + strings.Join(authorName[:len(authorName)-1], " ")
 	} else {
-		author = authorName[0]
+		mlaAuthor = authorName[0]
 	}
-	mlaCite += author + ". "
+	mlaCite += mlaAuthor + ". "
 	mlaCite += "\"" + NilHandler(source["title"], "string").(string) + ".\" "
 	mlaCite += NilHandler(source["venue"], "string").(string) + ", "
 	mlaCite += "vol. " + NilHandler(source["volume"], "string").(string)
@@ -83,17 +89,17 @@ func (l *PaperCiteLogic) PaperCite(req *types.PaperCiteRequest) (resp *types.Pap
 
 	// APA
 	var apaCite string
-	author = NilHandler(source["authors"].([]interface{})[0].(map[string]interface{})["name"], "string").(string)
 	authorName = strings.Split(author, " ")
+	var apaAuthor string
 	if len(authorName) >= 2 {
-		author = authorName[len(authorName)-1] + ", "
+		apaAuthor = authorName[len(authorName)-1] + ", "
 		for i := 0; i < len(authorName)-1; i++ {
-			author += strings.ToUpper(authorName[i][:1]) + ". "
+			apaAuthor += strings.ToUpper(authorName[i][:1]) + ". "
 		}
 	} else {
-		author = authorName[0] + ", "
+		apaAuthor = authorName[0] + ", "
 	}
-	apaCite += author + "(" + strconv.Itoa(NilHandler(source["year"], "int").(int)) + "). "
+	apaCite += apaAuthor + "(" + strconv.Itoa(NilHandler(source["year"], "int").(int)) + "). "
 	apaCite += NilHandler(source["title"], "string").(string) + ". "
 	apaCite += NilHandler(source["venue"], "string").(string) + ", "
 	apaCite += "(" + NilHandler(source["issue"], "string").(string) + "), "
@@ -106,7 +112,7 @@ func (l *PaperCiteLogic) PaperCite(req *types.PaperCiteRequest) (resp *types.Pap
 	bibtex += "@" + ParseBibtexDocType(NilHandler(source["doc_type"], "string").(string))
 	bibtex += "{CiteKey" + ParseBibtexDocType(NilHandler(source["doc_type"], "string").(string)) + ",\n"
 	bibtex += "  title\t= " + NilHandler(source["title"], "string").(string) + ",\n"
-	bibtex += "  author\t= " + NilHandler(source["authors"].([]interface{})[0].(map[string]interface{})["name"], "string").(string) + ",\n"
+	bibtex += "  author\t= " + author + ",\n"
 	bibtex += "  journal\t= " + NilHandler(source["venue"], "string").(string) + ",\n"
 	bibtex += "  year\t= " + strconv.Itoa(NilHandler(source["year"], "int").(int)) + ",\n"
 	bibtex += "  volume\t= " + NilHandler(source["volume"], "string").(string) + ",\n"
@@ -119,7 +125,7 @@ func (l *PaperCiteLogic) PaperCite(req *types.PaperCiteRequest) (resp *types.Pap
 	// generate caj_cd cite string
 	var cajCdCite string
 	cajCdCite += "[1]"
-	cajCdCite += NilHandler(source["authors"].([]interface{})[0].(map[string]interface{})["name"], "string").(string) + ". "
+	cajCdCite += author + ". "
 	cajCdCite += NilHandler(source["title"], "string").(string)
 	cajCdCite += "[" + ParseGBDocType(NilHandler(source["doc_type"], "string").(string)) + "]."
 	cajCdCite += NilHandler(source["venue"], "string").(string) + ","

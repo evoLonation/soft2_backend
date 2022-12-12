@@ -23,7 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type HelpClient interface {
 	RegisterUser(ctx context.Context, in *IdReq, opts ...grpc.CallOption) (*Reply, error)
-	UpDateStatus(ctx context.Context, in *UpdateReq, opts ...grpc.CallOption) (*Reply, error)
+	UpDateStatus(ctx context.Context, in *UpdateReq, opts ...grpc.CallOption) (*UpdateReply, error)
 	GetUserWealth(ctx context.Context, in *WealthReq, opts ...grpc.CallOption) (*WealthReply, error)
 }
 
@@ -44,8 +44,8 @@ func (c *helpClient) RegisterUser(ctx context.Context, in *IdReq, opts ...grpc.C
 	return out, nil
 }
 
-func (c *helpClient) UpDateStatus(ctx context.Context, in *UpdateReq, opts ...grpc.CallOption) (*Reply, error) {
-	out := new(Reply)
+func (c *helpClient) UpDateStatus(ctx context.Context, in *UpdateReq, opts ...grpc.CallOption) (*UpdateReply, error) {
+	out := new(UpdateReply)
 	err := c.cc.Invoke(ctx, "/help.help/upDateStatus", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -67,7 +67,7 @@ func (c *helpClient) GetUserWealth(ctx context.Context, in *WealthReq, opts ...g
 // for forward compatibility
 type HelpServer interface {
 	RegisterUser(context.Context, *IdReq) (*Reply, error)
-	UpDateStatus(context.Context, *UpdateReq) (*Reply, error)
+	UpDateStatus(context.Context, *UpdateReq) (*UpdateReply, error)
 	GetUserWealth(context.Context, *WealthReq) (*WealthReply, error)
 	mustEmbedUnimplementedHelpServer()
 }
@@ -79,7 +79,7 @@ type UnimplementedHelpServer struct {
 func (UnimplementedHelpServer) RegisterUser(context.Context, *IdReq) (*Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterUser not implemented")
 }
-func (UnimplementedHelpServer) UpDateStatus(context.Context, *UpdateReq) (*Reply, error) {
+func (UnimplementedHelpServer) UpDateStatus(context.Context, *UpdateReq) (*UpdateReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpDateStatus not implemented")
 }
 func (UnimplementedHelpServer) GetUserWealth(context.Context, *WealthReq) (*WealthReply, error) {

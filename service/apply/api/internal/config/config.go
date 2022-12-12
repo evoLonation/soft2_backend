@@ -7,7 +7,8 @@ import (
 
 type Config struct {
 	rest.RestConf
-	PaperRpc zrpc.RpcClientConf
+	PaperRpc   zrpc.RpcClientConf
+	MessageRpc zrpc.RpcClientConf
 
 	Mysql struct {
 		DataSource string

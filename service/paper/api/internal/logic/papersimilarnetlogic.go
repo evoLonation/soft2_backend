@@ -28,8 +28,24 @@ func NewPaperSimilarNetLogic(ctx context.Context, svcCtx *svc.ServiceContext) *P
 	}
 }
 
+var nodesSimilar []types.PaperNodeJSON
+var edgesSimilar []types.EdgeJSON
+var maxYearSimilar int
+var minYearSimilar int
+var maxCitationSimilar int
+var minCitationSimilar int
+var nodeMapSimilar map[string]int
+
 func (l *PaperSimilarNetLogic) PaperSimilarNet(req *types.PaperSimilarNetRequest) (resp *types.PaperSimilarNetResponse, err error) {
 	// todo: add your logic here and delete this line
+	nodesSimilar = make([]types.PaperNodeJSON, 0)
+	edgesSimilar = make([]types.EdgeJSON, 0)
+	maxYearSimilar = 0
+	minYearSimilar = 3000
+	maxCitationSimilar = 0
+	minCitationSimilar = 1000000
+	nodeMapSimilar = make(map[string]int, 0)
+
 	var thisPaperBuf bytes.Buffer
 	thisPaperQuery := map[string]interface{}{
 		"query": map[string]interface{}{
@@ -45,12 +61,18 @@ func (l *PaperSimilarNetLogic) PaperSimilarNet(req *types.PaperSimilarNetRequest
 
 	thisPaperSource := thisPaperRes["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})
 
+	authors := NilHandler(thisPaperSource["authors"], "list").([]interface{})
+	var author string
+	if len(authors) == 0 {
+		author = ""
+	} else {
+		author = NilHandler(authors[0].(map[string]interface{})["name"], "string").(string)
+	}
 	majorNode := types.PaperNodeJSON{
-		Id: req.Id,
-		Label: NilHandler(thisPaperSource["authors"].([]interface{})[0].(map[string]interface{})["name"], "string").(string) +
-			strconv.Itoa(NilHandler(thisPaperSource["year"], "int").(int)),
-		Size: NilHandler(thisPaperSource["n_citation"], "int").(int),
-		Type: "major",
+		Id:    req.Id,
+		Label: author + strconv.Itoa(NilHandler(thisPaperSource["year"], "int").(int)),
+		Size:  NilHandler(thisPaperSource["n_citation"], "int").(int),
+		Type:  "major",
 		Style: types.StyleJSON{
 			Fill: strconv.Itoa(NilHandler(thisPaperSource["year"], "int").(int)),
 		},
@@ -62,34 +84,44 @@ func (l *PaperSimilarNetLogic) PaperSimilarNet(req *types.PaperSimilarNetRequest
 			Year:     NilHandler(thisPaperSource["year"], "int").(int),
 		},
 	}
-	nodes = append(nodes, majorNode)
-	UpdateMaxMin(&maxYear, &minYear, majorNode.Info.Year)
-	UpdateMaxMin(&maxCitation, &minCitation, majorNode.Size)
+	nodesSimilar = append(nodesSimilar, majorNode)
+	nodeMapSimilar[req.Id] = 0
+	UpdateMaxMin(&maxYearSimilar, &minYearSimilar, majorNode.Info.Year)
+	UpdateMaxMin(&maxCitationSimilar, &minCitationSimilar, majorNode.Size)
 
 	references := NilHandler(thisPaperSource["relateds"], "list").([]interface{})
 	referenceIds := make([]string, 0)
 	for _, reference := range references {
+		_, ok := nodeMapSimilar[reference.(string)]
+		if ok {
+			continue
+		}
 		referenceIds = append(referenceIds, reference.(string))
 	}
+	log.Println(referenceIds)
+	log.Println(nodeMapSimilar)
 
 	DFSSimilar(referenceIds, majorNode, 0)
 
-	for _, node := range nodes {
-		node.Size = GetSize(node.Size, maxCitation, minCitation)
-		node.Style.Fill = GetColor(GetD(node.Info.Year, maxYear, minYear))
+	log.Printf("maxCitation: %d, minCitation: %d", maxCitationSimilar, minCitationSimilar)
+	for i, node := range nodesSimilar {
+		log.Printf("node %d: %d", i, node.Size)
+		nodesSimilar[i].Size = GetSize(node.Size, maxCitationSimilar, minCitationSimilar)
+		nodesSimilar[i].Style.Fill = GetColor(GetD(node.Info.Year, maxYearSimilar, minYearSimilar))
 	}
 
 	resp = &types.PaperSimilarNetResponse{
-		Nodes: nodes,
-		Edges: edges,
+		Nodes: nodesSimilar,
+		Edges: edgesSimilar,
 	}
 	return resp, nil
 }
 
 func DFSSimilar(referenceIds []string, fatherNode types.PaperNodeJSON, level int) {
-	if level == 4 {
+	if level == 3 {
 		return
 	}
+	log.Println(level)
 
 	var referenceBuf bytes.Buffer
 	referenceQuery := map[string]interface{}{
@@ -101,11 +133,28 @@ func DFSSimilar(referenceIds []string, fatherNode types.PaperNodeJSON, level int
 	referenceRes := database.MgetPaper(referenceBuf)
 
 	papers := NilHandler(referenceRes["docs"], "list").([]interface{})
+	var levelPaperCnt = 0
 	for _, paper := range papers {
+		if paper.(map[string]interface{})["found"].(bool) == false {
+			continue
+		}
+		if (levelPaperCnt >= 5 && level == 0) ||
+			(levelPaperCnt >= 4 && level == 1) ||
+			(levelPaperCnt >= 3 && level == 2) {
+			break
+		}
+		levelPaperCnt++
 		source := paper.(map[string]interface{})["_source"].(map[string]interface{})
+		authors := NilHandler(source["authors"], "list").([]interface{})
+		var author string
+		if len(authors) == 0 {
+			author = ""
+		} else {
+			author = NilHandler(authors[0].(map[string]interface{})["name"], "string").(string)
+		}
 		node := types.PaperNodeJSON{
 			Id:    NilHandler(source["id"], "string").(string),
-			Label: NilHandler(source["authors"].([]interface{})[0].(map[string]interface{})["name"], "string").(string) + strconv.Itoa(NilHandler(source["year"], "int").(int)),
+			Label: author + strconv.Itoa(NilHandler(source["year"], "int").(int)),
 			Size:  NilHandler(source["n_citation"], "int").(int),
 			Style: types.StyleJSON{
 				Fill: strconv.Itoa(NilHandler(source["year"], "int").(int)),
@@ -118,20 +167,27 @@ func DFSSimilar(referenceIds []string, fatherNode types.PaperNodeJSON, level int
 				Year:     NilHandler(source["year"], "int").(int),
 			},
 		}
-		nodes = append(nodes, node)
-		UpdateMaxMin(&maxYear, &minYear, node.Info.Year)
-		UpdateMaxMin(&maxCitation, &minCitation, node.Size)
+		nodesSimilar = append(nodesSimilar, node)
+		nodeMapSimilar[node.Id] = len(nodesSimilar) - 1
+		UpdateMaxMin(&maxYearSimilar, &minYearSimilar, node.Info.Year)
+		UpdateMaxMin(&maxCitationSimilar, &minCitationSimilar, node.Size)
 
-		edges = append(edges, types.EdgeJSON{
+		edgesSimilar = append(edgesSimilar, types.EdgeJSON{
 			Source: fatherNode.Id,
 			Target: node.Id,
 		})
 
 		references := NilHandler(source["relateds"], "list").([]interface{})
 		referenceIds = make([]string, 0)
+		log.Println(nodeMapSimilar)
 		for _, reference := range references {
+			_, ok := nodeMapSimilar[reference.(string)]
+			if ok {
+				continue
+			}
 			referenceIds = append(referenceIds, reference.(string))
 		}
+		log.Println(referenceIds)
 
 		DFSSimilar(referenceIds, node, level+1)
 	}

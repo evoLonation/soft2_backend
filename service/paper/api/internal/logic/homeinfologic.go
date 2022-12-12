@@ -30,13 +30,13 @@ func NewHomeInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *HomeInfo
 func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeInfoResponse, err error) {
 	// todo: add your logic here and delete this line
 	areas := [][]string{{"computer science", "machine learning", "computer vision"},
-						{"mathematics", "linear algebra", "calculus"},
-						{"physics", "quantum mechanics", "electromagnetism", "chemistry"},
-						{"biology", "genetics", "ecology", "zoology"},
-						{"economics", "microeconomics", "macroeconomics"},
-						{"psychology", "cognitive psychology", "social psychology"},
-						{"history", "ancient history", "modern history"},
-						{"environment", "climate change", "global warming"}}
+		{"mathematics", "linear algebra", "calculus"},
+		{"physics", "quantum mechanics", "electromagnetism", "chemistry"},
+		{"biology", "genetics", "ecology", "zoology"},
+		{"economics", "microeconomics", "macroeconomics"},
+		{"psychology", "cognitive psychology", "social psychology"},
+		{"history", "ancient history", "modern history"},
+		{"environment", "climate change", "global warming"}}
 	areaJsonList := make([]types.AreaJSON, 0)
 	for _, area := range areas {
 		var paperBuf bytes.Buffer
@@ -44,8 +44,7 @@ func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeIn
 			"from": 0,
 			"size": req.PaperNum,
 			"query": map[string]interface{}{
-				"bool": map[string]interface{}{
-				},
+				"bool": map[string]interface{}{},
 			},
 		}
 		var paperShould []map[string]interface{}
@@ -67,12 +66,13 @@ func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeIn
 		for _, hit := range hits {
 			var authorList []string
 			source := hit.(map[string]interface{})["_source"].(map[string]interface{})
-			for _, author := range source["authors"].([]interface{}) {
+			authors := NilHandler(source["authors"], "list").([]interface{})
+			for _, author := range authors {
 				authorList = append(authorList, NilHandler(author.(map[string]interface{})["name"], "string").(string))
 			}
 			paperList = append(paperList, types.PaperInfoJSON{
-				Title:       NilHandler(source["title"], "string").(string),
-				Authors: authorList,
+				Title:     NilHandler(source["title"], "string").(string),
+				Authors:   authorList,
 				NCitation: NilHandler(source["n_citation"], "int").(int),
 			})
 		}
@@ -82,8 +82,7 @@ func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeIn
 			"from": 0,
 			"size": req.ScholarNum,
 			"query": map[string]interface{}{
-				"bool": map[string]interface{}{
-				},
+				"bool": map[string]interface{}{},
 			},
 		}
 		var scholarShould []map[string]interface{}
@@ -106,15 +105,15 @@ func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeIn
 			source := hit.(map[string]interface{})["_source"].(map[string]interface{})
 			scholarList = append(scholarList, types.ScholarInfoJSON{
 				ScholarId: NilHandler(source["id"], "string").(string),
-				Name:       NilHandler(source["name"], "string").(string),
-				RefNum: NilHandler(source["n_citation"], "int").(int),
+				Name:      NilHandler(source["name"], "string").(string),
+				RefNum:    NilHandler(source["n_citation"], "int").(int),
 			})
 		}
 
 		areaJsonList = append(areaJsonList, types.AreaJSON{
-			Type: generateType(area),
-			Papers : paperList,
-			Scholars : scholarList,
+			Type:     generateType(area),
+			Papers:   paperList,
+			Scholars: scholarList,
 		})
 	}
 	resp = &types.HomeInfoResponse{

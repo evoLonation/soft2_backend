@@ -6,3 +6,8 @@ Etcd:
   Key: help.rpc
 Mysql:
   DataSource: root:DiamondPick@tcp(120.46.220.182:3306)/yyh?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+MessageRpc:
+  Etcd:
+    Hosts:
+      - 120.46.220.182:2379
+    Key: message.rpc

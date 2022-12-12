@@ -39,7 +39,7 @@ func GetD(d, max, min int) int {
 	if max == min {
 		return 0
 	}
-	return int((float64(d-min) / float64(max-min)) * 10)
+	return int((float64(d-min) / float64(max-min)) * 8)
 }
 
 func UpdateMaxMin(max *int, min *int, d int) {

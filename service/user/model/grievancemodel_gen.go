@@ -35,10 +35,10 @@ type (
 	}
 
 	Grievance struct {
-		GrievanceId int64 `db:"grievance_id"`
-		PlaintiffId int64 `db:"plaintiff_id"` // 申诉学者id
-		DefendantId int64 `db:"defendant_id"` // 被申诉学者id
-		PaperId     int64 `db:"paper_id"`
+		GrievanceId int64  `db:"grievance_id"`
+		PlaintiffId string `db:"plaintiff_id"` // 申诉学者id
+		DefendantId string `db:"defendant_id"` // 被申诉学者id
+		PaperId     string `db:"paper_id"`
 	}
 )
 
