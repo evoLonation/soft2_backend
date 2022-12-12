@@ -56,7 +56,7 @@ func (l *CheckScholarLogic) CheckScholar(in *paper.CheckScholarReq) (*paper.Crea
 	resp := &paper.CreateScholarReply{
 		ScholarName: NilHandler(source["name"], "string").(string),
 		Org:         NilHandler(source["orgs"].([]interface{})[0], "string").(string),
-		PaperNum:    NilHandler(source["n_pubs"], "int").(int64),
+		PaperNum:    int64(NilHandler(source["n_pubs"], "int").(int)),
 		Url:         avatarUrl.Url,
 	}
 	return resp, nil
