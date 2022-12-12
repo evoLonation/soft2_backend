@@ -39,15 +39,17 @@ func (l *DealApplyLogic) DealApply(req *types.DealApplyRequest) error {
 	}
 	if req.IsAgree {
 		_, err = l.svcCtx.MessageRpc.CreateMessage(l.ctx, &message.CreateMessageReq{
-			ReceiverId: apply.UserId,
-			Content:    "你发起的学者认证通过",
-			Result:     0,
+			ReceiverId:  apply.UserId,
+			Content:     "你发起的学者认证通过",
+			Result:      0,
+			MessageType: 5,
 		})
 	} else {
 		_, err = l.svcCtx.MessageRpc.CreateMessage(l.ctx, &message.CreateMessageReq{
-			ReceiverId: apply.UserId,
-			Content:    "你发起的学者认证未通过",
-			Result:     1,
+			ReceiverId:  apply.UserId,
+			Content:     "你发起的学者认证未通过",
+			Result:      1,
+			MessageType: 5,
 		})
 	}
 	if err != nil {

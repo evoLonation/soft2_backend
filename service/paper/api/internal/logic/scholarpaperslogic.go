@@ -34,6 +34,8 @@ func NewScholarPapersLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Sch
 
 func (l *ScholarPapersLogic) ScholarPapers(req *types.ScholarPapersRequest) (resp *types.ScholarPapersResponse, err error) {
 	// todo: add your logic here and delete this line
+	log.Printf("in scholar papers is_first: %v", req.IsFirst)
+
 	var authorBuf bytes.Buffer
 	query := map[string]interface{}{
 		"query": map[string]interface{}{
