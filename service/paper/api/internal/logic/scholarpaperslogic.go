@@ -105,6 +105,7 @@ func (l *ScholarPapersLogic) ScholarPapers(req *types.ScholarPapersRequest) (res
 			})
 		}
 		papers = append(papers, &types.PaperResponseJSON{
+			Id:        NilHandler(paper["id"], "string").(string),
 			Title:     NilHandler(paper["title"], "string").(string),
 			Abstract:  NilHandler(paper["abstract"], "string").(string),
 			Authors:   authors,
