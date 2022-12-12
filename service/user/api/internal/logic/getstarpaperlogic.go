@@ -36,7 +36,7 @@ func (l *GetStarPaperLogic) GetStarPaper(req *types.GetStarPaperRequest) (resp *
 		paperIds = append(paperIds, reqList[i].PaperId)
 	} //获取收藏的文献id
 	ListPaperReply, err := l.svcCtx.PaperRpc.ListGetPaper(l.ctx, &streamgreeter.ListGetPaperReq{PaperId: paperIds}) //获取收藏的文献详情
-	var reql []types.PaperStarReply
+	var reql = make([]types.PaperStarReply, sum)
 	for i := 0; i < sum; i++ {
 		reql[i].PaperId = reqList[i].PaperId
 		reql[i].PaperName = ListPaperReply.Papers[i].PaperName
