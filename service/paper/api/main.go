@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"soft2_backend/common"
 	"soft2_backend/service/paper/database"
 
 	"soft2_backend/service/paper/api/internal/config"
@@ -21,11 +22,13 @@ func main() {
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
 
-	server := rest.MustNewServer(c.RestConf)
+	server := rest.MustNewServer(c.RestConf, rest.WithCors())
 	defer server.Stop()
 
 	ctx := svc.NewServiceContext(c)
 	handler.RegisterHandlers(server, ctx)
+
+	common.InitHttpErrorHandler()
 
 	database.Init()
 
