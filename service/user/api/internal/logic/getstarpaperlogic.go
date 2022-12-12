@@ -3,12 +3,11 @@ package logic
 import (
 	"context"
 	"encoding/json"
+	"fmt"
+	"github.com/zeromicro/go-zero/core/logx"
 	"soft2_backend/service/paper/rpc/paper"
 	"soft2_backend/service/user/api/internal/svc"
 	"soft2_backend/service/user/api/internal/types"
-	"soft2_backend/service/user/model"
-
-	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type GetStarPaperLogic struct {
@@ -29,15 +28,21 @@ func (l *GetStarPaperLogic) GetStarPaper(req *types.GetStarPaperRequest) (resp *
 	// todo: add your logic here and delete this line
 	userId, _ := l.ctx.Value("UserId").(json.Number).Int64()
 	reqList, err := l.svcCtx.CollectModel.FindByUserId(l.ctx, userId) //获取收藏的文献
-	if err == model.ErrNotFound {
+	sum := len(reqList)
+	if sum == 0 {
+
 		return &types.GetStarPaperResponse{PaperStar: nil}, nil
 	}
-	sum := len(reqList)
 	var paperIds []string
 	for i := 0; i < sum; i++ {
 		paperIds = append(paperIds, reqList[i].PaperId)
 	} //获取收藏的文献id
 	ListPaperReply, err := l.svcCtx.PaperRpc.ListGetPaper(l.ctx, &paper.ListGetPaperReq{PaperId: paperIds}) //获取收藏的文献详情
+	fmt.Printf("``````````\n%d\n```````", len(ListPaperReply.Papers))
+
+	//fmt.Printf("", len(ListPaperReply))
+	//fmt.Printf("\n11111111111111\n")
+	//fmt.Printf("\nhhhhhhhhhhhhh\n%s\n", ListPaperReply.Papers[0].PaperName)
 	var reql []types.PaperStarReply
 	for i := 0; i < sum; i++ {
 		reql[i].PaperId = reqList[i].PaperId
