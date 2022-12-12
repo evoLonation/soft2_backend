@@ -49,6 +49,7 @@ func (l *GetCommentLogic) GetComment(req *types.GetCommentRequest) (resp *types.
 	var firstCommentReply types.CommentReply
 	firstCommentReply.CommentId = int64(temp)
 	firstCommentReply.UserName = firstComment.UserNickname
+	firstCommentReply.UserId = firstComment.UserId
 	firstCommentReply.Content = firstComment.Content
 	firstCommentReply.Date = fmt.Sprintf("%d年%d月%d日", firstComment.CreateTime.Year(), firstComment.CreateTime.Month(), firstComment.CreateTime.Day())
 	firstCommentReply.Likes = firstComment.Likes
