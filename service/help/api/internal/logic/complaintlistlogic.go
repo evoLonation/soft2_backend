@@ -25,7 +25,6 @@ func NewComplaintListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Com
 }
 
 func (l *ComplaintListLogic) ComplaintList(req *types.ComplaintListReq) (resp *types.ComplaintListReply, err error) {
-	// todo: add your logic here and delete this line
 	reqList, err := l.svcCtx.LiteratureRequestModel.FindComplaint(l.ctx)
 	sum := len(reqList)
 	var reql []types.Complaint
