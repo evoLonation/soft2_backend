@@ -44,38 +44,49 @@ func (l *ScholarBarchartLogic) ScholarBarchart(req *types.ScholarBarchartRequest
 	res := database.SearchAuthor(buf)
 
 	var statistic = make([]types.StatisticJSON, 0)
-	var achievementsMap = make(map[int]int)
-	var referencesMap = make(map[int]int)
 	source := res["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})
-	pubs := NilHandler(source["pubs"], "list").([]interface{})
-	for _, pub := range pubs {
-		var paperBuf bytes.Buffer
-		paperQuery := map[string]interface{}{
-			"query": map[string]interface{}{
-				"match": map[string]interface{}{
-					"id": pub.(map[string]interface{})["i"].(string),
-				},
-			},
-		}
-		if err := json.NewEncoder(&paperBuf).Encode(paperQuery); err != nil {
-			log.Printf("Error encoding query: %s\n", err)
-		}
-		log.Println(paperBuf.String())
-		paperRes := database.SearchPaper(paperBuf)
-
-		paperSource := paperRes["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})
-		year := NilHandler(paperSource["year"], "int").(int)
-		achievementsMap[year]++
-		referencesMap[year] += NilHandler(paperSource["n_citation"], "int").(int)
-	}
-
-	for k, v := range achievementsMap {
-		statistic = append(statistic, types.StatisticJSON{
-			Year:         k,
-			Achievements: v,
-			References:   referencesMap[k],
+	statistics := NilHandler(source["statistics"], "list").([]interface{})
+	for _, s := range statistics {
+		s = append(statistic, types.StatisticJSON{
+			Year:         NilHandler(s.(map[string]interface{})["year"], "int").(int),
+			Achievements: NilHandler(s.(map[string]interface{})["n_pubs"], "int").(int),
+			References:   NilHandler(s.(map[string]interface{})["n_citation"], "int").(int),
 		})
 	}
+
+	//var statistic = make([]types.StatisticJSON, 0)
+	//var achievementsMap = make(map[int]int)
+	//var referencesMap = make(map[int]int)
+	//source := res["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})
+	//pubs := NilHandler(source["pubs"], "list").([]interface{})
+	//for _, pub := range pubs {
+	//	var paperBuf bytes.Buffer
+	//	paperQuery := map[string]interface{}{
+	//		"query": map[string]interface{}{
+	//			"match": map[string]interface{}{
+	//				"id": pub.(map[string]interface{})["i"].(string),
+	//			},
+	//		},
+	//	}
+	//	if err := json.NewEncoder(&paperBuf).Encode(paperQuery); err != nil {
+	//		log.Printf("Error encoding query: %s\n", err)
+	//	}
+	//	log.Println(paperBuf.String())
+	//	paperRes := database.SearchPaper(paperBuf)
+	//
+	//	paperSource := paperRes["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})
+	//	year := NilHandler(paperSource["year"], "int").(int)
+	//	achievementsMap[year]++
+	//	referencesMap[year] += NilHandler(paperSource["n_citation"], "int").(int)
+	//}
+	//
+	//for k, v := range achievementsMap {
+	//	statistic = append(statistic, types.StatisticJSON{
+	//		Year:         k,
+	//		Achievements: v,
+	//		References:   referencesMap[k],
+	//	})
+	//}
 
 	resp = &types.ScholarBarchartResponse{
 		Statistic: statistic,
