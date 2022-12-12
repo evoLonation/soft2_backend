@@ -162,6 +162,19 @@ type (
 	GetSubscribeScholarResponse {
 		ScholarSubscribe []ScholarSubscribeReply `json:"all_subscribe"`
 	}
+	GetNickNameRequest {
+		UserId int64 `json:"user_id"`
+	}
+	GetNickNameResponse {
+		NickName string `json:"nickname"`
+		Email    string `json:"email"`
+	}
+	IfSubscribeRequest {
+		ScholarId string `json:"scholar_id"`
+	}
+	IfSubscribeResponse {
+		Code int64 `json:"code"` //0没有订阅 1订阅过
+	}
 )
 type CommentReply {
 	CommentId int64  `json:"comment_id"`
@@ -199,6 +212,8 @@ service User {
 	post /api/user/register(RegisterRequest) returns (RegisterResponse)
 	@handler GetComment
 	post /api/paper/get-comment (GetCommentRequest) returns (GetCommentReply)
+	@handler GetNickName
+	post /api/user/get-nickname (GetNickNameRequest) returns (GetNickNameResponse)
 }
 
 @server(
@@ -239,4 +254,6 @@ service User {
 	post /api/paper/all-star (GetStarPaperRequest) returns (GetStarPaperResponse)
 	@handler GetSubscribeScholar
 	post /api/scholar/all-subscribe (GetSubscribeScholarRequest) returns (GetSubscribeScholarResponse)
+	@handler IfSubscribe
+	post /api/scholar/if-subscribe (IfSubscribeRequest) returns (IfSubscribeResponse)
 }

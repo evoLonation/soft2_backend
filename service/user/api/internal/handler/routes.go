@@ -27,6 +27,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/api/paper/get-comment",
 				Handler: GetCommentHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/api/user/get-nickname",
+				Handler: GetNickNameHandler(serverCtx),
+			},
 		},
 	)
 
@@ -116,6 +121,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodPost,
 				Path:    "/api/scholar/all-subscribe",
 				Handler: GetSubscribeScholarHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/api/scholar/if-subscribe",
+				Handler: IfSubscribeHandler(serverCtx),
 			},
 		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),

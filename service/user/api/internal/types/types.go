@@ -168,6 +168,23 @@ type GetSubscribeScholarResponse struct {
 	ScholarSubscribe []ScholarSubscribeReply `json:"all_subscribe"`
 }
 
+type GetNickNameRequest struct {
+	UserId int64 `json:"user_id"`
+}
+
+type GetNickNameResponse struct {
+	NickName string `json:"nickname"`
+	Email    string `json:"email"`
+}
+
+type IfSubscribeRequest struct {
+	ScholarId string `json:"scholar_id"`
+}
+
+type IfSubscribeResponse struct {
+	Code int64 `json:"code"` //0没有订阅 1订阅过
+}
+
 type CommentReply struct {
 	CommentId int64  `json:"comment_id"`
 	UserName  string `json:"username"`
