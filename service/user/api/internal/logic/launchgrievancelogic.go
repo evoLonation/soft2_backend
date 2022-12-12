@@ -30,11 +30,11 @@ func NewLaunchGrievanceLogic(ctx context.Context, svcCtx *svc.ServiceContext) *L
 
 func (l *LaunchGrievanceLogic) LaunchGrievance(req *types.LaunchGrievanceRequest) (resp *types.LaunchGrievanceResponse, err error) {
 	// todo: add your logic here and delete this line
-	paperId := req.PaperId       //文献id
-	defendantId := req.ScholarId //被申诉学者id
-	tempId, _ := l.ctx.Value("UserId").(json.Number).Int64()
-	defendUser, _ := l.svcCtx.UserModel.FindOne(l.ctx, tempId)
-	username := defendUser.LoginId
+	paperId := req.PaperId                                   //文献id
+	defendantId := req.ScholarId                             //被申诉学者id
+	tempId, _ := l.ctx.Value("UserId").(json.Number).Int64() //申诉用户id
+	plaintUser, _ := l.svcCtx.UserModel.FindOne(l.ctx, tempId)
+	username := plaintUser.LoginId
 	plaintiff, _ := l.svcCtx.ApplyRpc.CheckIdentify(l.ctx, &apply.CheckIdentifyReq{
 		UserId: tempId,
 	})
@@ -59,6 +59,7 @@ func (l *LaunchGrievanceLogic) LaunchGrievance(req *types.LaunchGrievanceRequest
 		UId:         tempId,
 		GId:         gId,
 		PId:         paperId,
+		//RId:         0,
 	})
 	return &types.LaunchGrievanceResponse{}, nil
 }
