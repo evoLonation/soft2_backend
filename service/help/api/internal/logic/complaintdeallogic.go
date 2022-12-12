@@ -25,7 +25,6 @@ func NewComplaintDealLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Com
 }
 
 func (l *ComplaintDealLogic) ComplaintDeal(req *types.ComplaintDealReq) error {
-	// todo: add your logic here and delete this line
 	theReq, err := l.svcCtx.LiteratureRequestModel.FindOne(l.ctx, req.RequestId)
 	if err != nil {
 		return err
