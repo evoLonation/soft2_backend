@@ -38,30 +38,27 @@ func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeIn
 		{"psychology", "cognitive psychology", "social psychology"},
 		{"history", "ancient history", "modern history"},
 		{"environment", "climate change", "global warming"}}
+	areasNum := req.AreasNum
+	if areasNum == 0 {
+		areasNum = len(areas)
+	}
 	areaJsonList := make([]types.AreaJSON, 0)
-	for _, area := range areas {
+	for i, area := range areas {
+		if i == areasNum {
+			break
+		}
+
 		var paperBuf bytes.Buffer
+		paperQueryString, scholarQueryString := GenerateQueryString(area)
 		paperQuery := map[string]interface{}{
 			"from": 0,
 			"size": req.PaperNum,
 			"query": map[string]interface{}{
-				"bool": map[string]interface{}{},
-			},
-			"sort": map[string]interface{}{
-				"n_citation": map[string]interface{}{
-					"order": "desc",
+				"query_string": map[string]interface{}{
+					"query": paperQueryString,
 				},
 			},
 		}
-		var paperShould []map[string]interface{}
-		for _, subArea := range area {
-			paperShould = append(paperShould, map[string]interface{}{
-				"match_phrase": map[string]interface{}{
-					"keywords": subArea,
-				},
-			})
-		}
-		paperQuery["query"].(map[string]interface{})["bool"].(map[string]interface{})["should"] = paperShould
 		if err := json.NewEncoder(&paperBuf).Encode(paperQuery); err != nil {
 			log.Printf("Error encoding query: %s", err)
 		}
@@ -71,41 +68,31 @@ func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeIn
 		var paperList []types.PaperInfoJSON
 		hits := paperResult["hits"].(map[string]interface{})["hits"].([]interface{})
 		for _, hit := range hits {
-			var authorList []string
-			source := hit.(map[string]interface{})["_source"].(map[string]interface{})
-			authors := NilHandler(source["authors"], "list").([]interface{})
-			for _, author := range authors {
-				authorList = append(authorList, NilHandler(author.(map[string]interface{})["name"], "string").(string))
-			}
-			paperList = append(paperList, types.PaperInfoJSON{
-				Title:     NilHandler(source["title"], "string").(string),
-				Authors:   authorList,
-				NCitation: NilHandler(source["n_citation"], "int").(int),
-			})
+			go func() {
+				var authorList []string
+				source := hit.(map[string]interface{})["_source"].(map[string]interface{})
+				authors := NilHandler(source["authors"], "list").([]interface{})
+				for _, author := range authors {
+					authorList = append(authorList, NilHandler(author.(map[string]interface{})["name"], "string").(string))
+				}
+				paperList = append(paperList, types.PaperInfoJSON{
+					Title:     NilHandler(source["title"], "string").(string),
+					Authors:   authorList,
+					NCitation: NilHandler(source["n_citation"], "int").(int),
+				})
+			}()
 		}
 
 		var scholarBuf bytes.Buffer
 		scholarQuery := map[string]interface{}{
 			"from": 0,
-			"size": req.ScholarNum,
+			"size": req.PaperNum,
 			"query": map[string]interface{}{
-				"bool": map[string]interface{}{},
-			},
-			"sort": map[string]interface{}{
-				"n_citation": map[string]interface{}{
-					"order": "desc",
+				"query_string": map[string]interface{}{
+					"query": scholarQueryString,
 				},
 			},
 		}
-		var scholarShould []map[string]interface{}
-		for _, subArea := range area {
-			scholarShould = append(scholarShould, map[string]interface{}{
-				"match_phrase": map[string]interface{}{
-					"tags.t": subArea,
-				},
-			})
-		}
-		scholarQuery["query"].(map[string]interface{})["bool"].(map[string]interface{})["should"] = scholarShould
 		if err := json.NewEncoder(&scholarBuf).Encode(scholarQuery); err != nil {
 			log.Printf("Error encoding query: %s", err)
 		}
@@ -115,12 +102,14 @@ func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeIn
 		var scholarList []types.ScholarInfoJSON
 		hits = scholarResult["hits"].(map[string]interface{})["hits"].([]interface{})
 		for _, hit := range hits {
-			source := hit.(map[string]interface{})["_source"].(map[string]interface{})
-			scholarList = append(scholarList, types.ScholarInfoJSON{
-				ScholarId: NilHandler(source["id"], "string").(string),
-				Name:      NilHandler(source["name"], "string").(string),
-				RefNum:    NilHandler(source["n_citation"], "int").(int),
-			})
+			go func() {
+				source := hit.(map[string]interface{})["_source"].(map[string]interface{})
+				scholarList = append(scholarList, types.ScholarInfoJSON{
+					ScholarId: NilHandler(source["id"], "string").(string),
+					Name:      NilHandler(source["name"], "string").(string),
+					RefNum:    NilHandler(source["n_citation"], "int").(int),
+				})
+			}()
 		}
 
 		areaJsonList = append(areaJsonList, types.AreaJSON{
@@ -129,8 +118,24 @@ func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeIn
 			Scholars: scholarList,
 		})
 	}
+
 	resp = &types.HomeInfoResponse{
 		Areas: areaJsonList,
 	}
 	return resp, nil
+}
+
+func GenerateQueryString(areas []string) (string, string) {
+	paperQueryString := ""
+	scholarQueryString := ""
+	for i, area := range areas {
+		if i == 0 {
+			paperQueryString += "keywords:\"" + area + "\""
+			scholarQueryString += "tags.t:\"" + area + "\""
+		} else {
+			paperQueryString += " OR keywords:\"" + area + "\""
+			scholarQueryString += " OR tags.t:\"" + area + "\""
+		}
+	}
+	return paperQueryString, scholarQueryString
 }

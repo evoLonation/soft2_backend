@@ -331,6 +331,7 @@ type FieldScholarJSON struct {
 }
 
 type HomeInfoRequest struct {
+	AreasNum int `json:"areas_num, optional"`
 	PaperNum   int `json:"paper_num"`
 	ScholarNum int `json:"scholar_num"`
 	JournalNum int `json:"journal_num"`
