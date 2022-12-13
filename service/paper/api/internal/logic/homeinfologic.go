@@ -47,15 +47,15 @@ func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeIn
 			break
 		}
 
-		paperQueryString, _ := GenerateQueryString(area)
+		//paperQueryString, _ := GenerateQueryString(area)
 		log.Println(area)
 		var paperBuf bytes.Buffer
 		paperQuery := map[string]interface{}{
 			"from": 0,
 			"size": req.PaperNum,
 			"query": map[string]interface{}{
-				"query_string": map[string]interface{}{
-					"query": paperQueryString,
+				"match": map[string]interface{}{
+					"keywords": area[0],
 				},
 			},
 			//"aggs": map[string]interface{}{
@@ -80,19 +80,17 @@ func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeIn
 		hits := paperResult["hits"].(map[string]interface{})["hits"].([]interface{})
 		for i, _ := range hits {
 			hit := hits[i]
-			go func() {
-				var authorList []string
-				source := hit.(map[string]interface{})["_source"].(map[string]interface{})
-				authors := NilHandler(source["authors"], "list").([]interface{})
-				for _, author := range authors {
-					authorList = append(authorList, NilHandler(author.(map[string]interface{})["name"], "string").(string))
-				}
-				paperList = append(paperList, types.PaperInfoJSON{
-					Title:     NilHandler(source["title"], "string").(string),
-					Authors:   authorList,
-					NCitation: NilHandler(source["n_citation"], "int").(int),
-				})
-			}()
+			var authorList []string
+			source := hit.(map[string]interface{})["_source"].(map[string]interface{})
+			authors := NilHandler(source["authors"], "list").([]interface{})
+			for _, author := range authors {
+				authorList = append(authorList, NilHandler(author.(map[string]interface{})["name"], "string").(string))
+			}
+			paperList = append(paperList, types.PaperInfoJSON{
+				Title:     NilHandler(source["title"], "string").(string),
+				Authors:   authorList,
+				NCitation: NilHandler(source["n_citation"], "int").(int),
+			})
 		}
 
 		//var scholarBuf bytes.Buffer
