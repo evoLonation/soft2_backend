@@ -65,17 +65,20 @@ func dealWord(text string, isFuzzy bool) string {
 }
 
 func (l *PaperLogic) Paper(req *types.PaperRequest) (resp *types.PaperResponse, err error) {
-	queryString := generateCompleteQuery(req.Query, req.Years, req.Themes)
+	//queryString := generateCompleteQuery(req.Query, req.Years, req.Themes)
+	queryString := req.Query
 
 	var buf bytes.Buffer
 	query := map[string]interface{}{
 		"from": req.Start,
 		"size": req.End - req.Start,
 		"query": map[string]interface{}{
-			"query_string": map[string]interface{}{
-				"query": queryString,
-			},
 			"bool": map[string]interface{}{
+				"must": map[string]interface{}{
+					"query_string": map[string]interface{}{
+						"query": queryString,
+					},
+				},
 				"filter": map[string]interface{}{
 					"range": map[string]interface{}{
 						"year": map[string]interface{}{
@@ -86,6 +89,52 @@ func (l *PaperLogic) Paper(req *types.PaperRequest) (resp *types.PaperResponse, 
 				},
 			},
 		},
+	}
+	if req.StartYear != 0 || req.EndYear != 0 || len(req.Years) != 0 || len(req.Themes) != 0 || len(req.Venues) != 0 || len(req.Institutions) != 0 {
+		var filterList []map[string]interface{}
+		if req.StartYear != 0 || req.EndYear != 0 {
+			rangeMap := map[string]interface{}{}
+			if req.StartYear != 0 {
+				rangeMap["gte"] = req.StartYear
+			}
+			if req.EndYear != 0 {
+				rangeMap["lte"] = req.EndYear
+			}
+			filterList = append(filterList, map[string]interface{}{
+				"range": map[string]interface{}{
+					"year": rangeMap,
+				},
+			})
+		}
+		for _, year := range req.Years {
+			filterList = append(filterList, map[string]interface{}{
+				"term": map[string]interface{}{
+					"year": year,
+				},
+			})
+		}
+		for _, e := range req.Institutions {
+			filterList = append(filterList, map[string]interface{}{
+				"term": map[string]interface{}{
+					"authors.org.filter": e,
+				},
+			})
+		}
+		for _, e := range req.Venues {
+			filterList = append(filterList, map[string]interface{}{
+				"term": map[string]interface{}{
+					"venue.filter": e,
+				},
+			})
+		}
+		for _, e := range req.Themes {
+			filterList = append(filterList, map[string]interface{}{
+				"term": map[string]interface{}{
+					"keywords.filter": e,
+				},
+			})
+		}
+		query["query"].(map[string]interface{})["bool"].(map[string]interface{})["filter"] = filterList
 	}
 	if req.SortType == 1 {
 		query["sort"] = map[string]interface{}{
