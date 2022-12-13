@@ -9,6 +9,7 @@ CREATE TABLE `message`
     `msgTime`		timestamp			NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `result`		tinyint(3) unsigned NULL COMMENT '处理结果',
     `uId`		    bigint unsigned		NULL COMMENT '用户id',
+    `sId`		    varchar(255)		NULL COMMENT '学者id',
     `gId`		    bigint unsigned		NULL COMMENT '误认领申诉Id',
     `pId`		    varchar(255)		NULL COMMENT '文献id',
     `rId`		    bigint unsigned		NULL COMMENT '文献互助Id',
