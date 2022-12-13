@@ -69,7 +69,7 @@ func (l *LaunchGrievanceLogic) LaunchGrievance(req *types.LaunchGrievanceRequest
 		PId:         paperId,
 	})
 	if err != nil {
-		fmt.Printf("%s", err)
+		return nil, err
 	}
 	return &types.LaunchGrievanceResponse{}, nil
 }
