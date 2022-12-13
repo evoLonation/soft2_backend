@@ -31,7 +31,6 @@ func (l *GrievanceRefuseLogic) GrievanceRefuse(req *types.GrievanceRefuseRequest
 	// todo: add your logic here and delete this line
 	//给申诉者发通知
 	grievance, err := l.svcCtx.GrievanceModel.FindOne(l.ctx, req.GrievanceId)
-
 	plantiffId := grievance.PlaintiffId
 	fmt.Printf("111111111\n%s", plantiffId)
 	plaintiff, _ := l.svcCtx.ApplyRpc.CheckUser(l.ctx, &apply.CheckUserReq{ScholarId: plantiffId})
@@ -39,7 +38,13 @@ func (l *GrievanceRefuseLogic) GrievanceRefuse(req *types.GrievanceRefuseRequest
 	paperId := grievance.PaperId
 	paper, _ := l.svcCtx.PaperRpc.GetPaper(l.ctx, &paper2.GetPaperReq{PaperId: paperId})
 	fmt.Printf("333333\n%s", paper.PaperName)
-	content := fmt.Sprintf("你对文献 %s 的申诉未通过", paper.PaperName)
+	var papername string
+	if len(paper.PaperName) > 20 {
+		papername = paper.PaperName[0:20] + "..."
+	} else {
+		papername = paper.PaperName
+	}
+	content := fmt.Sprintf("你对文献 %s 的申诉未通过", papername)
 	_, err = l.svcCtx.MessageRpc.CreateMessage(l.ctx, &message2.CreateMessageReq{
 		ReceiverId:  plaintiff.UserId,
 		Content:     content,
