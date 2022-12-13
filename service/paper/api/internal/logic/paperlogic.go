@@ -9,6 +9,7 @@ import (
 	"soft2_backend/service/paper/api/internal/svc"
 	"soft2_backend/service/paper/api/internal/types"
 	"soft2_backend/service/paper/database"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -156,21 +157,22 @@ func (l *PaperLogic) Paper(req *types.PaperRequest) (resp *types.PaperResponse, 
 					"field": "year",
 				},
 			},
-			"keywords": map[string]interface{}{
-				"terms": map[string]interface{}{
-					"field": "keywords.filter",
-				},
-			},
-			"venues": map[string]interface{}{
-				"terms": map[string]interface{}{
-					"field": "venues.filter",
-				},
-			},
-			"institutions": map[string]interface{}{
-				"terms": map[string]interface{}{
-					"field": "authors.org.filter",
-				},
-			},
+			//todo
+			//"keywords": map[string]interface{}{
+			//	"terms": map[string]interface{}{
+			//		"field": "keywords.filter",
+			//	},
+			//},
+			//"venues": map[string]interface{}{
+			//	"terms": map[string]interface{}{
+			//		"field": "venues.filter",
+			//	},
+			//},
+			//"institutions": map[string]interface{}{
+			//	"terms": map[string]interface{}{
+			//		"field": "authors.org.filter",
+			//	},
+			//},
 		}
 	}
 
@@ -209,35 +211,37 @@ func (l *PaperLogic) Paper(req *types.PaperRequest) (resp *types.PaperResponse, 
 		})
 	}
 	themes := make([]types.Statistic, 0)
-	years := make([]types.StatisticNumber, 0)
+	years := make(Sorter, 0)
 	venues := make([]types.Statistic, 0)
 	institutions := make([]types.Statistic, 0)
 	if req.NeedFilterStatistics {
 		agg := res["aggregations"].(map[string]interface{})
-		for _, keyword := range agg["keywords"].(map[string]interface{})["buckets"].([]map[string]interface{}) {
-			themes = append(themes, types.Statistic{
-				Name:  keyword["key"].(string),
-				Count: keyword["doc_count"].(int),
-			})
-		}
 		for _, year := range agg["years"].(map[string]interface{})["buckets"].([]map[string]interface{}) {
 			years = append(years, types.StatisticNumber{
 				Name:  year["key"].(int),
 				Count: year["doc_count"].(int),
 			})
 		}
-		for _, venue := range agg["venues"].(map[string]interface{})["buckets"].([]map[string]interface{}) {
-			venues = append(venues, types.Statistic{
-				Name:  venue["key"].(string),
-				Count: venue["doc_count"].(int),
-			})
-		}
-		for _, inst := range agg["institutions"].(map[string]interface{})["buckets"].([]map[string]interface{}) {
-			institutions = append(institutions, types.Statistic{
-				Name:  inst["key"].(string),
-				Count: inst["doc_count"].(int),
-			})
-		}
+		sort.Sort(years)
+		//todo
+		//for _, keyword := range agg["keywords"].(map[string]interface{})["buckets"].([]map[string]interface{}) {
+		//	themes = append(themes, types.Statistic{
+		//		Name:  keyword["key"].(string),
+		//		Count: keyword["doc_count"].(int),
+		//	})
+		//}
+		//for _, venue := range agg["venues"].(map[string]interface{})["buckets"].([]map[string]interface{}) {
+		//	venues = append(venues, types.Statistic{
+		//		Name:  venue["key"].(string),
+		//		Count: venue["doc_count"].(int),
+		//	})
+		//}
+		//for _, inst := range agg["institutions"].(map[string]interface{})["buckets"].([]map[string]interface{}) {
+		//	institutions = append(institutions, types.Statistic{
+		//		Name:  inst["key"].(string),
+		//		Count: inst["doc_count"].(int),
+		//	})
+		//}
 	}
 	paperNum := int(res["hits"].(map[string]interface{})["total"].(map[string]interface{})["value"].(float64))
 	if paperNum > 10000 {
@@ -252,6 +256,18 @@ func (l *PaperLogic) Paper(req *types.PaperRequest) (resp *types.PaperResponse, 
 		Venues:       venues,
 	}
 	return resp, nil
+}
+
+type Sorter []types.StatisticNumber
+
+func (p Sorter) Len() int {
+	return len(p)
+}
+func (p Sorter) Less(i, j int) bool {
+	return p[i].Name > p[j].Name
+}
+func (p Sorter) Swap(i, j int) {
+	p[i], p[j] = p[j], p[i]
 }
 
 func TranslateSearchKey(searchKey int) string {
