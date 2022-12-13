@@ -226,7 +226,7 @@ type ScholarBarchartRequest struct {
 }
 
 type ScholarBarchartResponse struct {
-	Statistic []StatisticJSON `json:"Statistic"`
+	Statistic []StatisticJSON `json:"statistic"`
 }
 
 type StatisticJSON struct {
