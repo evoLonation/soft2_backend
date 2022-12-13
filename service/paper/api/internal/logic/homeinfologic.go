@@ -29,7 +29,7 @@ func NewHomeInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *HomeInfo
 func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeInfoResponse, err error) {
 	// todo: add your logic here and delete this line
 	areas := [][]string{
-		{"deep learning", "machine learning", "artificial intelligence"},
+		{"computer science", "deep learning", "machine learning", "artificial intelligence"},
 		{"mathematics", "linear algebra", "calculus"},
 		{"physics", "quantum mechanics", "electromagnetism", "chemistry"},
 		{"biology", "genetics", "ecology", "zoology"},
@@ -52,7 +52,7 @@ func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeIn
 		}
 		area := areas[i]
 		go func() {
-			paperQueryString, scholarQueryString := GenerateQueryString(area)
+			paperQueryString, scholarQueryString := GenerateQueryString(area[1:])
 			var paperList []types.PaperInfoJSON
 			var scholarList []types.ScholarInfoJSON
 			go func() {
