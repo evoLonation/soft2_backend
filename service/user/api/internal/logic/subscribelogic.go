@@ -47,7 +47,13 @@ func (l *SubscribeLogic) Subscribe(req *types.SubscribeRequest) (resp *types.Sub
 	user, _ = l.svcCtx.UserModel.FindOne(l.ctx, userId)
 	user.Follows = user.Follows + 1
 	_ = l.svcCtx.UserModel.Update(l.ctx, user)
-	content := fmt.Sprintf("%s 关注了你", user.Nickname)
+	var username string
+	if len(user.Nickname) > 20 {
+		username = user.Nickname[0:20] + "..."
+	} else {
+		username = user.Nickname
+	}
+	content := fmt.Sprintf("%s 关注了你", username)
 	_, _ = l.svcCtx.MessageRpc.CreateMessage(l.ctx, &message2.CreateMessageReq{
 		ReceiverId:  checkUserId,
 		Content:     content,

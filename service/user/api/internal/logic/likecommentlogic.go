@@ -46,7 +46,19 @@ func (l *LikeCommentLogic) LikeComment(req *types.LikeCommentRequest) (resp *typ
 	user, _ := l.svcCtx.UserModel.FindOne(l.ctx, userId) //点赞者
 	paperId := comment.PaperId
 	paper, _ := l.svcCtx.PaperRpc.GetPaper(l.ctx, &paper2.GetPaperReq{PaperId: paperId})
-	content := fmt.Sprintf("%s 赞了你在 %s 的评论", user.Nickname, paper.PaperName)
+	var username string
+	var papername string
+	if len(user.Nickname) > 20 {
+		username = user.Nickname[0:20] + "..."
+	} else {
+		username = user.Nickname
+	}
+	if len(paper.PaperName) > 20 {
+		papername = paper.PaperName[0:20] + "..."
+	} else {
+		papername = paper.PaperName
+	}
+	content := fmt.Sprintf("%s 赞了你在 %s 的评论", username, papername)
 	_, _ = l.svcCtx.MessageRpc.CreateMessage(l.ctx, &message2.CreateMessageReq{
 		ReceiverId:  comment.UserId,
 		Content:     content,

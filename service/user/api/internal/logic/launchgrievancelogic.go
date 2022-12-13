@@ -34,15 +34,13 @@ func (l *LaunchGrievanceLogic) LaunchGrievance(req *types.LaunchGrievanceRequest
 	defendantId := req.ScholarId                             //被申诉学者id
 	tempId, _ := l.ctx.Value("UserId").(json.Number).Int64() //申诉用户id
 	plaintUser, _ := l.svcCtx.UserModel.FindOne(l.ctx, tempId)
-	username := plaintUser.LoginId
+	//username := plaintUser.LoginId
 	plaintiff, _ := l.svcCtx.ApplyRpc.CheckIdentify(l.ctx, &apply.CheckIdentifyReq{
 		UserId: tempId,
 	})
 
 	plaintiffId := plaintiff.ScholarId //申诉学者id
-	fmt.Printf("1111111111111\n")
 	defendantUser, _ := l.svcCtx.ApplyRpc.CheckUser(l.ctx, &apply.CheckUserReq{ScholarId: defendantId})
-	fmt.Printf("2222222222222\n")
 	defendantUserId := defendantUser.UserId //被申诉用户的id
 	newGrievance := model.Grievance{
 		PlaintiffId: plaintiffId,
@@ -52,10 +50,20 @@ func (l *LaunchGrievanceLogic) LaunchGrievance(req *types.LaunchGrievanceRequest
 	tempGrievance, err := l.svcCtx.GrievanceModel.Insert(l.ctx, &newGrievance)
 	gId, _ := tempGrievance.LastInsertId()
 	paper, _ := l.svcCtx.PaperRpc.GetPaper(l.ctx, &paper2.GetPaperReq{PaperId: paperId})
-	paperName := paper.PaperName
-	content := fmt.Sprintf("%s 对你的文献 %s 发起申诉", username, paperName)
+	var userName string
+	var papername string
+	if len(plaintUser.Nickname) > 20 {
+		userName = plaintUser.Nickname[0:20] + "..."
+	} else {
+		userName = plaintUser.Nickname
+	}
+	if len(paper.PaperName) > 20 {
+		papername = paper.PaperName[0:20] + "..."
+	} else {
+		papername = paper.PaperName
+	}
+	content := fmt.Sprintf("%s 对你的文献 %s 发起申诉", userName, papername)
 	//给被申诉者发通知
-	fmt.Printf("333333333333\n")
 	_, _ = l.svcCtx.MessageRpc.CreateMessage(l.ctx, &message2.CreateMessageReq{
 		ReceiverId:  defendantUserId,
 		Content:     content,
@@ -63,8 +71,6 @@ func (l *LaunchGrievanceLogic) LaunchGrievance(req *types.LaunchGrievanceRequest
 		UId:         tempId,
 		GId:         gId,
 		PId:         paperId,
-		//RId:         0,
 	})
-	fmt.Printf("4444444444444\n")
 	return &types.LaunchGrievanceResponse{}, nil
 }
