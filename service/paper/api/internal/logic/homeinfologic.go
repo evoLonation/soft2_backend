@@ -29,13 +29,13 @@ func NewHomeInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *HomeInfo
 func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeInfoResponse, err error) {
 	// todo: add your logic here and delete this line
 	areas := [][]string{
-		{"computer science", "machine learning", "artificial intelligence"},
-		{"mathematics", "geometry", "calculus"},
-		{"physics", "electricity", "optics"},
-		{"biology", "genetics", "ecology"},
-		{"economics", "microeconomics", "macroeconomics"},
-		{"psychology", "cognitive", "social"},
-		{"environment", "environment", "global warming"}}
+		{"computer science", "machine learning", "artificial intelligence", "deep learning"},
+		{"mathematics", "geometry", "calculus", "algebra", "number theory"},
+		{"physics", "electricity", "optics", "mechanics", "nuclear physics"},
+		{"biology", "genetics", "ecology", "biochemistry", "microbiology"},
+		{"economics", "microeconomics", "macroeconomics", "finance"},
+		{"psychology", "cognitive", "social", "developmental", "personality"},
+		{"environment", "global warming", "pollution", "climate change"}}
 	areasNum := req.AreasNum
 	if areasNum == 0 {
 		areasNum = len(areas)
@@ -51,7 +51,7 @@ func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeIn
 		}
 		area := areas[i]
 		go func() {
-			paperQueryString, scholarQueryString := GenerateQueryString(area[1:])
+			paperQueryString, scholarQueryString := GenerateQueryString(area)
 			var paperList []types.PaperInfoJSON
 			var scholarList []types.ScholarInfoJSON
 			go func() {
@@ -156,13 +156,38 @@ func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeIn
 	for i := 0; i < areasNum; i++ {
 		areaJsonList = append(areaJsonList, <-areaChan)
 	}
+	sortedAreaJsonList := make([]types.AreaJSON, areasNum)
+	for _, area := range areaJsonList {
+		switch area.Type[0] {
+		case "computer science":
+			sortedAreaJsonList[0] = area
+		case "mathematics":
+			sortedAreaJsonList[1] = area
+		case "physics":
+			sortedAreaJsonList[2] = area
+		case "biology":
+			sortedAreaJsonList[3] = area
+		case "economics":
+			sortedAreaJsonList[4] = area
+		case "psychology":
+			sortedAreaJsonList[5] = area
+		case "environment":
+			sortedAreaJsonList[6] = area
+		}
+	}
 	resp = &types.HomeInfoResponse{
-		Areas: areaJsonList,
+		Areas: sortedAreaJsonList,
 	}
 	return resp, nil
 }
 
 func GenerateQueryString(areas []string) (string, string) {
+	if areas[0] == "environment" {
+		areas = areas[0:2]
+	} else {
+		areas = areas[1:3]
+	}
+
 	paperQueryString := ""
 	scholarQueryString := ""
 	for i, area := range areas {
