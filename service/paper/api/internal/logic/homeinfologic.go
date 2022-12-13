@@ -29,7 +29,8 @@ func NewHomeInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *HomeInfo
 
 func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeInfoResponse, err error) {
 	// todo: add your logic here and delete this line
-	areas := [][]string{{"computer science", "machine learning", "computer vision"},
+	areas := [][]string{
+		{"computer science", "machine learning", "computer vision"},
 		{"mathematics", "linear algebra", "calculus"},
 		{"physics", "quantum mechanics", "electromagnetism", "chemistry"},
 		{"biology", "genetics", "ecology", "zoology"},
@@ -46,6 +47,11 @@ func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeIn
 			"query": map[string]interface{}{
 				"bool": map[string]interface{}{},
 			},
+			"sort": map[string]interface{}{
+				"n_citation": map[string]interface{}{
+					"order": "desc",
+				},
+			},
 		}
 		var paperShould []map[string]interface{}
 		for _, subArea := range area {
@@ -59,6 +65,7 @@ func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeIn
 		if err := json.NewEncoder(&paperBuf).Encode(paperQuery); err != nil {
 			log.Printf("Error encoding query: %s", err)
 		}
+		log.Println(paperBuf.String())
 		paperResult := database.SearchPaper(paperBuf)
 
 		var paperList []types.PaperInfoJSON
@@ -84,6 +91,11 @@ func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeIn
 			"query": map[string]interface{}{
 				"bool": map[string]interface{}{},
 			},
+			"sort": map[string]interface{}{
+				"n_citation": map[string]interface{}{
+					"order": "desc",
+				},
+			},
 		}
 		var scholarShould []map[string]interface{}
 		for _, subArea := range area {
@@ -97,6 +109,7 @@ func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeIn
 		if err := json.NewEncoder(&scholarBuf).Encode(scholarQuery); err != nil {
 			log.Printf("Error encoding query: %s", err)
 		}
+		log.Println(scholarBuf.String())
 		scholarResult := database.SearchAuthor(scholarBuf)
 
 		var scholarList []types.ScholarInfoJSON
