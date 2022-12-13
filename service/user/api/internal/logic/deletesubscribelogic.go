@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"encoding/json"
 	"soft2_backend/service/user/model"
 
 	"soft2_backend/service/user/api/internal/svc"
@@ -26,7 +27,7 @@ func NewDeleteSubscribeLogic(ctx context.Context, svcCtx *svc.ServiceContext) *D
 
 func (l *DeleteSubscribeLogic) DeleteSubscribe(req *types.DeleteSubscribeRequest) (resp *types.DeleteSubscribeResponse, err error) {
 	// todo: add your logic here and delete this line
-	userId := req.UserId
+	userId, _ := l.ctx.Value("UserId").(json.Number).Int64()
 	scholarId := req.ScholarId
 	temp, err := l.svcCtx.SubscribeModel.FindSubscribeId(l.ctx, userId, scholarId)
 	if err != nil {

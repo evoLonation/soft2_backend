@@ -4,13 +4,11 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"github.com/zeromicro/go-zero/core/logx"
 	"log"
-	"soft2_backend/service/paper/database"
-
 	"soft2_backend/service/paper/api/internal/svc"
 	"soft2_backend/service/paper/api/internal/types"
-
-	"github.com/zeromicro/go-zero/core/logx"
+	"soft2_backend/service/paper/database"
 )
 
 type ScholarCooperationLogic struct {
@@ -61,7 +59,16 @@ func (l *ScholarCooperationLogic) ScholarCooperation(req *types.ScholarCooperati
 
 	papers := NilHandler(res["docs"], "list").([]interface{})
 	coopList := make(map[string]types.CoopJSON)
+	paperCnt := 0
 	for _, paper := range papers {
+		if paper.(map[string]interface{})["found"].(bool) == false {
+			continue
+		}
+		if paperCnt > 80 {
+			break
+		}
+		paperCnt++
+
 		authors := NilHandler(paper.(map[string]interface{})["_source"].(map[string]interface{})["authors"], "list").([]interface{})
 		for _, author := range authors {
 			authorId := NilHandler(author.(map[string]interface{})["id"], "string").(string)
@@ -90,10 +97,14 @@ func (l *ScholarCooperationLogic) ScholarCooperation(req *types.ScholarCooperati
 					log.Printf("Error encoding query: %s\n", err)
 				}
 				log.Println(coopBuf.String())
-				res = database.SearchAuthor(coopBuf)
-				source := res["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})
+				coopRes := database.SearchAuthor(coopBuf)
+				coopHits := NilHandler(coopRes["hits"].(map[string]interface{})["hits"], "list").([]interface{})
+				if len(coopHits) == 0 {
+					continue
+				}
+				coopSource := coopHits[0].(map[string]interface{})["_source"].(map[string]interface{})
 				var institutions []string
-				for _, institution := range source["orgs"].([]interface{}) {
+				for _, institution := range coopSource["orgs"].([]interface{}) {
 					institutions = append(institutions, institution.(string))
 				}
 				coopJSON.Institution = institutions
@@ -106,9 +117,11 @@ func (l *ScholarCooperationLogic) ScholarCooperation(req *types.ScholarCooperati
 	for _, v := range coopList {
 		coopJSONs = append(coopJSONs, v)
 	}
+
 	if len(coopJSONs) > 4 {
 		coopJSONs = coopJSONs[:4]
 	}
+
 	resp = &types.ScholarCooperationResponse{
 		CoopList: coopJSONs,
 	}

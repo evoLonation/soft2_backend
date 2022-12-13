@@ -101,7 +101,6 @@ type (
 	//订阅
 	//取消订阅
 	DeleteSubscribeRequest {
-		UserId    int64  `json:"user_id"`
 		ScholarId string `json:"scholar_id"`
 	}
 	DeleteSubscribeResponse {
