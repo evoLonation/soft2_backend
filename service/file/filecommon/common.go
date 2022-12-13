@@ -15,6 +15,7 @@ const (
 	FilePath          = "./localfile/"
 	GetFileBaseUrl    = "http://120.46.220.182:8894/api/get-file/"
 	DefaultAvatarName = "_defaultavatar.webp"
+	DefaultLogoName   = "logo.jpg"
 )
 const (
 	DefaultMultipartMemory = 32 << 20 // 32 MB
@@ -111,17 +112,29 @@ func NewUUid() string {
 //}
 
 func InitFile() {
-	src, err := os.Open("etc/" + DefaultAvatarName)
+	avatarSrc, err := os.Open("etc/" + DefaultAvatarName)
+	if err != nil {
+		panic(err)
+	}
+	logoSrc, err := os.Open("etc/" + DefaultLogoName)
 	if err != nil {
 		panic(err)
 	}
 	os.MkdirAll(FilePath, 0x777)
 	//os.MkdirAll(FilePath + "temp/", 0x777)
-	dst, err := os.Create(FilePath + DefaultAvatarName)
+	avatarDst, err := os.Create(FilePath + DefaultAvatarName)
 	if err != nil {
 		panic(err)
 	}
-	_, err = io.Copy(dst, src)
+	logoDst, err := os.Create(FilePath + DefaultLogoName)
+	if err != nil {
+		panic(err)
+	}
+	_, err = io.Copy(avatarDst, avatarSrc)
+	if err != nil {
+		panic(err)
+	}
+	_, err = io.Copy(logoDst, logoSrc)
 	if err != nil {
 		panic(err)
 	}
