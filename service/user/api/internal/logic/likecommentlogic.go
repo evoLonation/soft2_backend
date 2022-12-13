@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	message2 "soft2_backend/service/message/rpc/types/message"
-	paper2 "soft2_backend/service/paper/rpc/paper"
 	"soft2_backend/service/user/model"
 
 	"soft2_backend/service/user/api/internal/svc"
@@ -45,20 +44,15 @@ func (l *LikeCommentLogic) LikeComment(req *types.LikeCommentRequest) (resp *typ
 	//发通知
 	user, _ := l.svcCtx.UserModel.FindOne(l.ctx, userId) //点赞者
 	paperId := comment.PaperId
-	paper, _ := l.svcCtx.PaperRpc.GetPaper(l.ctx, &paper2.GetPaperReq{PaperId: paperId})
+	//paper, _ := l.svcCtx.PaperRpc.GetPaper(l.ctx, &paper2.GetPaperReq{PaperId: paperId})
 	var username string
-	var papername string
+
 	if len(user.Nickname) > 20 {
 		username = user.Nickname[0:20] + "..."
 	} else {
 		username = user.Nickname
 	}
-	if len(paper.PaperName) > 20 {
-		papername = paper.PaperName[0:20] + "..."
-	} else {
-		papername = paper.PaperName
-	}
-	content := fmt.Sprintf("%s 赞了你在 %s 的评论", username, papername)
+	content := fmt.Sprintf("%s 赞了你在 %s 的评论", username, paperId)
 	_, _ = l.svcCtx.MessageRpc.CreateMessage(l.ctx, &message2.CreateMessageReq{
 		ReceiverId:  comment.UserId,
 		Content:     content,

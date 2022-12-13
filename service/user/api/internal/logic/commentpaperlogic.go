@@ -46,16 +46,10 @@ func (l *CommentPaperLogic) CommentPaper(req *types.CommentPaperRequest) (resp *
 	getPaper, _ := l.svcCtx.PaperRpc.GetPaper(l.ctx, &paper.GetPaperReq{PaperId: req.PaperId})
 	sum := len(getPaper.Authors)
 	var username string
-	var papername string
 	if len(user.Nickname) > 20 {
 		username = user.Nickname[0:20] + "..."
 	} else {
 		username = user.Nickname
-	}
-	if len(getPaper.PaperName) > 20 {
-		papername = getPaper.PaperName[0:20] + "..."
-	} else {
-		papername = getPaper.PaperName
 	}
 	for i := 0; i < sum; i++ {
 		if getPaper.Authors[i].HasId == false {
@@ -65,7 +59,7 @@ func (l *CommentPaperLogic) CommentPaper(req *types.CommentPaperRequest) (resp *
 		if tempUser.IsVerified == false {
 			continue
 		}
-		content := fmt.Sprintf("%s评论了你的文献 %s", username, papername)
+		content := fmt.Sprintf("%s评论了你的文献", username)
 		_, _ = l.svcCtx.MessageRpc.CreateMessage(l.ctx, &message2.CreateMessageReq{
 			ReceiverId:  tempUser.UserId,
 			Content:     content,
