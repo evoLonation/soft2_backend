@@ -89,6 +89,7 @@ func (l *ScholarClaimLogic) ScholarClaim(req *types.ScholarClaimRequest) (resp *
 	}
 
 	if !checkScholar.IsVerified {
+		oldScholarId := authors[minIter].(map[string]interface{})["id"].(string)
 		authors[minIter].(map[string]interface{})["id"] = req.ScholarId
 		authors[minIter].(map[string]interface{})["name"] = scholarSource["name"]
 
@@ -107,7 +108,7 @@ func (l *ScholarClaimLogic) ScholarClaim(req *types.ScholarClaimRequest) (resp *
 			return nil, errors.New("update paper error")
 		}
 
-		var updateScholarBuf bytes.Buffer
+		var updateNewScholarBuf bytes.Buffer
 		scholarPapers := scholarSource["pubs"].([]interface{})
 		scholarPapers = append(scholarPapers, map[string]interface{}{
 			"i": req.PaperId,
@@ -115,16 +116,58 @@ func (l *ScholarClaimLogic) ScholarClaim(req *types.ScholarClaimRequest) (resp *
 		})
 		updateScholar := map[string]interface{}{
 			"doc": map[string]interface{}{
-				"pubs": scholarPapers,
+				"pubs":   scholarPapers,
+				"n_pubs": len(scholarPapers),
 			},
 		}
-		if err := json.NewEncoder(&updateScholarBuf).Encode(updateScholar); err != nil {
+		if err := json.NewEncoder(&updateNewScholarBuf).Encode(updateScholar); err != nil {
 			log.Printf("Error encoding query: %s\n", err)
 		}
-		log.Println(updateScholarBuf.String())
-		updateScholarRes := database.UpdateAuthor(updateScholarBuf, req.ScholarId)
+		log.Println(updateNewScholarBuf.String())
+		updateScholarRes := database.UpdateAuthor(updateNewScholarBuf, req.ScholarId)
 		if int(updateScholarRes["_shards"].(map[string]interface{})["successful"].(float64)) != 1 {
 			return nil, errors.New("update scholar error")
+		}
+
+		var findOldScholarBuf bytes.Buffer
+		findOldScholarQuery := map[string]interface{}{
+			"query": map[string]interface{}{
+				"match": map[string]interface{}{
+					"id": oldScholarId,
+				},
+			},
+		}
+		if err := json.NewEncoder(&findOldScholarBuf).Encode(findOldScholarQuery); err != nil {
+			log.Printf("Error encoding query: %s", err)
+		}
+		log.Println(findOldScholarBuf.String())
+		findOldScholarRes := database.SearchAuthor(findOldScholarBuf)
+
+		oldScholarHits := NilHandler(findOldScholarRes["hits"].(map[string]interface{})["hits"], "list").([]interface{})
+		if len(oldScholarHits) != 0 {
+			oldScholarSource := oldScholarHits[0].(map[string]interface{})["_source"].(map[string]interface{})
+			oldScholarPapers := NilHandler(oldScholarSource["pubs"], "list").([]interface{})
+			for i, paper := range oldScholarPapers {
+				if paper.(map[string]interface{})["i"].(string) == req.PaperId {
+					oldScholarPapers = append(oldScholarPapers[:i], oldScholarPapers[i+1:]...)
+					break
+				}
+			}
+			var updateOldScholarBuf bytes.Buffer
+			updateOldScholar := map[string]interface{}{
+				"doc": map[string]interface{}{
+					"pubs":   oldScholarPapers,
+					"n_pubs": len(oldScholarPapers),
+				},
+			}
+			if err := json.NewEncoder(&updateOldScholarBuf).Encode(updateOldScholar); err != nil {
+				log.Printf("Error encoding query: %s\n", err)
+			}
+			log.Println(updateOldScholarBuf.String())
+			updateOldScholarRes := database.UpdateAuthor(updateNewScholarBuf, req.ScholarId)
+			if int(updateOldScholarRes["_shards"].(map[string]interface{})["successful"].(float64)) != 1 {
+				return nil, errors.New("update scholar error")
+			}
 		}
 
 		return &types.ScholarClaimResponse{
