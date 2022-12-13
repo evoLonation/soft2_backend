@@ -49,7 +49,7 @@ func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeIn
 		}
 
 		var paperBuf bytes.Buffer
-		paperQueryString, scholarQueryString := GenerateQueryString(area)
+		paperQueryString, _ := GenerateQueryString(area)
 		paperQuery := map[string]interface{}{
 			"from": 0,
 			"size": req.PaperNum,
@@ -58,6 +58,16 @@ func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeIn
 					"query": paperQueryString,
 				},
 			},
+			//"aggs": map[string]interface{}{
+			//	"journals": map[string]interface{}{
+			//		"terms": map[string]interface{}{
+			//			"field": "venue.filter",
+			//			"order": map[string]interface{}{
+			//				"_count": "desc",
+			//			},
+			//		},
+			//	},
+			//},
 		}
 		if err := json.NewEncoder(&paperBuf).Encode(paperQuery); err != nil {
 			log.Printf("Error encoding query: %s", err)
@@ -83,39 +93,39 @@ func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeIn
 			}()
 		}
 
-		var scholarBuf bytes.Buffer
-		scholarQuery := map[string]interface{}{
-			"from": 0,
-			"size": req.PaperNum,
-			"query": map[string]interface{}{
-				"query_string": map[string]interface{}{
-					"query": scholarQueryString,
-				},
-			},
-		}
-		if err := json.NewEncoder(&scholarBuf).Encode(scholarQuery); err != nil {
-			log.Printf("Error encoding query: %s", err)
-		}
-		log.Println(scholarBuf.String())
-		scholarResult := database.SearchAuthor(scholarBuf)
-
-		var scholarList []types.ScholarInfoJSON
-		hits = scholarResult["hits"].(map[string]interface{})["hits"].([]interface{})
-		for _, hit := range hits {
-			go func() {
-				source := hit.(map[string]interface{})["_source"].(map[string]interface{})
-				scholarList = append(scholarList, types.ScholarInfoJSON{
-					ScholarId: NilHandler(source["id"], "string").(string),
-					Name:      NilHandler(source["name"], "string").(string),
-					RefNum:    NilHandler(source["n_citation"], "int").(int),
-				})
-			}()
-		}
+		//var scholarBuf bytes.Buffer
+		//scholarQuery := map[string]interface{}{
+		//	"from": 0,
+		//	"size": req.PaperNum,
+		//	"query": map[string]interface{}{
+		//		"query_string": map[string]interface{}{
+		//			"query": scholarQueryString,
+		//		},
+		//	},
+		//}
+		//if err := json.NewEncoder(&scholarBuf).Encode(scholarQuery); err != nil {
+		//	log.Printf("Error encoding query: %s", err)
+		//}
+		//log.Println(scholarBuf.String())
+		//scholarResult := database.SearchAuthor(scholarBuf)
+		//
+		//var scholarList []types.ScholarInfoJSON
+		//hits = scholarResult["hits"].(map[string]interface{})["hits"].([]interface{})
+		//for _, hit := range hits {
+		//	go func() {
+		//		source := hit.(map[string]interface{})["_source"].(map[string]interface{})
+		//		scholarList = append(scholarList, types.ScholarInfoJSON{
+		//			ScholarId: NilHandler(source["id"], "string").(string),
+		//			Name:      NilHandler(source["name"], "string").(string),
+		//			RefNum:    NilHandler(source["n_citation"], "int").(int),
+		//		})
+		//	}()
+		//}
 
 		areaJsonList = append(areaJsonList, types.AreaJSON{
-			Type:     area,
-			Papers:   paperList,
-			Scholars: scholarList,
+			Type:   area,
+			Papers: paperList,
+			//Scholars: scholarList,
 		})
 	}
 
