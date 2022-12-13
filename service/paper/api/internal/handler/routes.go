@@ -102,6 +102,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/api/home/info",
 				Handler: HomeInfoHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/api/data/info",
+				Handler: DataInfoHandler(serverCtx),
+			},
 		},
 	)
 }

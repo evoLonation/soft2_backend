@@ -103,7 +103,7 @@ func (l *ScholarClaimLogic) ScholarClaim(req *types.ScholarClaimRequest) (resp *
 		}
 		log.Println(updatePaperBuf.String())
 		updatePaperRes := database.UpdatePaper(updatePaperBuf, req.PaperId)
-		if updatePaperRes["_shards"].(map[string]interface{})["successful"] != 1 {
+		if int(updatePaperRes["_shards"].(map[string]interface{})["successful"].(float64)) != 1 {
 			return nil, errors.New("update paper error")
 		}
 
@@ -123,7 +123,7 @@ func (l *ScholarClaimLogic) ScholarClaim(req *types.ScholarClaimRequest) (resp *
 		}
 		log.Println(updateScholarBuf.String())
 		updateScholarRes := database.UpdateAuthor(updateScholarBuf, req.ScholarId)
-		if updateScholarRes["_shards"].(map[string]interface{})["successful"] != 1 {
+		if int(updateScholarRes["_shards"].(map[string]interface{})["successful"].(float64)) != 1 {
 			return nil, errors.New("update scholar error")
 		}
 

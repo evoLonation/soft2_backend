@@ -360,3 +360,13 @@ type ScholarInfoJSON struct {
 	Name      string `json:"name"`
 	RefNum    int    `json:"ref_num"`
 }
+
+type DataInfoRequest struct {
+}
+
+type DataInfoResponse struct {
+	PaperNum   int `json:"paper_num"`
+	ScholarNum int `json:"scholar_num"`
+	JournalNum int `json:"journal_num"`
+	OrgNum     int `json:"org_num"`
+}

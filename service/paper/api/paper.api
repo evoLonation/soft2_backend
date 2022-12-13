@@ -52,6 +52,9 @@ service paper-api {
 	
 	@handler HomeInfo
 	post /api/home/info (HomeInfoRequest) returns (HomeInfoResponse);
+	
+	@handler DataInfo
+	post /api/data/info (DataInfoRequest) returns (DataInfoResponse);
 }
 
 type PaperRequest {
@@ -132,6 +135,7 @@ type PaperDetailResponse {
 	Authors    []AuthorJSON `json:"authors"`
 	Doi        string       `json:"doi"`
 	ISBN       string       `json:"isbn"`
+	ISSN       string       `json:"issn"`
 	Org        string       `json:"org"`
 	Keywords   []string     `json:"keywords"`
 	Year       int          `json:"year"`
@@ -367,6 +371,7 @@ type FieldScholarJSON {
 }
 
 type HomeInfoRequest {
+	AreasNum   int `json:"areas_num, optional"`
 	PaperNum   int `json:"paper_num"`
 	ScholarNum int `json:"scholar_num"`
 	JournalNum int `json:"journal_num"`
@@ -377,7 +382,7 @@ type HomeInfoResponse {
 }
 
 type AreaJSON {
-	Type     string            `json:"type"`
+	Type     []string          `json:"type"`
 	Papers   []PaperInfoJSON   `json:"papers"`
 	Scholars []ScholarInfoJSON `json:"scholars"`
 	Journals []string          `json:"journals"`
@@ -393,4 +398,14 @@ type ScholarInfoJSON {
 	ScholarId string `json:"scholar_id"`
 	Name      string `json:"name"`
 	RefNum    int    `json:"ref_num"`
+}
+
+type DataInfoRequest {
+}
+
+type DataInfoResponse {
+	PaperNum   int `json:"paper_num"`
+	ScholarNum int `json:"scholar_num"`
+	JournalNum int `json:"journal_num"`
+	OrgNum     int `json:"org_num"`
 }
