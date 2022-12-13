@@ -135,12 +135,6 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 					},
 				}
 				coNodes[authorId] = coNode
-				if req.ScholarId != authorId {
-					coEdges = append(coEdges, types.EdgeJSON{
-						Source: req.ScholarId,
-						Target: authorId,
-					})
-				}
 			}
 		}
 	}
@@ -161,11 +155,23 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 		}
 	}
 
+	coNodeCnt := 0
 	for _, coNode := range coNodes {
+		if coNodeCnt > 20 {
+			break
+		}
+		coNodeCnt++
+
 		nCitation, _ := strconv.Atoi(NilHandler(coNode.Style.Fill, "string").(string))
 		coNode.Size = GetSize(coNode.CoNum, maxCoNum, minCoNum)
 		coNode.Style.Fill = GetColor(GetD(nCitation, maxCoCitation, minCoCitation))
 		coNodeList = append(coNodeList, coNode)
+		if req.ScholarId != coNode.Id {
+			coEdges = append(coEdges, types.EdgeJSON{
+				Source: req.ScholarId,
+				Target: coNode.Id,
+			})
+		}
 	}
 
 	for _, pub := range pubs {
@@ -225,12 +231,6 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 					},
 				}
 				ciNodes[authorId] = ciNode
-				if req.ScholarId != authorId {
-					ciEdges = append(ciEdges, types.EdgeJSON{
-						Source: req.ScholarId,
-						Target: authorId,
-					})
-				}
 			}
 		}
 	}
@@ -251,12 +251,23 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 		}
 	}
 
+	ciNodeCnt := 0
 	for _, ciNode := range ciNodes {
+		if ciNodeCnt > 20 {
+			break
+		}
+		ciNodeCnt++
+
 		nCitation, _ := strconv.Atoi(NilHandler(ciNode.Style.Fill, "string").(string))
-		log.Println(ciNode.CiNum, maxCiNum, minCiNum)
 		ciNode.Size = GetSize(ciNode.CiNum, maxCiNum, minCiNum)
 		ciNode.Style.Fill = GetColor(GetD(nCitation, maxCiCitation, minCiCitation))
 		ciNodeList = append(ciNodeList, ciNode)
+		if req.ScholarId != ciNode.Id {
+			ciEdges = append(ciEdges, types.EdgeJSON{
+				Source: req.ScholarId,
+				Target: ciNode.Id,
+			})
+		}
 	}
 
 	coNodeList[0].CoNum = 0
