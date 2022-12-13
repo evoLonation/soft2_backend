@@ -65,7 +65,7 @@ func SendEmail(address []string, vCode string) error {
 	//设置文件发送的内容
 	content := fmt.Sprintf(`<div>
 	    <div>
-	        <img src="120.46.220.182:8894/api/get-file/logo/jpg" width="100px" height="100px">
+	        <img src="http://120.46.220.182:8894/api/get-file/logo/jpg" width="100px" height="100px">
 	    </div>
 	    <div>
 	        尊敬的%s，您好！
