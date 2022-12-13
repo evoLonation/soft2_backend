@@ -88,7 +88,7 @@ func (l *ScholarClaimLogic) ScholarClaim(req *types.ScholarClaimRequest) (resp *
 		return nil, err
 	}
 
-	if !checkScholar.IsVerified {
+	if !checkScholar.IsVerified && minLevenshtein < 0.25 {
 		oldScholarId := authors[minIter].(map[string]interface{})["id"].(string)
 		authors[minIter].(map[string]interface{})["id"] = req.ScholarId
 		authors[minIter].(map[string]interface{})["name"] = scholarSource["name"]
@@ -164,7 +164,7 @@ func (l *ScholarClaimLogic) ScholarClaim(req *types.ScholarClaimRequest) (resp *
 				log.Printf("Error encoding query: %s\n", err)
 			}
 			log.Println(updateOldScholarBuf.String())
-			updateOldScholarRes := database.UpdateAuthor(updateNewScholarBuf, req.ScholarId)
+			updateOldScholarRes := database.UpdateAuthor(updateOldScholarBuf, oldScholarId)
 			if int(updateOldScholarRes["_shards"].(map[string]interface{})["successful"].(float64)) != 1 {
 				return nil, errors.New("update scholar error")
 			}
