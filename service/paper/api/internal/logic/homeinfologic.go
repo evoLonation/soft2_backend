@@ -64,6 +64,11 @@ func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeIn
 							"query": paperQueryString,
 						},
 					},
+					"sort": map[string]interface{}{
+						"n_citation": map[string]interface{}{
+							"order": "desc",
+						},
+					},
 					//"aggs": map[string]interface{}{
 					//	"journals": map[string]interface{}{
 					//		"terms": map[string]interface{}{
@@ -107,6 +112,11 @@ func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeIn
 					"query": map[string]interface{}{
 						"query_string": map[string]interface{}{
 							"query": scholarQueryString,
+						},
+					},
+					"sort": map[string]interface{}{
+						"n_citation": map[string]interface{}{
+							"order": "desc",
 						},
 					},
 				}
