@@ -3,6 +3,10 @@ package logic
 import (
 	"context"
 	"encoding/json"
+	"fmt"
+	"soft2_backend/service/apply/rpc/types/apply"
+	message2 "soft2_backend/service/message/rpc/types/message"
+	"soft2_backend/service/paper/rpc/paper"
 	"soft2_backend/service/user/model"
 	"time"
 
@@ -37,17 +41,27 @@ func (l *CommentPaperLogic) CommentPaper(req *types.CommentPaperRequest) (resp *
 		Likes:        0,
 		CreateTime:   time.Time{},
 	}
-	//getPaper, _ := l.svcCtx.PaperRpc.GetPaper()
 	_, err = l.svcCtx.CommentModel.Insert(l.ctx, &newComment)
-	//_, _ = l.svcCtx.MessageRpc.CreateMessage(l.ctx, &message2.CreateMessageReq{
-	//	ReceiverId:  0,
-	//	Content:     "",
-	//	MessageType: 0,
-	//	Result:      0,
-	//	UId:         0,
-	//	GId:         0,
-	//	PId:         "",
-	//	RId:         0,
-	//})
+	//通知
+	getPaper, _ := l.svcCtx.PaperRpc.GetPaper(l.ctx, &paper.GetPaperReq{PaperId: req.PaperId})
+	sum := len(getPaper.Authors)
+	for i := 0; i < sum; i++ {
+		if getPaper.Authors[i].HasId == false {
+			continue
+		}
+		tempUser, _ := l.svcCtx.ApplyRpc.CheckUser(l.ctx, &apply.CheckUserReq{ScholarId: getPaper.Authors[i].Id})
+		if tempUser.IsVerified == false {
+			continue
+		}
+		content := fmt.Sprintf("%s评论了你的文献 %s", user.Nickname, getPaper.PaperName)
+		_, _ = l.svcCtx.MessageRpc.CreateMessage(l.ctx, &message2.CreateMessageReq{
+			ReceiverId:  tempUser.UserId,
+			Content:     content,
+			MessageType: 1,
+			UId:         userId,
+			PId:         req.PaperId,
+		})
+	}
+
 	return &types.CommentPaperResponse{Code: 0}, nil
 }
