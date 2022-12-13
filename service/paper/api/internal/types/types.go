@@ -2,16 +2,17 @@
 package types
 
 type PaperRequest struct {
-	Query        string   `json:"query"`
-	Years        []int    `json:"years,optional"`
-	Themes       []string `json:"themes,optional"`
-	Venues       []string `json:"venues,optional"`
-	Institutions []string `json:"institutions,optional"`
-	StartYear    int      `json:"start_year,optional"`
-	EndYear      int      `json:"end_year,optional"`
-	SortType     int      `json:"sort_type,optional"`
-	Start        int      `json:"start"`
-	End          int      `json:"end"`
+	NeedFilterStatistics bool     `json:"needFilterStatistics,optional"`
+	Query                string   `json:"query"`
+	Years                []int    `json:"years,optional"`
+	Themes               []string `json:"themes,optional"`
+	Venues               []string `json:"venues,optional"`
+	Institutions         []string `json:"institutions,optional"`
+	StartYear            int      `json:"start_year,optional"`
+	EndYear              int      `json:"end_year,optional"`
+	SortType             int      `json:"sort_type,optional"`
+	Start                int      `json:"start"`
+	End                  int      `json:"end"`
 }
 
 type PaperRequestJSON struct {
@@ -21,11 +22,23 @@ type PaperRequestJSON struct {
 	Content    string `json:"content"`
 }
 
+type Statistic struct {
+	Name  string `json:"name"`
+	Count int    `json:"count"`
+}
+
+type StatisticNumber struct {
+	Name  int `json:"name"`
+	Count int `json:"count"`
+}
+
 type PaperResponse struct {
-	PaperNum int                 `json:"paper_num"`
-	Papers   []PaperResponseJSON `json:"papers"`
-	Themes   []string            `json:"themes"`
-	Years    []int               `json:"years"`
+	PaperNum     int                 `json:"paper_num"`
+	Papers       []PaperResponseJSON `json:"papers"`
+	Themes       []Statistic         `json:"themes"`
+	Years        []StatisticNumber   `json:"years"`
+	Institutions []Statistic         `json:"institutions"`
+	Venues       []Statistic         `json:"venues"`
 }
 
 type PaperResponseJSON struct {
@@ -213,7 +226,7 @@ type ScholarBarchartRequest struct {
 }
 
 type ScholarBarchartResponse struct {
-	Statistic []StatisticJSON `json:"statistic"`
+	Statistic []StatisticJSON `json:"Statistic"`
 }
 
 type StatisticJSON struct {

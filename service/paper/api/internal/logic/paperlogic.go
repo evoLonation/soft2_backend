@@ -149,6 +149,31 @@ func (l *PaperLogic) Paper(req *types.PaperRequest) (resp *types.PaperResponse, 
 			},
 		}
 	}
+	if req.NeedFilterStatistics {
+		query["aggs"] = map[string]interface{}{
+			"years": map[string]interface{}{
+				"terms": map[string]interface{}{
+					"field": "year",
+				},
+			},
+			"keywords": map[string]interface{}{
+				"terms": map[string]interface{}{
+					"field": "keywords.filter",
+				},
+			},
+			"venues": map[string]interface{}{
+				"terms": map[string]interface{}{
+					"field": "venues.filter",
+				},
+			},
+			"institutions": map[string]interface{}{
+				"terms": map[string]interface{}{
+					"field": "authors.org.filter",
+				},
+			},
+		}
+	}
+
 	if err := json.NewEncoder(&buf).Encode(query); err != nil {
 		log.Printf("Error encoding query: %s\n", err)
 	}
@@ -157,12 +182,11 @@ func (l *PaperLogic) Paper(req *types.PaperRequest) (resp *types.PaperResponse, 
 	if err != nil {
 		return nil, err
 	}
-	var papers []types.PaperResponseJSON
-	var themes map[string]int
-	var years []int
+	papers := make([]types.PaperResponseJSON, 0)
+
 	for _, hit := range res["hits"].(map[string]interface{})["hits"].([]interface{}) {
 		source := hit.(map[string]interface{})["_source"].(map[string]interface{})
-		var authors []types.AuthorJSON
+		authors := make([]types.AuthorJSON, 0)
 		for _, author := range source["authors"].([]interface{}) {
 			hasId := false
 			if author.(map[string]interface{})["id"] != nil {
@@ -183,26 +207,49 @@ func (l *PaperLogic) Paper(req *types.PaperRequest) (resp *types.PaperResponse, 
 			NCitation: NilHandler(source["n_citation"], "int").(int),
 			Publisher: NilHandler(source["venue"], "string").(string),
 		})
-		log.Println(source["keywords"])
-		keywords := NilHandler(source["keywords"], "list").([]interface{})
-		cnt := 0
-		themes = make(map[string]int)
-		for _, theme := range keywords {
-			themes[theme.(string)] = cnt
-			cnt++
-		}
-		years = append(years, int(source["year"].(float64)))
 	}
-
+	themes := make([]types.Statistic, 0)
+	years := make([]types.StatisticNumber, 0)
+	venues := make([]types.Statistic, 0)
+	institutions := make([]types.Statistic, 0)
+	if req.NeedFilterStatistics {
+		agg := res["aggregations"].(map[string]interface{})
+		for _, keyword := range agg["keywords"].(map[string]interface{})["buckets"].([]map[string]interface{}) {
+			themes = append(themes, types.Statistic{
+				Name:  keyword["key"].(string),
+				Count: keyword["doc_count"].(int),
+			})
+		}
+		for _, year := range agg["years"].(map[string]interface{})["buckets"].([]map[string]interface{}) {
+			years = append(years, types.StatisticNumber{
+				Name:  year["key"].(int),
+				Count: year["doc_count"].(int),
+			})
+		}
+		for _, venue := range agg["venues"].(map[string]interface{})["buckets"].([]map[string]interface{}) {
+			venues = append(venues, types.Statistic{
+				Name:  venue["key"].(string),
+				Count: venue["doc_count"].(int),
+			})
+		}
+		for _, inst := range agg["institutions"].(map[string]interface{})["buckets"].([]map[string]interface{}) {
+			institutions = append(institutions, types.Statistic{
+				Name:  inst["key"].(string),
+				Count: inst["doc_count"].(int),
+			})
+		}
+	}
 	paperNum := int(res["hits"].(map[string]interface{})["total"].(map[string]interface{})["value"].(float64))
 	if paperNum > 10000 {
 		paperNum = 10000
 	}
 	resp = &types.PaperResponse{
-		PaperNum: paperNum,
-		Papers:   papers,
-		Themes:   getKeywords(themes),
-		Years:    years,
+		PaperNum:     paperNum,
+		Papers:       papers,
+		Themes:       themes,
+		Years:        years,
+		Institutions: institutions,
+		Venues:       venues,
 	}
 	return resp, nil
 }
