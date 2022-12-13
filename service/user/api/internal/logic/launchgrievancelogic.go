@@ -4,14 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/zeromicro/go-zero/core/logx"
 	"soft2_backend/service/apply/rpc/types/apply"
 	message2 "soft2_backend/service/message/rpc/types/message"
-	paper2 "soft2_backend/service/paper/rpc/paper"
 	"soft2_backend/service/user/api/internal/svc"
 	"soft2_backend/service/user/api/internal/types"
 	"soft2_backend/service/user/model"
-
-	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type LaunchGrievanceLogic struct {
@@ -29,48 +27,39 @@ func NewLaunchGrievanceLogic(ctx context.Context, svcCtx *svc.ServiceContext) *L
 }
 
 func (l *LaunchGrievanceLogic) LaunchGrievance(req *types.LaunchGrievanceRequest) (resp *types.LaunchGrievanceResponse, err error) {
-	// todo: add your logic here and delete this line
-	paperId := req.PaperId                                   //文献id
-	defendantId := req.ScholarId                             //被申诉学者id
-	tempId, _ := l.ctx.Value("UserId").(json.Number).Int64() //申诉用户id
-	plaintUser, _ := l.svcCtx.UserModel.FindOne(l.ctx, tempId)
-	//username := plaintUser.LoginId
-	plaintiff, _ := l.svcCtx.ApplyRpc.CheckIdentify(l.ctx, &apply.CheckIdentifyReq{
-		UserId: tempId,
-	})
-
-	plaintiffId := plaintiff.ScholarId //申诉学者id
-	defendantUser, _ := l.svcCtx.ApplyRpc.CheckUser(l.ctx, &apply.CheckUserReq{ScholarId: defendantId})
-	defendantUserId := defendantUser.UserId //被申诉用户的id
+	paperId := req.PaperId
+	defendantScholarId := req.ScholarId
+	plaintiffId, _ := l.ctx.Value("UserId").(json.Number).Int64()                                               //申诉用户id
+	plaintiffUser, _ := l.svcCtx.UserModel.FindOne(l.ctx, plaintiffId)                                          //申诉用户
+	plaintiffScholar, _ := l.svcCtx.ApplyRpc.CheckIdentify(l.ctx, &apply.CheckIdentifyReq{UserId: plaintiffId}) //申诉学者
+	plaintiffScholarId := plaintiffScholar.ScholarId                                                            //申诉学者id
+	defendantScholar, _ := l.svcCtx.ApplyRpc.CheckUser(l.ctx, &apply.CheckUserReq{ScholarId: defendantScholarId})
+	defendantScholarUserId := defendantScholar.UserId //被申诉者用户id
 	newGrievance := model.Grievance{
-		PlaintiffId: plaintiffId,
-		DefendantId: defendantId,
+		PlaintiffId: plaintiffScholarId,
+		DefendantId: req.ScholarId,
 		PaperId:     paperId,
 	}
-	tempGrievance, err := l.svcCtx.GrievanceModel.Insert(l.ctx, &newGrievance)
+	tempGrievance, _ := l.svcCtx.GrievanceModel.Insert(l.ctx, &newGrievance)
 	gId, _ := tempGrievance.LastInsertId()
-	paper, _ := l.svcCtx.PaperRpc.GetPaper(l.ctx, &paper2.GetPaperReq{PaperId: paperId})
-	var userName string
-	var papername string
-	if len(plaintUser.Nickname) > 20 {
-		userName = plaintUser.Nickname[0:20] + "..."
+	//paper, _ := l.svcCtx.PaperRpc.GetPaper(l.ctx, &paper2.GetPaperReq{PaperId: paperId})
+	var username string
+	if len(plaintiffUser.Nickname) > 20 {
+		username = plaintiffUser.Nickname[0:20] + "..."
 	} else {
-		userName = plaintUser.Nickname
+		username = plaintiffUser.Nickname
 	}
-	if len(paper.PaperName) > 20 {
-		papername = paper.PaperName[0:20] + "..."
-	} else {
-		papername = paper.PaperName
-	}
-	content := fmt.Sprintf("%s 对你的文献 %s 发起申诉", userName, papername)
-	//给被申诉者发通知
-	_, _ = l.svcCtx.MessageRpc.CreateMessage(l.ctx, &message2.CreateMessageReq{
-		ReceiverId:  defendantUserId,
+	content := fmt.Sprintf("%s对你的文献%s发起申诉", username, req.PaperId)
+	_, err = l.svcCtx.MessageRpc.CreateMessage(l.ctx, &message2.CreateMessageReq{
+		ReceiverId:  defendantScholarUserId,
 		Content:     content,
 		MessageType: 4,
-		SId:         plaintiffId,
+		SId:         plaintiffScholarId,
 		GId:         gId,
 		PId:         paperId,
 	})
+	if err != nil {
+		return nil, err
+	}
 	return &types.LaunchGrievanceResponse{}, nil
 }
