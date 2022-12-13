@@ -29,7 +29,7 @@ func NewHomeInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *HomeInfo
 func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeInfoResponse, err error) {
 	// todo: add your logic here and delete this line
 	areas := [][]string{
-		{"computer science", "machine learning", "computer vision"},
+		{"deep learning", "machine learning", "artificial intelligence"},
 		{"mathematics", "linear algebra", "calculus"},
 		{"physics", "quantum mechanics", "electromagnetism", "chemistry"},
 		{"biology", "genetics", "ecology", "zoology"},
