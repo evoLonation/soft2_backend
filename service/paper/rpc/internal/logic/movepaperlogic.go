@@ -130,7 +130,8 @@ func (l *MovePaperLogic) MovePaper(in *paper.MovePaperReq) (*paper.MovePaperRepl
 	var updateOwnerBuf bytes.Buffer
 	updateOwner := map[string]interface{}{
 		"doc": map[string]interface{}{
-			"pubs": ownerPapers,
+			"pubs":   ownerPapers,
+			"n_pubs": len(ownerPapers),
 		},
 	}
 	if err := json.NewEncoder(&updateOwnerBuf).Encode(updateOwner); err != nil {
@@ -152,7 +153,8 @@ func (l *MovePaperLogic) MovePaper(in *paper.MovePaperReq) (*paper.MovePaperRepl
 	var updateTargetBuf bytes.Buffer
 	updateTarget := map[string]interface{}{
 		"doc": map[string]interface{}{
-			"pubs": targetPapers,
+			"pubs":   targetPapers,
+			"n_pubs": len(ownerPapers),
 		},
 	}
 	if err := json.NewEncoder(&updateTargetBuf).Encode(updateTarget); err != nil {
