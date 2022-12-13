@@ -85,7 +85,8 @@ func (l *PaperDetailLogic) PaperDetail(req *types.PaperDetailRequest) (resp *typ
 	}
 	referenceRes := database.MgetPaper(referenceBuf)
 	papers := NilHandler(referenceRes["docs"], "list").([]interface{})
-	for _, paper := range papers {
+	firstAuthorOrg := ""
+	for i, paper := range papers {
 		if paper.(map[string]interface{})["found"].(bool) == false {
 			continue
 		}
@@ -96,6 +97,14 @@ func (l *PaperDetailLogic) PaperDetail(req *types.PaperDetailRequest) (resp *typ
 			author = ""
 		} else {
 			author = NilHandler(authors[0].(map[string]interface{})["name"], "string").(string)
+			if i == 0 {
+				orgs := NilHandler(authors[0].(map[string]interface{})["orgs"], "list").([]interface{})
+				if len(orgs) == 0 {
+					firstAuthorOrg = ""
+				} else {
+					firstAuthorOrg = NilHandler(orgs[0], "string").(string)
+				}
+			}
 		}
 		referencePapers = append(referencePapers, types.PaperJSON{
 			Id:     NilHandler(source["id"], "string").(string),
@@ -148,7 +157,8 @@ func (l *PaperDetailLogic) PaperDetail(req *types.PaperDetailRequest) (resp *typ
 		Authors:    authors,
 		Doi:        NilHandler(source["doi"], "string").(string),
 		ISBN:       NilHandler(source["isbn"], "string").(string),
-		Org:        NilHandler(source["org"], "string").(string),
+		ISSN:       NilHandler(source["issn"], "string").(string),
+		Org:        firstAuthorOrg,
 		Keywords:   keywordStrings,
 		Year:       NilHandler(source["year"], "int").(int),
 		NCitation:  NilHandler(source["n_citation"], "int").(int),

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"soft2_backend/service/message/api/internal/svc"
 	"soft2_backend/service/message/api/internal/types"
+	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -35,14 +36,14 @@ func (l *GetMessageLogic) GetMessage(req *types.GetMessageRequest) (resp *types.
 		end = req.End
 	}
 	count := end - i
-
+	var cstZone = time.FixedZone("CST", 8*3600)
 	for ; i < end; i++ {
 		info := types.MessageInfo{
 			MessageId:   list[i].MsgId,
 			MessageType: list[i].MessageType,
 			Content:     list[i].Content,
 			Read:        list[i].Read,
-			MessageTime: list[i].MsgTime.Format("2006-01-02 15:04:05"),
+			MessageTime: list[i].MsgTime.In(cstZone).Format("2006-01-02 15:04:05"),
 		}
 
 		if list[i].UId.Valid {

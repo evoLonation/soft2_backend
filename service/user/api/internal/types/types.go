@@ -100,7 +100,6 @@ type SubscribeResponse struct {
 }
 
 type DeleteSubscribeRequest struct {
-	UserId    int64  `json:"user_id"`
 	ScholarId string `json:"scholar_id"`
 }
 

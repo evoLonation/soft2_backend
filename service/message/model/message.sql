@@ -20,3 +20,5 @@ CREATE TABLE `message`
     KEY `idx_pId` (`pId`),
     KEY `idx_rId` (`rId`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+set global time_zone='+8:00';

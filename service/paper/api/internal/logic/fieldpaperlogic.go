@@ -49,7 +49,7 @@ func (l *FieldPaperLogic) FieldPaper(req *types.FieldPaperRequest) (resp *types.
 	}
 	log.Println(paperBuf.String())
 	paperRes := database.SearchPaper(paperBuf)
-	log.Println(paperRes)
+	log.Printf("finished searching paper in field %v", req.Field)
 
 	var papers []types.PaperResponseJSON
 	hits := paperRes["hits"].(map[string]interface{})["hits"].([]interface{})
@@ -69,6 +69,7 @@ func (l *FieldPaperLogic) FieldPaper(req *types.FieldPaperRequest) (resp *types.
 			})
 		}
 		papers = append(papers, types.PaperResponseJSON{
+			Id:        NilHandler(source["id"], "string").(string),
 			Title:     NilHandler(source["title"], "string").(string),
 			Abstract:  NilHandler(source["abstract"], "string").(string),
 			Authors:   authorJSONs,

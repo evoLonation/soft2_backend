@@ -85,6 +85,8 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 	}
 	coNodes[scholarSource["id"].(string)] = majorCoNode
 	ciNodes[scholarSource["id"].(string)] = majorCiNode
+	coNodeList = append(coNodeList, majorCoNode)
+	ciNodeList = append(ciNodeList, majorCiNode)
 
 	pubs := NilHandler(scholarSource["pubs"], "list").([]interface{})
 	pubIds := make([]string, 0)
@@ -109,7 +111,7 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 		if pub.(map[string]interface{})["found"].(bool) == false {
 			continue
 		}
-		if pubCnt > 10 {
+		if pubCnt > 8 {
 			break
 		}
 		pubCnt++
@@ -135,12 +137,6 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 					},
 				}
 				coNodes[authorId] = coNode
-				if req.ScholarId != authorId {
-					coEdges = append(coEdges, types.EdgeJSON{
-						Source: req.ScholarId,
-						Target: authorId,
-					})
-				}
 			}
 		}
 	}
@@ -161,12 +157,27 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 		}
 	}
 
+	coNodeCnt := 0
 	for _, coNode := range coNodes {
+		if coNodeCnt > 20 {
+			break
+		}
+		coNodeCnt++
+
 		nCitation, _ := strconv.Atoi(NilHandler(coNode.Style.Fill, "string").(string))
 		coNode.Size = GetSize(coNode.CoNum, maxCoNum, minCoNum)
 		coNode.Style.Fill = GetColor(GetD(nCitation, maxCoCitation, minCoCitation))
 		coNodeList = append(coNodeList, coNode)
+		if req.ScholarId != coNode.Id {
+			coEdges = append(coEdges, types.EdgeJSON{
+				Source: req.ScholarId,
+				Target: coNode.Id,
+			})
+		}
 	}
+	nCitation, _ := strconv.Atoi(NilHandler(coNodeList[0].Style.Fill, "string").(string))
+	coNodeList[0].Size = GetSize(coNodeList[0].CoNum, maxCoNum, minCoNum)
+	coNodeList[0].Style.Fill = GetColor(GetD(nCitation, maxCoCitation, minCoCitation))
 
 	for _, pub := range pubs {
 		references := NilHandler(pub.(map[string]interface{})["_source"].(map[string]interface{})["references"], "list").([]interface{})
@@ -190,7 +201,7 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 			if reference.(map[string]interface{})["found"].(bool) == false {
 				continue
 			}
-			if referenceCnt > 10 {
+			if referenceCnt > 8 {
 				break
 			}
 			referenceCnt++
@@ -225,12 +236,6 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 					},
 				}
 				ciNodes[authorId] = ciNode
-				if req.ScholarId != authorId {
-					ciEdges = append(ciEdges, types.EdgeJSON{
-						Source: req.ScholarId,
-						Target: authorId,
-					})
-				}
 			}
 		}
 	}
@@ -251,13 +256,27 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 		}
 	}
 
+	ciNodeCnt := 0
 	for _, ciNode := range ciNodes {
+		if ciNodeCnt > 20 {
+			break
+		}
+		ciNodeCnt++
+
 		nCitation, _ := strconv.Atoi(NilHandler(ciNode.Style.Fill, "string").(string))
-		log.Println(ciNode.CiNum, maxCiNum, minCiNum)
 		ciNode.Size = GetSize(ciNode.CiNum, maxCiNum, minCiNum)
 		ciNode.Style.Fill = GetColor(GetD(nCitation, maxCiCitation, minCiCitation))
 		ciNodeList = append(ciNodeList, ciNode)
+		if req.ScholarId != ciNode.Id {
+			ciEdges = append(ciEdges, types.EdgeJSON{
+				Source: req.ScholarId,
+				Target: ciNode.Id,
+			})
+		}
 	}
+	nCitation, _ = strconv.Atoi(NilHandler(ciNodeList[0].Style.Fill, "string").(string))
+	ciNodeList[0].Size = GetSize(ciNodeList[0].CiNum, maxCiNum, minCiNum)
+	ciNodeList[0].Style.Fill = GetColor(GetD(nCitation, maxCiCitation, minCiCitation))
 
 	coNodeList[0].CoNum = 0
 	ciNodeList[0].Size = 40
