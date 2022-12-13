@@ -3,7 +3,6 @@ package logic
 import (
 	"context"
 	"encoding/json"
-	message2 "soft2_backend/service/message/rpc/types/message"
 	"soft2_backend/service/user/model"
 	"time"
 
@@ -28,9 +27,8 @@ func NewCommentPaperLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Comm
 }
 
 func (l *CommentPaperLogic) CommentPaper(req *types.CommentPaperRequest) (resp *types.CommentPaperResponse, err error) {
-	// todo: add your logic here and delete this line
 	userId, _ := l.ctx.Value("UserId").(json.Number).Int64()
-	user, _ := l.svcCtx.UserModel.FindOne(l.ctx, userId)
+	user, _ := l.svcCtx.UserModel.FindOne(l.ctx, userId) //发表评论的用户
 	newComment := model.Comment{
 		UserId:       userId,
 		UserNickname: user.Nickname,
@@ -39,16 +37,17 @@ func (l *CommentPaperLogic) CommentPaper(req *types.CommentPaperRequest) (resp *
 		Likes:        0,
 		CreateTime:   time.Time{},
 	}
+	//getPaper, _ := l.svcCtx.PaperRpc.GetPaper()
 	_, err = l.svcCtx.CommentModel.Insert(l.ctx, &newComment)
-	_, _ = l.svcCtx.MessageRpc.CreateMessage(l.ctx, &message2.CreateMessageReq{
-		ReceiverId:  0,
-		Content:     "",
-		MessageType: 0,
-		Result:      0,
-		UId:         0,
-		GId:         0,
-		PId:         "",
-		RId:         0,
-	})
+	//_, _ = l.svcCtx.MessageRpc.CreateMessage(l.ctx, &message2.CreateMessageReq{
+	//	ReceiverId:  0,
+	//	Content:     "",
+	//	MessageType: 0,
+	//	Result:      0,
+	//	UId:         0,
+	//	GId:         0,
+	//	PId:         "",
+	//	RId:         0,
+	//})
 	return &types.CommentPaperResponse{Code: 0}, nil
 }
