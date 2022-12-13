@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"log"
+	"soft2_backend/service/apply/rpc/applyclient"
 	"soft2_backend/service/paper/database"
 
 	"soft2_backend/service/paper/api/internal/svc"
@@ -79,7 +80,11 @@ func (l *ScholarClaimLogic) ScholarClaim(req *types.ScholarClaimRequest) (resp *
 		}
 	}
 
-	if NilHandler(authors[minIter].(map[string]interface{})["id"], "string").(string) == "" {
+	minLevenAuthor := authors[minIter].(map[string]interface{})
+	checkScholar, err := l.svcCtx.ApplyRpc.CheckUser(l.ctx, &applyclient.CheckUserReq{
+		ScholarId: minLevenAuthor["id"].(string),
+	})
+	if !checkScholar.IsVerified {
 		authors[minIter].(map[string]interface{})["id"] = req.ScholarId
 		authors[minIter].(map[string]interface{})["name"] = scholarSource["name"]
 
@@ -125,7 +130,7 @@ func (l *ScholarClaimLogic) ScholarClaim(req *types.ScholarClaimRequest) (resp *
 	} else {
 		return &types.ScholarClaimResponse{
 			Code:      1,
-			ScholarId: NilHandler(authors[minIter].(map[string]interface{})["id"], "string").(string),
+			ScholarId: NilHandler(minLevenAuthor["id"], "string").(string),
 		}, nil
 	}
 }
