@@ -49,6 +49,7 @@ func (l *FieldPaperLogic) FieldPaper(req *types.FieldPaperRequest) (resp *types.
 	}
 	log.Println(paperBuf.String())
 	paperRes := database.SearchPaper(paperBuf)
+	log.Println(paperRes)
 
 	var papers []types.PaperResponseJSON
 	hits := paperRes["hits"].(map[string]interface{})["hits"].([]interface{})

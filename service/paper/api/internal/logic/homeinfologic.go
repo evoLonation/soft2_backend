@@ -48,7 +48,6 @@ func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeIn
 		}
 
 		//paperQueryString, _ := GenerateQueryString(area)
-		log.Println(area)
 		var paperBuf bytes.Buffer
 		paperQuery := map[string]interface{}{
 			"from": 0,
@@ -78,8 +77,7 @@ func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeIn
 
 		var paperList []types.PaperInfoJSON
 		hits := paperResult["hits"].(map[string]interface{})["hits"].([]interface{})
-		for i, _ := range hits {
-			hit := hits[i]
+		for _, hit := range hits {
 			var authorList []string
 			source := hit.(map[string]interface{})["_source"].(map[string]interface{})
 			authors := NilHandler(source["authors"], "list").([]interface{})
