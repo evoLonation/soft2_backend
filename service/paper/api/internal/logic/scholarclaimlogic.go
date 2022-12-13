@@ -84,6 +84,10 @@ func (l *ScholarClaimLogic) ScholarClaim(req *types.ScholarClaimRequest) (resp *
 	checkScholar, err := l.svcCtx.ApplyRpc.CheckUser(l.ctx, &applyclient.CheckUserReq{
 		ScholarId: minLevenAuthor["id"].(string),
 	})
+	if err != nil {
+		return nil, err
+	}
+
 	if !checkScholar.IsVerified {
 		authors[minIter].(map[string]interface{})["id"] = req.ScholarId
 		authors[minIter].(map[string]interface{})["name"] = scholarSource["name"]
