@@ -29,14 +29,13 @@ func NewHomeInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *HomeInfo
 func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeInfoResponse, err error) {
 	// todo: add your logic here and delete this line
 	areas := [][]string{
-		{"computer science", "deep learning", "machine learning", "artificial intelligence"},
-		{"mathematics", "linear algebra", "calculus"},
-		{"physics", "quantum mechanics", "electromagnetism", "chemistry"},
-		{"biology", "genetics", "ecology", "zoology"},
+		{"computer science", "machine learning", "artificial intelligence"},
+		{"mathematics", "geometry", "calculus"},
+		{"physics", "electricity", "optics"},
+		{"biology", "genetics", "ecology"},
 		{"economics", "microeconomics", "macroeconomics"},
-		{"psychology", "cognitive psychology", "social psychology"},
-		{"history", "ancient history", "modern history"},
-		{"environment", "climate change", "global warming"}}
+		{"psychology", "cognitive", "social"},
+		{"environment", "environment", "global warming"}}
 	areasNum := req.AreasNum
 	if areasNum == 0 {
 		areasNum = len(areas)
@@ -44,7 +43,7 @@ func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeIn
 
 	paperChan := make(chan types.PaperInfoJSON, areasNum*req.PaperNum)
 	scholarChan := make(chan types.ScholarInfoJSON, areasNum*req.ScholarNum)
-	areaChan := make(chan types.AreaJSON, 8)
+	areaChan := make(chan types.AreaJSON, 7)
 	areaJsonList := make([]types.AreaJSON, 0)
 	for i, _ := range areas {
 		if i == areasNum {
