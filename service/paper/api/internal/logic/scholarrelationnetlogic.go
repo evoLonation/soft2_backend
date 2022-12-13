@@ -109,7 +109,7 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 		if pub.(map[string]interface{})["found"].(bool) == false {
 			continue
 		}
-		if pubCnt > 10 {
+		if pubCnt > 8 {
 			break
 		}
 		pubCnt++
@@ -190,7 +190,7 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 			if reference.(map[string]interface{})["found"].(bool) == false {
 				continue
 			}
-			if referenceCnt > 10 {
+			if referenceCnt > 8 {
 				break
 			}
 			referenceCnt++
