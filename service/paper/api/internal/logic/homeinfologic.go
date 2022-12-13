@@ -5,10 +5,9 @@ import (
 	"context"
 	"encoding/json"
 	"log"
-	"soft2_backend/service/paper/database"
-
 	"soft2_backend/service/paper/api/internal/svc"
 	"soft2_backend/service/paper/api/internal/types"
+	"soft2_backend/service/paper/database"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -48,8 +47,9 @@ func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeIn
 			break
 		}
 
-		var paperBuf bytes.Buffer
 		paperQueryString, _ := GenerateQueryString(area)
+		log.Println(area)
+		var paperBuf bytes.Buffer
 		paperQuery := map[string]interface{}{
 			"from": 0,
 			"size": req.PaperNum,
@@ -74,10 +74,12 @@ func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeIn
 		}
 		log.Println(paperBuf.String())
 		paperResult := database.SearchPaper(paperBuf)
+		log.Println(paperResult)
 
 		var paperList []types.PaperInfoJSON
 		hits := paperResult["hits"].(map[string]interface{})["hits"].([]interface{})
-		for _, hit := range hits {
+		for i, _ := range hits {
+			hit := hits[i]
 			go func() {
 				var authorList []string
 				source := hit.(map[string]interface{})["_source"].(map[string]interface{})
