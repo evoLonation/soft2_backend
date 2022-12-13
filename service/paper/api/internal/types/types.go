@@ -2,7 +2,7 @@
 package types
 
 type PaperRequest struct {
-	NeedFilterStatistics bool     `json:"needFilterStatistics,optional"`
+	NeedFilterStatistics bool     `json:"need_filter_statistics,optional"`
 	Query                string   `json:"query"`
 	Years                []int    `json:"years,optional"`
 	Themes               []string `json:"themes,optional"`

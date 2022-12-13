@@ -80,14 +80,6 @@ func (l *PaperLogic) Paper(req *types.PaperRequest) (resp *types.PaperResponse, 
 						"query": queryString,
 					},
 				},
-				"filter": map[string]interface{}{
-					"range": map[string]interface{}{
-						"year": map[string]interface{}{
-							"gte": req.StartYear,
-							"lte": req.EndYear,
-						},
-					},
-				},
 			},
 		},
 	}
@@ -216,30 +208,30 @@ func (l *PaperLogic) Paper(req *types.PaperRequest) (resp *types.PaperResponse, 
 	institutions := make([]types.Statistic, 0)
 	if req.NeedFilterStatistics {
 		agg := res["aggregations"].(map[string]interface{})
-		for _, year := range agg["years"].(map[string]interface{})["buckets"].([]map[string]interface{}) {
+		for _, year := range agg["years"].(map[string]interface{})["buckets"].([]interface{}) {
 			years = append(years, types.StatisticNumber{
-				Name:  year["key"].(int),
-				Count: year["doc_count"].(int),
+				Name:  int(year.(map[string]interface{})["key"].(float64)),
+				Count: int(year.(map[string]interface{})["doc_count"].(float64)),
 			})
 		}
 		sort.Sort(years)
 		//todo
-		//for _, keyword := range agg["keywords"].(map[string]interface{})["buckets"].([]map[string]interface{}) {
+		//for _, keyword := range agg["keywords"].(map[string]interface{})["buckets"].([]interface{}) {
 		//	themes = append(themes, types.Statistic{
-		//		Name:  keyword["key"].(string),
-		//		Count: keyword["doc_count"].(int),
+		//		Name:  keyword.(map[string]interface{})["key"].(string),
+		//		Count: int(keyword.(map[string]interface{})["doc_count"].(float64)),
 		//	})
 		//}
-		//for _, venue := range agg["venues"].(map[string]interface{})["buckets"].([]map[string]interface{}) {
+		//for _, venue := range agg["venues"].(map[string]interface{})["buckets"].([]interface{}) {
 		//	venues = append(venues, types.Statistic{
-		//		Name:  venue["key"].(string),
-		//		Count: venue["doc_count"].(int),
+		//		Name:  venue.(map[string]interface{})["key"].(string),
+		//		Count: int(venue.(map[string]interface{})["doc_count"].(float64)),
 		//	})
 		//}
-		//for _, inst := range agg["institutions"].(map[string]interface{})["buckets"].([]map[string]interface{}) {
+		//for _, inst := range agg["institutions"].(map[string]interface{})["buckets"].([]interface{}) {
 		//	institutions = append(institutions, types.Statistic{
-		//		Name:  inst["key"].(string),
-		//		Count: inst["doc_count"].(int),
+		//		Name:  inst.(map[string]interface{})["key"].(string),
+		//		Count: int(inst.(map[string]interface{})["doc_count"].(float64)),
 		//	})
 		//}
 	}
