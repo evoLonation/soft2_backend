@@ -58,8 +58,8 @@ func (l *LaunchGrievanceLogic) LaunchGrievance(req *types.LaunchGrievanceRequest
 		papername = paper.PaperName
 	}
 	content := fmt.Sprintf("%s对你的文献%s发起申诉", username, papername)
-	fmt.Printf("1111111111111\n%s", defendantScholarUserId)
-	fmt.Printf("2222222222222\n%s", plaintiffScholarId)
+	fmt.Printf("1111111111111\n%d\n", defendantScholarUserId)
+	fmt.Printf("2222222222222\n%s\n", plaintiffScholarId)
 	_, _ = l.svcCtx.MessageRpc.CreateMessage(l.ctx, &message2.CreateMessageReq{
 		ReceiverId:  defendantScholarUserId,
 		Content:     content,
