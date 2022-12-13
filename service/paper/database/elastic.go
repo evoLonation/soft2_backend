@@ -41,6 +41,43 @@ func SearchPaper(query bytes.Buffer) map[string]interface{} {
 	return res
 }
 
+func SearchPaperE(query bytes.Buffer) (map[string]interface{}, error) {
+	var res map[string]interface{}
+	resp, err := es.Search(
+		es.Search.WithContext(context.Background()),
+		es.Search.WithIndex("papers"),
+		es.Search.WithBody(&query),
+		es.Search.WithTrackTotalHits(true),
+		es.Search.WithPretty(),
+	)
+	if err != nil {
+		log.Printf("Error getting response: %s\n", err)
+	}
+	if resp.IsError() {
+		raw := map[string]interface{}{}
+		errStr := "http from ES responses error! \n"
+		if err := json.NewDecoder(resp.Body).Decode(&raw); err != nil {
+			errStr += fmt.Sprintf("parse error response body error:\n%s", err.Error())
+		} else {
+			_, success := raw["error"].(map[string]interface{})
+			if success {
+				errStr += fmt.Sprintf("ES http response Errors:\nstatus:%s\n%s\n%s\n%s\n",
+					resp.Status(),
+					raw["error"].(map[string]interface{})["type"].(string),
+					raw["error"].(map[string]interface{})["reason"].(string),
+				)
+			} else {
+				errStr += fmt.Sprintf("ES http response Errors:\n%s", raw["error"])
+			}
+			return nil, errors.New(errStr)
+		}
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&res); err != nil {
+		return nil, errors.New(fmt.Sprintf("Error parsing the response body: %s\n", err))
+	}
+	return res, nil
+}
+
 func SearchAuthor(query bytes.Buffer) map[string]interface{} {
 	var res map[string]interface{}
 	resp, err := es.Search(

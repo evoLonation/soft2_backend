@@ -104,8 +104,10 @@ func (l *PaperLogic) Paper(req *types.PaperRequest) (resp *types.PaperResponse, 
 		log.Printf("Error encoding query: %s\n", err)
 	}
 	log.Println(buf.String())
-	res := database.SearchPaper(buf)
-
+	res, err := database.SearchPaperE(buf)
+	if err != nil {
+		return nil, err
+	}
 	var papers []types.PaperResponseJSON
 	var themes map[string]int
 	var years []int
