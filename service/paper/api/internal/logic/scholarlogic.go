@@ -55,6 +55,9 @@ func (l *ScholarLogic) Scholar(req *types.ScholarRequest) (resp *types.ScholarRe
 			"n_citation": map[string]interface{}{
 				"order": "desc",
 			},
+			"n_pubs": map[string]interface{}{
+				"order": "desc",
+			},
 		},
 	}
 	if err := json.NewEncoder(&buf).Encode(query); err != nil {
