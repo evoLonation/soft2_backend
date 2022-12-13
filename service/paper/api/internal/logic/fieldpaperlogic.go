@@ -69,6 +69,7 @@ func (l *FieldPaperLogic) FieldPaper(req *types.FieldPaperRequest) (resp *types.
 			})
 		}
 		papers = append(papers, types.PaperResponseJSON{
+			Id:        NilHandler(source["id"], "string").(string),
 			Title:     NilHandler(source["title"], "string").(string),
 			Abstract:  NilHandler(source["abstract"], "string").(string),
 			Authors:   authorJSONs,
