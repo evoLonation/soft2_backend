@@ -41,6 +41,9 @@ func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeIn
 	if areasNum == 0 {
 		areasNum = len(areas)
 	}
+
+	paperChan := make(chan types.PaperInfoJSON, areasNum*req.PaperNum)
+	scholarChan := make(chan types.ScholarInfoJSON, areasNum*req.ScholarNum)
 	areaJsonList := make([]types.AreaJSON, 0)
 	for i, area := range areas {
 		if i == areasNum {
@@ -85,11 +88,12 @@ func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeIn
 				for _, author := range authors {
 					authorList = append(authorList, NilHandler(author.(map[string]interface{})["name"], "string").(string))
 				}
-				paperList = append(paperList, types.PaperInfoJSON{
+				thisPaperJson := types.PaperInfoJSON{
 					Title:     NilHandler(source["title"], "string").(string),
 					Authors:   authorList,
 					NCitation: NilHandler(source["n_citation"], "int").(int),
-				})
+				}
+				paperChan <- thisPaperJson
 			}
 		}()
 
@@ -113,16 +117,23 @@ func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeIn
 			hits := scholarResult["hits"].(map[string]interface{})["hits"].([]interface{})
 			for _, hit := range hits {
 				source := hit.(map[string]interface{})["_source"].(map[string]interface{})
-				scholarList = append(scholarList, types.ScholarInfoJSON{
+				thisScholarJson := types.ScholarInfoJSON{
 					ScholarId: NilHandler(source["id"], "string").(string),
 					Name:      NilHandler(source["name"], "string").(string),
 					RefNum:    NilHandler(source["n_citation"], "int").(int),
-				})
+				}
+				scholarChan <- thisScholarJson
 			}
 		}()
 
+		for j := 0; j < req.PaperNum; j++ {
+			paperList = append(paperList, <-paperChan)
+		}
+		for j := 0; j < req.ScholarNum; j++ {
+			scholarList = append(scholarList, <-scholarChan)
+		}
 		areaJsonList = append(areaJsonList, types.AreaJSON{
-			Type:     areas[0],
+			Type:     area,
 			Papers:   paperList,
 			Scholars: scholarList,
 		})
