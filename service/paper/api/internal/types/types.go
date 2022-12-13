@@ -341,7 +341,7 @@ type HomeInfoResponse struct {
 }
 
 type AreaJSON struct {
-	Type     string            `json:"type"`
+	Type     []string            `json:"type"`
 	Papers   []PaperInfoJSON   `json:"papers"`
 	Scholars []ScholarInfoJSON `json:"scholars"`
 	Journals []string          `json:"journals"`

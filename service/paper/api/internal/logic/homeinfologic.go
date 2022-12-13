@@ -124,7 +124,7 @@ func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeIn
 		}
 
 		areaJsonList = append(areaJsonList, types.AreaJSON{
-			Type:     generateType(area),
+			Type:     area,
 			Papers:   paperList,
 			Scholars: scholarList,
 		})
@@ -133,16 +133,4 @@ func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeIn
 		Areas: areaJsonList,
 	}
 	return resp, nil
-}
-
-func generateType(value []string) string {
-	str := ""
-	for i, v := range value {
-		if i == 0 {
-			str += v
-		} else {
-			str += ", " + v
-		}
-	}
-	return str
 }
