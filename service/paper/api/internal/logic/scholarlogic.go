@@ -49,11 +49,13 @@ func (l *ScholarLogic) Scholar(req *types.ScholarRequest) (resp *types.ScholarRe
 			},
 		},
 		"sort": map[string]interface{}{
+			"_score": map[string]interface{}{
+				"order": "desc",
+			},
 			"n_citation": map[string]interface{}{
 				"order": "desc",
 			},
 		},
-		"min_score": 3,
 	}
 	if err := json.NewEncoder(&buf).Encode(query); err != nil {
 		log.Printf("Error encoding query: %s\n", err)
