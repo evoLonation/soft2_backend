@@ -64,9 +64,9 @@ func (l *CreateMessageLogic) CreateMessage(in *message.CreateMessageReq) (*messa
 		}
 		break
 	case 4:
-		newMessage.UId = sql.NullInt64{
-			Int64: in.UId,
-			Valid: true,
+		newMessage.SId = sql.NullString{
+			String: in.SId,
+			Valid:  true,
 		}
 		newMessage.GId = sql.NullInt64{
 			Int64: in.GId,

@@ -48,6 +48,9 @@ func (l *GetMessageLogic) GetMessage(req *types.GetMessageRequest) (resp *types.
 		if list[i].UId.Valid {
 			info.UId = list[i].UId.Int64
 		}
+		if list[i].SId.Valid {
+			info.SId = list[i].SId.String
+		}
 		if list[i].GId.Valid {
 			info.GId = list[i].GId.Int64
 		}

@@ -4,6 +4,7 @@ type (
 		MessageId   int64  `json:"id"`
 		MessageType int64  `json:"type"`
 		UId         int64  `json:"uid,optional"`
+		SId         string `json:"sid,optional"`
 		GId         int64  `json:"gid,optional"`
 		PId         string `json:"pid,optional"`
 		RId         int64  `json:"rid,optional"`

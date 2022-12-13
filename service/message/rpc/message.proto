@@ -11,9 +11,10 @@ message CreateMessageReq {
   int64 messageType = 3; //消息类型
   int64 result = 4; //处理结果
   int64 uId = 5; //用户id
-  int64 gId = 6; //误认领申诉Id
-  string pId = 7; //文献id
-  int64 rId = 8; //文献互助Id
+  string sId = 6; //学者id
+  int64 gId = 7; //误认领申诉Id
+  string pId = 8; //文献id
+  int64 rId = 9; //文献互助Id
 }
 message CreateMessageReply {
 
