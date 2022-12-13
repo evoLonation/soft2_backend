@@ -60,7 +60,7 @@ func (l *LaunchGrievanceLogic) LaunchGrievance(req *types.LaunchGrievanceRequest
 	content := fmt.Sprintf("%s对你的文献%s发起申诉", username, papername)
 	fmt.Printf("1111111111111\n%d\n", defendantScholarUserId)
 	fmt.Printf("2222222222222\n%s\n", plaintiffScholarId)
-	_, _ = l.svcCtx.MessageRpc.CreateMessage(l.ctx, &message2.CreateMessageReq{
+	_, err = l.svcCtx.MessageRpc.CreateMessage(l.ctx, &message2.CreateMessageReq{
 		ReceiverId:  defendantScholarUserId,
 		Content:     content,
 		MessageType: 4,
@@ -68,5 +68,8 @@ func (l *LaunchGrievanceLogic) LaunchGrievance(req *types.LaunchGrievanceRequest
 		GId:         gId,
 		PId:         paperId,
 	})
+	if err != nil {
+		fmt.Printf("%s", err)
+	}
 	return &types.LaunchGrievanceResponse{}, nil
 }
