@@ -68,7 +68,7 @@ func (l *LaunchGrievanceLogic) LaunchGrievance(req *types.LaunchGrievanceRequest
 		ReceiverId:  defendantUserId,
 		Content:     content,
 		MessageType: 4,
-		UId:         tempId,
+		SId:         plaintiffId,
 		GId:         gId,
 		PId:         paperId,
 	})
