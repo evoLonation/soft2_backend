@@ -145,51 +145,53 @@ func (l *PaperCiteLogic) PaperCite(req *types.PaperCiteRequest) (resp *types.Pap
 }
 
 func ParseGBDocType(docType string) string {
-	docType = strings.ToLower(docType)
-	switch docType {
-	case "book":
-		return "M"
-	case "conference":
-		return "C"
-	case "journal":
-		return "J"
-	case "dissertation":
-		return "D"
-	case "patent":
-		return "P"
-	case "standard":
-		return "S"
-	case "newspaper":
-		return "N"
-	case "report":
-		return "R"
-	case "database":
-		return "DB"
-	default:
-		return "J"
-	}
+	return "J"
+	//docType = strings.ToLower(docType)
+	//switch docType {
+	//case "book":
+	//	return "M"
+	//case "conference":
+	//	return "C"
+	//case "journal":
+	//	return "J"
+	//case "dissertation":
+	//	return "D"
+	//case "patent":
+	//	return "P"
+	//case "standard":
+	//	return "S"
+	//case "newspaper":
+	//	return "N"
+	//case "report":
+	//	return "R"
+	//case "database":
+	//	return "DB"
+	//default:
+	//	return "J"
+	//}
 }
 
 func ParseBibtexDocType(docType string) string {
-	docType = strings.ToLower(docType)
-	switch docType {
-	case "book":
-		return "book"
-	case "conference":
-		return "coference"
-	case "journal":
-		return "article"
-	case "patent":
-		return "misc"
-	case "standard":
-		return "standard"
-	case "newspaper":
-		return "article"
-	case "report":
-		return "techreport"
-	case "database":
-		return "database"
-	default:
-		return "article"
-	}
+	return "article"
+	//docType = strings.ToLower(docType)
+	//switch docType {
+	//case "book":
+	//	return "book"
+	//case "conference":
+	//	return "coference"
+	//case "journal":
+	//	return "article"
+	//case "patent":
+	//	return "misc"
+	//case "standard":
+	//	return "standard"
+	//case "newspaper":
+	//	return "article"
+	//case "report":
+	//	return "techreport"
+	//case "database":
+	//	return "database"
+	//default:
+	//	return "article"
+	//}
 }

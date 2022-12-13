@@ -54,6 +54,7 @@ func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeIn
 			paperQueryString, scholarQueryString := GenerateQueryString(area)
 			var paperList []types.PaperInfoJSON
 			var scholarList []types.ScholarInfoJSON
+			//var journalList []string
 			go func() {
 				var paperBuf bytes.Buffer
 				paperQuery := map[string]interface{}{
@@ -69,16 +70,17 @@ func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeIn
 							"order": "desc",
 						},
 					},
-					//"aggs": map[string]interface{}{
-					//	"journals": map[string]interface{}{
-					//		"terms": map[string]interface{}{
-					//			"field": "venue.filter",
-					//			"order": map[string]interface{}{
-					//				"_count": "desc",
+					//	"aggs": map[string]interface{}{
+					//		"journals": map[string]interface{}{
+					//			"terms": map[string]interface{}{
+					//				"field": "venue.filter",
+					//				"order": map[string]interface{}{
+					//					"_count": "desc",
+					//				},
+					//				"size": req.JournalNum + 1,
 					//			},
 					//		},
 					//	},
-					//},
 				}
 				if err := json.NewEncoder(&paperBuf).Encode(paperQuery); err != nil {
 					log.Printf("Error encoding query: %s", err)
@@ -102,6 +104,16 @@ func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeIn
 					}
 					paperChan <- thisPaperJson
 				}
+
+				//journals := paperResult["aggregations"].(map[string]interface{})["journals"].(map[string]interface{})
+				//buckets := NilHandler(journals["buckets"], "list").([]interface{})
+				//for _, bucket := range buckets {
+				//	journal := NilHandler(bucket.(map[string]interface{})["key"], "string").(string)
+				//	if journal == "" {
+				//		continue
+				//	}
+				//	journalList = append(journalList, journal)
+				//}
 			}()
 
 			go func() {

@@ -96,6 +96,7 @@ type PaperDetailResponse struct {
 	Authors    []AuthorJSON `json:"authors"`
 	Doi        string       `json:"doi"`
 	ISBN       string       `json:"isbn"`
+	ISSN       string       `json:"issn"`
 	Org        string       `json:"org"`
 	Keywords   []string     `json:"keywords"`
 	Year       int          `json:"year"`
@@ -331,7 +332,7 @@ type FieldScholarJSON struct {
 }
 
 type HomeInfoRequest struct {
-	AreasNum int `json:"areas_num, optional"`
+	AreasNum   int `json:"areas_num, optional"`
 	PaperNum   int `json:"paper_num"`
 	ScholarNum int `json:"scholar_num"`
 	JournalNum int `json:"journal_num"`
@@ -342,7 +343,7 @@ type HomeInfoResponse struct {
 }
 
 type AreaJSON struct {
-	Type     []string            `json:"type"`
+	Type     []string          `json:"type"`
 	Papers   []PaperInfoJSON   `json:"papers"`
 	Scholars []ScholarInfoJSON `json:"scholars"`
 	Journals []string          `json:"journals"`
