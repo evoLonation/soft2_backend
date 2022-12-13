@@ -116,7 +116,7 @@ func InitFile() {
 	if err != nil {
 		panic(err)
 	}
-	logoSrc, err := os.Open("etc/" + DefaultAvatarName)
+	logoSrc, err := os.Open("etc/" + DefaultLogoName)
 	if err != nil {
 		panic(err)
 	}
