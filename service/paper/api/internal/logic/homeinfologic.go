@@ -44,101 +44,109 @@ func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeIn
 
 	paperChan := make(chan types.PaperInfoJSON, areasNum*req.PaperNum)
 	scholarChan := make(chan types.ScholarInfoJSON, areasNum*req.ScholarNum)
+	areaChan := make(chan types.AreaJSON, 8)
 	areaJsonList := make([]types.AreaJSON, 0)
-	for i, area := range areas {
+	for i, _ := range areas {
 		if i == areasNum {
 			break
 		}
-		paperQueryString, scholarQueryString := GenerateQueryString(area)
-		var paperList []types.PaperInfoJSON
-		var scholarList []types.ScholarInfoJSON
+		area := areas[i]
 		go func() {
-			var paperBuf bytes.Buffer
-			paperQuery := map[string]interface{}{
-				"from": 0,
-				"size": req.PaperNum,
-				"query": map[string]interface{}{
-					"query_string": map[string]interface{}{
-						"query": paperQueryString,
+			paperQueryString, scholarQueryString := GenerateQueryString(area)
+			var paperList []types.PaperInfoJSON
+			var scholarList []types.ScholarInfoJSON
+			go func() {
+				var paperBuf bytes.Buffer
+				paperQuery := map[string]interface{}{
+					"from": 0,
+					"size": req.PaperNum,
+					"query": map[string]interface{}{
+						"query_string": map[string]interface{}{
+							"query": paperQueryString,
+						},
 					},
-				},
-				//"aggs": map[string]interface{}{
-				//	"journals": map[string]interface{}{
-				//		"terms": map[string]interface{}{
-				//			"field": "venue.filter",
-				//			"order": map[string]interface{}{
-				//				"_count": "desc",
-				//			},
-				//		},
-				//	},
-				//},
-			}
-			if err := json.NewEncoder(&paperBuf).Encode(paperQuery); err != nil {
-				log.Printf("Error encoding query: %s", err)
-			}
-			log.Println(paperBuf.String())
-			paperResult := database.SearchPaper(paperBuf)
-			log.Println(paperResult)
-
-			hits := paperResult["hits"].(map[string]interface{})["hits"].([]interface{})
-			for _, hit := range hits {
-				var authorList []string
-				source := hit.(map[string]interface{})["_source"].(map[string]interface{})
-				authors := NilHandler(source["authors"], "list").([]interface{})
-				for _, author := range authors {
-					authorList = append(authorList, NilHandler(author.(map[string]interface{})["name"], "string").(string))
+					//"aggs": map[string]interface{}{
+					//	"journals": map[string]interface{}{
+					//		"terms": map[string]interface{}{
+					//			"field": "venue.filter",
+					//			"order": map[string]interface{}{
+					//				"_count": "desc",
+					//			},
+					//		},
+					//	},
+					//},
 				}
-				thisPaperJson := types.PaperInfoJSON{
-					Title:     NilHandler(source["title"], "string").(string),
-					Authors:   authorList,
-					NCitation: NilHandler(source["n_citation"], "int").(int),
+				if err := json.NewEncoder(&paperBuf).Encode(paperQuery); err != nil {
+					log.Printf("Error encoding query: %s", err)
 				}
-				paperChan <- thisPaperJson
-			}
-		}()
+				log.Println(paperBuf.String())
+				paperResult := database.SearchPaper(paperBuf)
+				log.Printf("finished searching paper in area: %v", area)
 
-		go func() {
-			var scholarBuf bytes.Buffer
-			scholarQuery := map[string]interface{}{
-				"from": 0,
-				"size": req.PaperNum,
-				"query": map[string]interface{}{
-					"query_string": map[string]interface{}{
-						"query": scholarQueryString,
+				hits := paperResult["hits"].(map[string]interface{})["hits"].([]interface{})
+				for _, hit := range hits {
+					var authorList []string
+					source := hit.(map[string]interface{})["_source"].(map[string]interface{})
+					authors := NilHandler(source["authors"], "list").([]interface{})
+					for _, author := range authors {
+						authorList = append(authorList, NilHandler(author.(map[string]interface{})["name"], "string").(string))
+					}
+					thisPaperJson := types.PaperInfoJSON{
+						Title:     NilHandler(source["title"], "string").(string),
+						Authors:   authorList,
+						NCitation: NilHandler(source["n_citation"], "int").(int),
+					}
+					paperChan <- thisPaperJson
+				}
+			}()
+
+			go func() {
+				var scholarBuf bytes.Buffer
+				scholarQuery := map[string]interface{}{
+					"from": 0,
+					"size": req.PaperNum,
+					"query": map[string]interface{}{
+						"query_string": map[string]interface{}{
+							"query": scholarQueryString,
+						},
 					},
-				},
-			}
-			if err := json.NewEncoder(&scholarBuf).Encode(scholarQuery); err != nil {
-				log.Printf("Error encoding query: %s", err)
-			}
-			log.Println(scholarBuf.String())
-			scholarResult := database.SearchAuthor(scholarBuf)
-
-			hits := scholarResult["hits"].(map[string]interface{})["hits"].([]interface{})
-			for _, hit := range hits {
-				source := hit.(map[string]interface{})["_source"].(map[string]interface{})
-				thisScholarJson := types.ScholarInfoJSON{
-					ScholarId: NilHandler(source["id"], "string").(string),
-					Name:      NilHandler(source["name"], "string").(string),
-					RefNum:    NilHandler(source["n_citation"], "int").(int),
 				}
-				scholarChan <- thisScholarJson
-			}
-		}()
+				if err := json.NewEncoder(&scholarBuf).Encode(scholarQuery); err != nil {
+					log.Printf("Error encoding query: %s", err)
+				}
+				log.Println(scholarBuf.String())
+				scholarResult := database.SearchAuthor(scholarBuf)
+				log.Printf("finished searching scholar in area: %v", area)
 
-		for j := 0; j < req.PaperNum; j++ {
-			paperList = append(paperList, <-paperChan)
-		}
-		for j := 0; j < req.ScholarNum; j++ {
-			scholarList = append(scholarList, <-scholarChan)
-		}
-		areaJsonList = append(areaJsonList, types.AreaJSON{
-			Type:     area,
-			Papers:   paperList,
-			Scholars: scholarList,
-		})
+				hits := scholarResult["hits"].(map[string]interface{})["hits"].([]interface{})
+				for _, hit := range hits {
+					source := hit.(map[string]interface{})["_source"].(map[string]interface{})
+					thisScholarJson := types.ScholarInfoJSON{
+						ScholarId: NilHandler(source["id"], "string").(string),
+						Name:      NilHandler(source["name"], "string").(string),
+						RefNum:    NilHandler(source["n_citation"], "int").(int),
+					}
+					scholarChan <- thisScholarJson
+				}
+			}()
+
+			for j := 0; j < req.PaperNum; j++ {
+				paperList = append(paperList, <-paperChan)
+			}
+			for j := 0; j < req.ScholarNum; j++ {
+				scholarList = append(scholarList, <-scholarChan)
+			}
+			thisAreaJson := types.AreaJSON{
+				Type:     area,
+				Papers:   paperList,
+				Scholars: scholarList,
+			}
+			areaChan <- thisAreaJson
+		}()
 	}
-
+	for i := 0; i < areasNum; i++ {
+		areaJsonList = append(areaJsonList, <-areaChan)
+	}
 	resp = &types.HomeInfoResponse{
 		Areas: areaJsonList,
 	}
