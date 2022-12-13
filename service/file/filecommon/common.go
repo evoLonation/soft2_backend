@@ -126,7 +126,7 @@ func InitFile() {
 	if err != nil {
 		panic(err)
 	}
-	logoDst, err := os.Create(FilePath + DefaultAvatarName)
+	logoDst, err := os.Create(FilePath + DefaultLogoName)
 	if err != nil {
 		panic(err)
 	}
