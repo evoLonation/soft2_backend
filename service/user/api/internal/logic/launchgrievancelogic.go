@@ -7,7 +7,6 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"soft2_backend/service/apply/rpc/types/apply"
 	message2 "soft2_backend/service/message/rpc/types/message"
-	paper2 "soft2_backend/service/paper/rpc/paper"
 	"soft2_backend/service/user/api/internal/svc"
 	"soft2_backend/service/user/api/internal/types"
 	"soft2_backend/service/user/model"
@@ -43,23 +42,14 @@ func (l *LaunchGrievanceLogic) LaunchGrievance(req *types.LaunchGrievanceRequest
 	}
 	tempGrievance, _ := l.svcCtx.GrievanceModel.Insert(l.ctx, &newGrievance)
 	gId, _ := tempGrievance.LastInsertId()
-	paper, _ := l.svcCtx.PaperRpc.GetPaper(l.ctx, &paper2.GetPaperReq{PaperId: paperId})
+	//paper, _ := l.svcCtx.PaperRpc.GetPaper(l.ctx, &paper2.GetPaperReq{PaperId: paperId})
 	var username string
-	var papername string
 	if len(plaintiffUser.Nickname) > 20 {
 		username = plaintiffUser.Nickname[0:20] + "..."
 	} else {
 		username = plaintiffUser.Nickname
 	}
-
-	if len(paper.PaperName) > 20 {
-		papername = paper.PaperName[0:20] + "..."
-	} else {
-		papername = paper.PaperName
-	}
-	content := fmt.Sprintf("%s对你的文献%s发起申诉", username, papername)
-	fmt.Printf("1111111111111\n%d\n", defendantScholarUserId)
-	fmt.Printf("2222222222222\n%s\n", plaintiffScholarId)
+	content := fmt.Sprintf("%s对你的文献%s发起申诉", username, req.PaperId)
 	_, err = l.svcCtx.MessageRpc.CreateMessage(l.ctx, &message2.CreateMessageReq{
 		ReceiverId:  defendantScholarUserId,
 		Content:     content,
