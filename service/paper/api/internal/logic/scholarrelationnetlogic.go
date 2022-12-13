@@ -85,6 +85,8 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 	}
 	coNodes[scholarSource["id"].(string)] = majorCoNode
 	ciNodes[scholarSource["id"].(string)] = majorCiNode
+	coNodeList = append(coNodeList, majorCoNode)
+	ciNodeList = append(ciNodeList, majorCiNode)
 
 	pubs := NilHandler(scholarSource["pubs"], "list").([]interface{})
 	pubIds := make([]string, 0)
@@ -173,6 +175,9 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 			})
 		}
 	}
+	nCitation, _ := strconv.Atoi(NilHandler(coNodeList[0].Style.Fill, "string").(string))
+	coNodeList[0].Size = GetSize(coNodeList[0].CoNum, maxCoNum, minCoNum)
+	coNodeList[0].Style.Fill = GetColor(GetD(nCitation, maxCoCitation, minCoCitation))
 
 	for _, pub := range pubs {
 		references := NilHandler(pub.(map[string]interface{})["_source"].(map[string]interface{})["references"], "list").([]interface{})
@@ -269,6 +274,9 @@ func (l *ScholarRelationNetLogic) ScholarRelationNet(req *types.ScholarRelationN
 			})
 		}
 	}
+	nCitation, _ = strconv.Atoi(NilHandler(ciNodeList[0].Style.Fill, "string").(string))
+	ciNodeList[0].Size = GetSize(ciNodeList[0].CiNum, maxCiNum, minCiNum)
+	ciNodeList[0].Style.Fill = GetColor(GetD(nCitation, maxCiCitation, minCiCitation))
 
 	coNodeList[0].CoNum = 0
 	ciNodeList[0].Size = 40
