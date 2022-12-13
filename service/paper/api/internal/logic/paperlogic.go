@@ -99,33 +99,69 @@ func (l *PaperLogic) Paper(req *types.PaperRequest) (resp *types.PaperResponse, 
 				},
 			})
 		}
-		for _, year := range req.Years {
-			filterList = append(filterList, map[string]interface{}{
-				"term": map[string]interface{}{
-					"year": year,
+		if len(req.Years) != 0 {
+			var termList []map[string]interface{}
+			for _, year := range req.Years {
+				termList = append(termList, map[string]interface{}{
+					"term": map[string]interface{}{
+						"year": year,
+					},
+				})
+			}
+			boolList := map[string]interface{}{
+				"bool": map[string]interface{}{
+					"should": termList,
 				},
-			})
+			}
+			filterList = append(filterList, boolList)
 		}
-		for _, e := range req.Institutions {
-			filterList = append(filterList, map[string]interface{}{
-				"term": map[string]interface{}{
-					"authors.org.filter": e,
+		if len(req.Institutions) != 0 {
+			var termList []map[string]interface{}
+			for _, e := range req.Institutions {
+				termList = append(termList, map[string]interface{}{
+					"term": map[string]interface{}{
+						"authors.org.filter": e,
+					},
+				})
+			}
+			boolList := map[string]interface{}{
+				"bool": map[string]interface{}{
+					"should": termList,
 				},
-			})
+			}
+			filterList = append(filterList, boolList)
 		}
-		for _, e := range req.Venues {
-			filterList = append(filterList, map[string]interface{}{
-				"term": map[string]interface{}{
-					"venue.filter": e,
+		if len(req.Venues) != 0 {
+			var termList []map[string]interface{}
+			for _, e := range req.Venues {
+				termList = append(termList, map[string]interface{}{
+					"term": map[string]interface{}{
+						"venue.filter": e,
+					},
+				})
+			}
+			boolList := map[string]interface{}{
+				"bool": map[string]interface{}{
+					"should": termList,
 				},
-			})
+			}
+			filterList = append(filterList, boolList)
 		}
-		for _, e := range req.Themes {
-			filterList = append(filterList, map[string]interface{}{
-				"term": map[string]interface{}{
-					"keywords.filter": e,
+		if len(req.Themes) != 0 {
+			var termList []map[string]interface{}
+			for _, e := range req.Themes {
+				termList = append(termList, map[string]interface{}{
+					"term": map[string]interface{}{
+						"keywords.filter": e,
+					},
+				})
+			}
+			boolList := map[string]interface{}{
+				"bool": map[string]interface{}{
+					"should": termList,
 				},
-			})
+			}
+			filterList = append(filterList, boolList)
 		}
 		query["query"].(map[string]interface{})["bool"].(map[string]interface{})["filter"] = filterList
 	}
