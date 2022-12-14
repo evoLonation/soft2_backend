@@ -54,6 +54,9 @@ func SearchPaperE(query bytes.Buffer) (map[string]interface{}, error) {
 		log.Printf("Error getting response: %s\n", err)
 	}
 	if resp.IsError() {
+		if resp.StatusCode == 400 {
+			return nil, errors.New("检索式格式错误！请检查")
+		}
 		raw := map[string]interface{}{}
 		errStr := "http from ES responses error! \n"
 		if err := json.NewDecoder(resp.Body).Decode(&raw); err != nil {

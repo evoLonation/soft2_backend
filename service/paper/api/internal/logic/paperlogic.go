@@ -193,7 +193,7 @@ func (l *PaperLogic) Paper(req *types.PaperRequest) (resp *types.PaperResponse, 
 			},
 			"venues": map[string]interface{}{
 				"terms": map[string]interface{}{
-					"field": "venues.filter",
+					"field": "venue.filter",
 				},
 			},
 			"institutions": map[string]interface{}{
