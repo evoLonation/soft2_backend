@@ -350,6 +350,7 @@ type AreaJSON struct {
 }
 
 type PaperInfoJSON struct {
+	PaperId   string `json:"paper_id"`
 	Title     string   `json:"title"`
 	Authors   []string `json:"authors"`
 	NCitation int      `json:"n_citation"`

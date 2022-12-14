@@ -98,6 +98,7 @@ func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeIn
 						authorList = append(authorList, NilHandler(author.(map[string]interface{})["name"], "string").(string))
 					}
 					thisPaperJson := types.PaperInfoJSON{
+						PaperId:        NilHandler(source["id"], "string").(string),
 						Title:     NilHandler(source["title"], "string").(string),
 						Authors:   authorList,
 						NCitation: NilHandler(source["n_citation"], "int").(int),
