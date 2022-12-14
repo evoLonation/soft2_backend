@@ -47,7 +47,8 @@ func (l *PaperDetailLogic) PaperDetail(req *types.PaperDetailRequest) (resp *typ
 	}
 	source := res["hits"].(map[string]interface{})["hits"].([]interface{})[0].(map[string]interface{})["_source"].(map[string]interface{})
 	var authors []types.AuthorJSON
-	for _, author := range source["authors"].([]interface{}) {
+	firstAuthorOrg := ""
+	for i, author := range source["authors"].([]interface{}) {
 		hasId := false
 		if author.(map[string]interface{})["id"] != nil {
 			hasId = true
@@ -57,6 +58,9 @@ func (l *PaperDetailLogic) PaperDetail(req *types.PaperDetailRequest) (resp *typ
 			Id:    NilHandler(author.(map[string]interface{})["id"], "string").(string),
 			HasId: hasId,
 		})
+		if i == 0 {
+			firstAuthorOrg = NilHandler(author.(map[string]interface{})["orgs"], "string").(string)
+		}
 	}
 	var urlStrings []string
 	urls := NilHandler(source["url"], "list").([]interface{})
@@ -85,8 +89,7 @@ func (l *PaperDetailLogic) PaperDetail(req *types.PaperDetailRequest) (resp *typ
 	}
 	referenceRes := database.MgetPaper(referenceBuf)
 	papers := NilHandler(referenceRes["docs"], "list").([]interface{})
-	firstAuthorOrg := ""
-	for i, paper := range papers {
+	for _, paper := range papers {
 		if paper.(map[string]interface{})["found"].(bool) == false {
 			continue
 		}
@@ -97,14 +100,6 @@ func (l *PaperDetailLogic) PaperDetail(req *types.PaperDetailRequest) (resp *typ
 			author = ""
 		} else {
 			author = NilHandler(authors[0].(map[string]interface{})["name"], "string").(string)
-			if i == 0 {
-				orgs := NilHandler(authors[0].(map[string]interface{})["orgs"], "list").([]interface{})
-				if len(orgs) == 0 {
-					firstAuthorOrg = ""
-				} else {
-					firstAuthorOrg = NilHandler(orgs[0], "string").(string)
-				}
-			}
 		}
 		referencePapers = append(referencePapers, types.PaperJSON{
 			Id:     NilHandler(source["id"], "string").(string),

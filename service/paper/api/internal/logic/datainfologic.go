@@ -47,6 +47,17 @@ func (l *DataInfoLogic) DataInfo(req *types.DataInfoRequest) (resp *types.DataIn
 					"buckets_path": "journal>_count",
 				},
 			},
+			"org": map[string]interface{}{
+				"terms": map[string]interface{}{
+					"field": "authors.org.filter",
+					"size":  1,
+				},
+			},
+			"sum_org": map[string]interface{}{
+				"sum_bucket": map[string]interface{}{
+					"buckets_path": "org>_count",
+				},
+			},
 		},
 	}
 	if err := json.NewEncoder(&paperBuf).Encode(paperQuery); err != nil {
@@ -57,6 +68,7 @@ func (l *DataInfoLogic) DataInfo(req *types.DataInfoRequest) (resp *types.DataIn
 	paperNum := int(paperRes["hits"].(map[string]interface{})["total"].(map[string]interface{})["value"].(float64))
 
 	journalNum := paperRes["aggregations"].(map[string]interface{})["sum_journal"].(map[string]interface{})["value"].(float64)
+	orgNum := paperRes["aggregations"].(map[string]interface{})["sum_org"].(map[string]interface{})["value"].(float64)
 	//journalNum, _ := strconv.ParseFloat(sumJournal, 64)
 
 	var scholarBuf bytes.Buffer
@@ -86,7 +98,7 @@ func (l *DataInfoLogic) DataInfo(req *types.DataInfoRequest) (resp *types.DataIn
 	scholarRes := database.SearchAuthor(scholarBuf)
 	scholarNum := int(scholarRes["hits"].(map[string]interface{})["total"].(map[string]interface{})["value"].(float64))
 
-	orgNum := scholarRes["aggregations"].(map[string]interface{})["sum_org"].(map[string]interface{})["value"].(float64)
+	//orgNum := scholarRes["aggregations"].(map[string]interface{})["sum_org"].(map[string]interface{})["value"].(float64)
 	//orgNum, _ := strconv.ParseFloat(sumOrg, 64)
 
 	resp = &types.DataInfoResponse{

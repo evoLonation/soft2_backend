@@ -71,7 +71,7 @@ func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeIn
 						},
 					},
 					//	"aggs": map[string]interface{}{
-					//		"journals": map[string]interface{}{
+					//		"journal": map[string]interface{}{
 					//			"terms": map[string]interface{}{
 					//				"field": "venue.filter",
 					//				"order": map[string]interface{}{
@@ -106,7 +106,7 @@ func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeIn
 					paperChan <- thisPaperJson
 				}
 
-				//journals := paperResult["aggregations"].(map[string]interface{})["journals"].(map[string]interface{})
+				//journals := paperResult["aggregations"].(map[string]interface{})["journal"].(map[string]interface{})
 				//buckets := NilHandler(journals["buckets"], "list").([]interface{})
 				//for _, bucket := range buckets {
 				//	journal := NilHandler(bucket.(map[string]interface{})["key"], "string").(string)
