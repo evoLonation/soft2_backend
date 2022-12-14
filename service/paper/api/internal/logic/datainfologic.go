@@ -5,11 +5,9 @@ import (
 	"context"
 	"encoding/json"
 	"log"
-	"soft2_backend/service/paper/database"
-	"strconv"
-
 	"soft2_backend/service/paper/api/internal/svc"
 	"soft2_backend/service/paper/api/internal/types"
+	"soft2_backend/service/paper/database"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -58,8 +56,8 @@ func (l *DataInfoLogic) DataInfo(req *types.DataInfoRequest) (resp *types.DataIn
 	paperRes := database.SearchPaper(paperBuf)
 	paperNum := int(paperRes["hits"].(map[string]interface{})["total"].(map[string]interface{})["value"].(float64))
 
-	sumJournal := paperRes["aggregations"].(map[string]interface{})["sum_journal"].(map[string]interface{})["value"].(string)
-	journalNum, _ := strconv.ParseFloat(sumJournal, 64)
+	journalNum := paperRes["aggregations"].(map[string]interface{})["sum_journal"].(map[string]interface{})["value"].(float64)
+	//journalNum, _ := strconv.ParseFloat(sumJournal, 64)
 
 	var scholarBuf bytes.Buffer
 	scholarQuery := map[string]interface{}{
@@ -88,8 +86,8 @@ func (l *DataInfoLogic) DataInfo(req *types.DataInfoRequest) (resp *types.DataIn
 	scholarRes := database.SearchAuthor(scholarBuf)
 	scholarNum := int(scholarRes["hits"].(map[string]interface{})["total"].(map[string]interface{})["value"].(float64))
 
-	sumOrg := scholarRes["aggregations"].(map[string]interface{})["sum_org"].(map[string]interface{})["value"].(string)
-	orgNum, _ := strconv.ParseFloat(sumOrg, 64)
+	orgNum := scholarRes["aggregations"].(map[string]interface{})["sum_org"].(map[string]interface{})["value"].(float64)
+	//orgNum, _ := strconv.ParseFloat(sumOrg, 64)
 
 	resp = &types.DataInfoResponse{
 		PaperNum:   paperNum,
