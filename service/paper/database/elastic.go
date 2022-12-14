@@ -27,7 +27,7 @@ func SearchPaper(query bytes.Buffer) map[string]interface{} {
 	var res map[string]interface{}
 	resp, err := es.Search(
 		es.Search.WithContext(context.Background()),
-		es.Search.WithIndex("papers"),
+		es.Search.WithIndex("papers2"),
 		es.Search.WithBody(&query),
 		es.Search.WithTrackTotalHits(true),
 		es.Search.WithPretty(),
@@ -45,7 +45,7 @@ func SearchPaperE(query bytes.Buffer) (map[string]interface{}, error) {
 	var res map[string]interface{}
 	resp, err := es.Search(
 		es.Search.WithContext(context.Background()),
-		es.Search.WithIndex("papers"),
+		es.Search.WithIndex("papers2"),
 		es.Search.WithBody(&query),
 		es.Search.WithTrackTotalHits(true),
 		es.Search.WithPretty(),
@@ -123,7 +123,7 @@ func MgetPaper(query bytes.Buffer) map[string]interface{} {
 	resp, err := es.Mget(
 		io.Reader(&query),
 		es.Mget.WithContext(context.Background()),
-		es.Mget.WithIndex("papers"),
+		es.Mget.WithIndex("papers2"),
 		es.Mget.WithPretty(),
 	)
 	if err != nil {
@@ -155,7 +155,7 @@ func MgetScholer(query bytes.Buffer) map[string]interface{} {
 func UpdatePaper(query bytes.Buffer, id string) map[string]interface{} {
 	var res map[string]interface{}
 	resp, err := es.Update(
-		"papers",
+		"papers2",
 		id,
 		io.Reader(&query),
 		es.Update.WithContext(context.Background()),
