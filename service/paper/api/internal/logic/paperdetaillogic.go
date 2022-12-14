@@ -59,7 +59,7 @@ func (l *PaperDetailLogic) PaperDetail(req *types.PaperDetailRequest) (resp *typ
 			HasId: hasId,
 		})
 		if i == 0 {
-			firstAuthorOrg = NilHandler(author.(map[string]interface{})["orgs"], "string").(string)
+			firstAuthorOrg = NilHandler(author.(map[string]interface{})["org"], "string").(string)
 			log.Println(author)
 		}
 	}
