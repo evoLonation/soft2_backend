@@ -41,9 +41,9 @@ func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeIn
 		areasNum = len(areas)
 	}
 
-	paperChan := make(chan types.PaperInfoJSON, areasNum*req.PaperNum)
-	scholarChan := make(chan types.ScholarInfoJSON, areasNum*req.ScholarNum)
-	journalChan := make(chan string, areasNum*req.JournalNum)
+	//paperChan := make(chan types.PaperInfoJSON, areasNum*req.PaperNum)
+	//scholarChan := make(chan types.ScholarInfoJSON, areasNum*req.ScholarNum)
+	//journalChan := make(chan string, areasNum*req.JournalNum)
 	areaChan := make(chan types.AreaJSON, 7)
 	areaJsonList := make([]types.AreaJSON, 0)
 	for i, _ := range areas {
@@ -52,6 +52,9 @@ func (l *HomeInfoLogic) HomeInfo(req *types.HomeInfoRequest) (resp *types.HomeIn
 		}
 		area := areas[i]
 		go func() {
+			paperChan := make(chan types.PaperInfoJSON, req.PaperNum)
+			scholarChan := make(chan types.ScholarInfoJSON, req.ScholarNum)
+			journalChan := make(chan string, req.JournalNum)
 			paperQueryString, scholarQueryString := GenerateQueryString(area)
 			var paperList []types.PaperInfoJSON
 			var scholarList []types.ScholarInfoJSON
