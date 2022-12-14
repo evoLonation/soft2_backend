@@ -158,7 +158,7 @@ func (l *PaperDetailLogic) PaperDetail(req *types.PaperDetailRequest) (resp *typ
 		Keywords:   keywordStrings,
 		Year:       NilHandler(source["year"], "int").(int),
 		NCitation:  NilHandler(source["n_citation"], "int").(int),
-		Publisher:  NilHandler(source["publisher"], "string").(string),
+		Publisher:  NilHandler(source["venue"], "string").(string),
 		References: referencePapers,
 		Similars:   SimilarPapers,
 		Urls:       urlStrings,
