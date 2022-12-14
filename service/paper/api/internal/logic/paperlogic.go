@@ -253,21 +253,29 @@ func (l *PaperLogic) Paper(req *types.PaperRequest) (resp *types.PaperResponse, 
 		sort.Sort(years)
 		//todo
 		for _, keyword := range agg["keywords"].(map[string]interface{})["buckets"].([]interface{}) {
+			name := keyword.(map[string]interface{})["key"].(string)
+			if name == "" {
+				continue
+			}
 			themes = append(themes, types.Statistic{
-				Name:  keyword.(map[string]interface{})["key"].(string),
+				Name:  name,
 				Count: int(keyword.(map[string]interface{})["doc_count"].(float64)),
 			})
 		}
 		for _, venue := range agg["venues"].(map[string]interface{})["buckets"].([]interface{}) {
+			name := venue.(map[string]interface{})["key"].(string)
+			if name == "" {
+				continue
+			}
 			venues = append(venues, types.Statistic{
-				Name:  venue.(map[string]interface{})["key"].(string),
+				Name:  name,
 				Count: int(venue.(map[string]interface{})["doc_count"].(float64)),
 			})
 		}
 		for _, inst := range agg["institutions"].(map[string]interface{})["buckets"].([]interface{}) {
 			name := inst.(map[string]interface{})["key"].(string)
-			if len(strings.Split(name, " ")) == 0 {
-				break
+			if name == "" {
+				continue
 			}
 			institutions = append(institutions, types.Statistic{
 				Name:  name,
