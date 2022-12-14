@@ -60,6 +60,7 @@ func (l *PaperDetailLogic) PaperDetail(req *types.PaperDetailRequest) (resp *typ
 		})
 		if i == 0 {
 			firstAuthorOrg = NilHandler(author.(map[string]interface{})["orgs"], "string").(string)
+			log.Println(author)
 		}
 	}
 	var urlStrings []string
@@ -123,7 +124,7 @@ func (l *PaperDetailLogic) PaperDetail(req *types.PaperDetailRequest) (resp *typ
 		log.Printf("encode query error: %v", err)
 	}
 	similarRes := database.MgetPaper(similarBuf)
-	log.Println(similarRes)
+	//log.Println(similarRes)
 	papers = NilHandler(similarRes["docs"], "list").([]interface{})
 	for _, paper := range papers {
 		if paper.(map[string]interface{})["found"].(bool) == false {
