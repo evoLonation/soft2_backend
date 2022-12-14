@@ -265,8 +265,12 @@ func (l *PaperLogic) Paper(req *types.PaperRequest) (resp *types.PaperResponse, 
 			})
 		}
 		for _, inst := range agg["institutions"].(map[string]interface{})["buckets"].([]interface{}) {
+			name := inst.(map[string]interface{})["key"].(string)
+			if len(strings.Split(name, " ")) == 0 {
+				break
+			}
 			institutions = append(institutions, types.Statistic{
-				Name:  inst.(map[string]interface{})["key"].(string),
+				Name:  name,
 				Count: int(inst.(map[string]interface{})["doc_count"].(float64)),
 			})
 		}
