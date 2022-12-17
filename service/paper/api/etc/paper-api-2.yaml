@@ -1,6 +1,6 @@
 Name: paper-api
 Host: 0.0.0.0
-Port: 8893
+Port: 10002
 Timeout: 30000
 Auth:
   AccessSecret: BUAADIAMONDPICK

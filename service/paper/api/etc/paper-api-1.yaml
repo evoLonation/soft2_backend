@@ -1,0 +1,22 @@
+Name: paper-api
+Host: 0.0.0.0
+Port: 10001
+Timeout: 30000
+Auth:
+  AccessSecret: BUAADIAMONDPICK
+  AccessExpire: 3600
+FileRpc:
+  Etcd:
+    Hosts:
+      - 120.46.220.182:2379
+    Key: file.rpc
+  Timeout: 30000
+ApplyRpc:
+  Etcd:
+    Hosts:
+      - 120.46.220.182:2379
+    Key: apply.rpc
+  Timeout: 30000
+elasticsearch:
+  host:
+    - 127.0.0.1:9200

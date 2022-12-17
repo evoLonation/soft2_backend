@@ -18,4 +18,4 @@ COPY . .
 COPY service/paper/api/etc /app/etc
 RUN go build -ldflags="-s -w" -o /app/main service/paper/api/main.go
 WORKDIR /app
-CMD ["./main", "-f", "etc/paper-api.yaml"]
+CMD ["./main", "-f", "etc/paper-api-3.yaml"]

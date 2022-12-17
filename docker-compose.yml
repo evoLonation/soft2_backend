@@ -178,14 +178,44 @@ services:
       - backend
     restart: always
 
-  paper-api: # {服务名称}.rpc或者 {服务名称}.api
+  paper-api-1: # {服务名称}.rpc或者 {服务名称}.api
     build:
-      dockerfile: service/paper/api/Dockerfile # service/{服务名称}/{rpc|api}/Dockerfile
+      dockerfile: service/paper/api/Dockerfile1 # service/{服务名称}/{rpc|api}/Dockerfile
     environment:
       - TZ=Asia/Shanghai
     privileged: true
     ports:
-      - "8893:8893"  # rpc或者api服务的自己的端口
+      - "10001:10001"  # rpc或者api服务的自己的端口
+    stdin_open: true
+    tty: true
+    volumes:
+      - go-cache:/build/cache
+    networks:
+      - backend
+    restart: always
+  paper-api-2: # {服务名称}.rpc或者 {服务名称}.api
+    build:
+      dockerfile: service/paper/api/Dockerfile2 # service/{服务名称}/{rpc|api}/Dockerfile
+    environment:
+      - TZ=Asia/Shanghai
+    privileged: true
+    ports:
+      - "10002:10002"  # rpc或者api服务的自己的端口
+    stdin_open: true
+    tty: true
+    volumes:
+      - go-cache:/build/cache
+    networks:
+      - backend
+    restart: always
+  paper-api-3: # {服务名称}.rpc或者 {服务名称}.api
+    build:
+      dockerfile: service/paper/api/Dockerfile3 # service/{服务名称}/{rpc|api}/Dockerfile
+    environment:
+      - TZ=Asia/Shanghai
+    privileged: true
+    ports:
+      - "10003:10003"  # rpc或者api服务的自己的端口
     stdin_open: true
     tty: true
     volumes:
