@@ -85,7 +85,7 @@ func SearchAuthor(query bytes.Buffer) map[string]interface{} {
 	var res map[string]interface{}
 	resp, err := es.Search(
 		es.Search.WithContext(context.Background()),
-		es.Search.WithIndex("authors"),
+		es.Search.WithIndex("authors2"),
 		es.Search.WithBody(&query),
 		es.Search.WithTrackTotalHits(true),
 		es.Search.WithPretty(),
@@ -143,7 +143,7 @@ func MgetScholer(query bytes.Buffer) map[string]interface{} {
 	resp, err := es.Mget(
 		io.Reader(&query),
 		es.Mget.WithContext(context.Background()),
-		es.Mget.WithIndex("authors"),
+		es.Mget.WithIndex("authors2"),
 		es.Mget.WithPretty(),
 	)
 	if err != nil {
@@ -176,7 +176,7 @@ func UpdatePaper(query bytes.Buffer, id string) map[string]interface{} {
 func UpdateAuthor(query bytes.Buffer, id string) map[string]interface{} {
 	var res map[string]interface{}
 	resp, err := es.Update(
-		"authors",
+		"authors2",
 		id,
 		io.Reader(&query),
 		es.Update.WithContext(context.Background()),
