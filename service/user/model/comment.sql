@@ -1,5 +1,5 @@
 create table comment(
-    comment_id int primary key auto_increment,
+    comment_id int auto_increment,
     user_id int not null ,
     user_nickname varchar(20) not null ,
     paper_id varchar(20) not null ,

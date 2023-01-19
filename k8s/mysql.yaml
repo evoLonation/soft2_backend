@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+spec:
+  type: NodePort
+  ports:
+    - port: 3306
+      nodePort: 30306
+  selector:
+    app: mysql
+  # clusterIP: None
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-deployment
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql
+          # 设置环境变量用于配置容器
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: 2002116yy
+          # 设置stain和tty使得容器运行后可以使用exec来与容器交互
+          stdin: true
+          tty: true
+          ports:
+            - containerPort: 3306
+          # volume 设置
+          volumeMounts:
+            - name: mysql-storage
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-storage
+          persistentVolumeClaim:
+            claimName: mysql-pv-claim

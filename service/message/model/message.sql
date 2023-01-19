@@ -1,4 +1,4 @@
-DROP TABLE `message`;
+# DROP TABLE `message`;
 CREATE TABLE `message`
 (
     `msgId`			bigint unsigned		NOT NULL AUTO_INCREMENT,

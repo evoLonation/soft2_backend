@@ -1,0 +1,42 @@
+# 设置一个headless service
+apiVersion: v1
+kind: Service
+metadata:
+  name: etcd
+spec:
+  selector:
+    app: etcd
+  ports:
+    - port: 2379
+  clusterIP: None
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: etcd
+spec:
+  selector:
+    matchLabels:
+      app: etcd
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: etcd
+    spec:
+      containers:
+        - name: etcd
+          image: quay.io/coreos/etcd:v3.5.5
+          ports:
+            - containerPort: 2379
+            - containerPort: 2380
+          env:
+            - name: ETCD_LISTEN_CLIENT_URLS
+              value: http://0.0.0.0:2379
+            - name: HOST_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: ETCD_ADVERTISE_CLIENT_URLS
+              # 环境变量组合
+              value: "http://$(HOST_IP):2379"

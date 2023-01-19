@@ -1,13 +1,13 @@
 Name: apply.rpc
-ListenOn: 0.0.0.0:8083
+ListenOn: 0.0.0.0:8080
 Etcd:
   Hosts:
-  - 120.46.220.182:2379
+  - etcd:2379
   Key: apply.rpc
 Mysql:
-  DataSource: root:DiamondPick@tcp(120.46.220.182:3306)/wyx?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+  DataSource: root:2002116yy@tcp(mysql:3306)/wyx?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
 PaperRpc:
   Etcd:
     Hosts:
-      - 120.46.220.182:2379
+      - etcd:2379
     Key: paper.rpc

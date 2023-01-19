@@ -1,9 +1,9 @@
 Name: message-api
 Host: 0.0.0.0
-Port: 8890
+Port: 8888
 
 Mysql:
-  DataSource: root:DiamondPick@tcp(120.46.220.182:3306)/wyx?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+  DataSource: root:2002116yy@tcp(mysql:3306)/wyx?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
 
 Auth:
   AccessSecret: BUAADIAMONDPICK

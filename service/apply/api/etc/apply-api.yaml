@@ -1,21 +1,21 @@
 Name: apply-api
 Host: 0.0.0.0
-Port: 8891
+Port: 8888
 
 PaperRpc:
   Etcd:
     Hosts:
-      - 120.46.220.182:2379
+      - etcd:2379
     Key: paper.rpc
 
 MessageRpc:
   Etcd:
     Hosts:
-      - 120.46.220.182:2379
+      - etcd:2379
     Key: message.rpc
 
 Mysql:
-  DataSource: root:DiamondPick@tcp(120.46.220.182:3306)/wyx?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+  DataSource: root:2002116yy@tcp(mysql:3306)/wyx?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
 
 Auth:
   AccessSecret: BUAADIAMONDPICK

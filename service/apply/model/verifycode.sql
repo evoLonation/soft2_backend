@@ -1,4 +1,4 @@
-DROP TABLE `verifycode`;
+# DROP TABLE `verifycode`;
 CREATE TABLE `verifycode`
 (
     `email`       varchar(255) NOT NULL COMMENT '认证邮箱',

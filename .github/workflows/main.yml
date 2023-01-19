@@ -13,7 +13,7 @@ jobs:
     name: Running go
     steps:
       - name: 在服务器上执行 sudo go run
-        if: always()
+        if: never()
         uses: fifsky/ssh-action@master
         with:
           command: | # down命令必须在pull前进行

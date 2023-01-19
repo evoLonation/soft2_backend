@@ -1,4 +1,4 @@
-DROP TABLE `apply`;
+# DROP TABLE `apply`;
 CREATE TABLE `apply`
 (
     `applyId`   bigint unsigned     NOT NULL AUTO_INCREMENT,

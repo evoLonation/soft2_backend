@@ -1,13 +1,13 @@
 Name: help.rpc
-ListenOn: 0.0.0.0:8084
+ListenOn: 0.0.0.0:8080
 Etcd:
   Hosts:
-  - 120.46.220.182:2379
+  - etcd:2379
   Key: help.rpc
 Mysql:
-  DataSource: root:DiamondPick@tcp(120.46.220.182:3306)/yyh?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+  DataSource: root:2002116yy@tcp(mysql:3306)/yyh?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
 MessageRpc:
   Etcd:
     Hosts:
-      - 120.46.220.182:2379
+      - etcd:2379
     Key: message.rpc

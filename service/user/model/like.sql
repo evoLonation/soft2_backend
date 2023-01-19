@@ -1,5 +1,5 @@
 create table `like`(
-    like_id int primary key auto_increment,
+    like_id int auto_increment,
     user_id int not null ,
     comment_id int not null ,
     primary key (like_id),

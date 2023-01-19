@@ -1,24 +1,24 @@
 Name: user-api
 Host: 0.0.0.0
-Port: 8894
+Port: 8888
 MaxBytes: 33554432
 Mysql:
-  DataSource: root:DiamondPick@tcp(120.46.220.182:3306)/zzy?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+  DataSource: root:2002116yy@tcp(mysql:3306)/zzy?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
 Auth:
   AccessSecret: BUAADIAMONDPICK
   AccessExpire: 3600
 HelpRpcConf:
   Etcd:
     Hosts:
-      - 120.46.220.182:2379
+      - etcd:2379
     Key: help.rpc
 ApplyRpcConf:
   Etcd:
     Hosts:
-      - 120.46.220.182:2379
+      - etcd:2379
     Key: apply.rpc
 MessageRpcConf:
   Etcd:
     Hosts:
-      - 120.46.220.182:2379
+      - etcd:2379
     Key: message.rpc

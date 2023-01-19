@@ -1,6 +1,6 @@
 
 create table collect(
-                        collect_id int primary key auto_increment,
+                        collect_id int auto_increment,
                         user_id int not null ,
                         paper_id varchar(20) not null ,
                         create_time timestamp NULL default current_timestamp,

@@ -8,13 +8,13 @@ Auth:
 FileRpc:
   Etcd:
     Hosts:
-      - 120.46.220.182:2379
+      - etcd:2379
     Key: file.rpc
   Timeout: 30000
 ApplyRpc:
   Etcd:
     Hosts:
-      - 120.46.220.182:2379
+      - etcd:2379
     Key: apply.rpc
   Timeout: 30000
 elasticsearch:
