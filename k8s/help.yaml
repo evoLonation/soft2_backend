@@ -6,7 +6,7 @@ metadata:
 spec:
   type: NodePort # NodePort类型可以直接建立端口映射，外部cilent可以从集群中任何一个ip访问nodePort所配置的端口来访问服务
   ports:
-    - Port: 8888
+    - port: 8888
       nodePort: 30004
   selector:
     service: help
